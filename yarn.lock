@@ -7,14 +7,6 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@bigcinc/bigc-design-system-pkg@0.0.4":
-  version "0.0.4"
-  resolved "https://npm.pkg.github.com/download/@bigcinc/bigc-design-system-pkg/0.0.4/e95249cd3f8f150ee6cab3c7aeead4f86d397da5#e95249cd3f8f150ee6cab3c7aeead4f86d397da5"
-  integrity sha512-wEWRPXSMMndyGNFvkjryjHVkpbu5XNuMkmEoo5tWULs5XAxD+A9EJJ8RvFt31J1aZqDo9lBZy+7zrVfZUWzsHQ==
-  dependencies:
-    react "^18.2.0"
-    react-dom "^18.2.0"
-
 "@emotion/is-prop-valid@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-1.2.1.tgz#23116cf1ed18bfeac910ec6436561ecb1a3885cc"

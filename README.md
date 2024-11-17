@@ -1,2 +1,2 @@
-# bigc-frontend-web
- React + TypeScript + Vite
+# 시인성 연구
+
