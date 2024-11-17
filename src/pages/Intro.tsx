@@ -1,4 +1,4 @@
-function App() {
+function Intro() {
   return (
     <>
       <h1>시인성 연구</h1>
@@ -6,4 +6,4 @@ function App() {
   );
 }
 
-export default App;
+export default Intro;
