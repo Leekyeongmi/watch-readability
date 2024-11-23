@@ -1,16 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Intro from '@/pages/Intro';
-import JinsungLabs from '@/pages/JinsungLabs';
+import Intro from '../pages/intro';
+import JinsungLabs from '../pages/JinsungLabs';
 
 const webRouter = createBrowserRouter([
   {
     path: '/',
-    element: <Intro />,
+    element: <Intro />
   },
   {
     path: '/jinsung-labs',
-    element: <JinsungLabs />,
-  },
+    element: <JinsungLabs />
+  }
 ]);
 
 export { webRouter };
