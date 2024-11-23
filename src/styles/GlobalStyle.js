@@ -3,20 +3,22 @@ import theme from './theme';
 
 const GlobalStyle = createGlobalStyle`
 * {
-    margin: 0;
-    padding: 0;
-    -webkit-touch-callout: none;
-    -webkit-user-select : none;  
-    user-select:none;
-    -webkit-tap-highlight-color: transparent !important;
-    box-shadow: none !important;
-    font-display: swap;
-    -webkit-user-drag: none;
-    overscroll-behavior: none;
-  }
+  margin: 0;
+  padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select : none;  
+  user-select:none;
+  -webkit-tap-highlight-color: transparent !important;
+  box-shadow: none !important;
+  font-display: swap;
+  -webkit-user-drag: none;
+  overscroll-behavior: none;
+  box-sizing:border-box;
+}
 
 html {
   font-size: 16px;
+
 }
 
 @media screen and (max-width: ${theme.deviceSizes.mobile}) {
@@ -49,28 +51,6 @@ img {
 input { 
   -webkit-user-select : auto;
 }
-
-.hide-scrollbar {
-  ::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
-    -webkit-appearance: none !important;
-  }
-}
-
-.custom-scrollbar {
-  &::-webkit-scrollbar {
-    width: 0.5rem;
-    height: 10rem;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 0.5rem;
-    background: ${theme.colors.grey100};
-  }
-}
-
 
 `;
 
