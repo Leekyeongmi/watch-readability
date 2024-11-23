@@ -4,9 +4,11 @@ import styled from 'styled-components';
 import Image from './atoms/Image';
 
 const ClockContainer = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 30rem;
+  height: 30rem;
   position: relative;
+  overflow-x: hidden;
+  overflow-y: hidden;
 `;
 
 const ClockFace = styled(Image)`

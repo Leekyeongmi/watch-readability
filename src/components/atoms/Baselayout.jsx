@@ -14,5 +14,4 @@ export default function BaseLayout() {
 const BasicLayout = styled(Column)`
   position: relative;
   padding: ${LAYOUT.PADDING_X}rem;
-  overflow-x: hidden;
 `;
