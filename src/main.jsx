@@ -5,10 +5,18 @@ import { webRouter } from './router/index';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import GlobalStyle from './styles/GlobalStyle';
+import { useThemeColors } from './stores/useTheme';
 
-createRoot(document.getElementById('root')).render(
-  <ThemeProvider theme={theme}>
-    <RouterProvider router={webRouter} />
-    <GlobalStyle />
-  </ThemeProvider>
-);
+const App = () => {
+  const colors = useThemeColors();
+  console.log(colors);
+
+  return (
+    <ThemeProvider theme={{ ...theme, colors }}>
+      <RouterProvider router={webRouter} />
+      <GlobalStyle />
+    </ThemeProvider>
+  );
+};
+
+createRoot(document.getElementById('root')).render(<App />);

@@ -36,10 +36,9 @@ ${theme.devices.largeDesktop} {
 
 body {
     -webkit-text-size-adjust: none;
-    background-color: #FFFFFF;
 
     & #root {
-      background-color: #FFFFFF;  
+      background-color: white;
     }
   }
 

@@ -1,12 +1,17 @@
 import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { LAYOUT } from '../../constant';
-import { CenterColumn, Column } from '../layouts/Layout';
+import { Column } from '../layouts/Layout';
+import { Text } from './Text';
+import theme from '../../styles/theme';
 
 export default function BaseLayout() {
+  const theme = useTheme();
   return (
-    <BasicLayout>
-      <h2>시계 인덱스에 따른 시인성 연구</h2>
+    <BasicLayout theme={theme}>
+      <Text typo='head01' color='black'>
+        시계 인덱스에 따른 시인성 연구
+      </Text>
       <Outlet />
     </BasicLayout>
   );
@@ -14,6 +19,7 @@ export default function BaseLayout() {
 
 const BasicLayout = styled(Column)`
   position: relative;
+  background-color: ${({ theme }) => theme.colors.white};
   padding: ${LAYOUT.PADDING_X}rem;
   overflow-x: hidden;
   min-height: 100svh;
