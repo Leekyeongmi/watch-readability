@@ -13,29 +13,28 @@ const ClockFace = styled(Image)`
   width: 100%;
   height: 100%;
   position: relative;
-  z-index: 0;
+  z-index: 10;
 `;
 
 const ClockHand = styled.svg`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   transform-origin: center;
   transform: rotate(${(props) => props.rotation}deg);
-`;
-
-const HourHand = styled(ClockHand)`
-  z-index: 10;
-`;
-
-const MinuteHand = styled(ClockHand)`
   z-index: 20;
 `;
 
-const SecondHand = styled(ClockHand)`
+const HourHand = styled(ClockHand)`
   z-index: 30;
+`;
+
+const MinuteHand = styled(ClockHand)`
+  z-index: 50;
+`;
+
+const SecondHand = styled(ClockHand)`
+  z-index: 100;
 `;
 
 export default function Clock() {
