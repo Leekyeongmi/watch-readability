@@ -20,6 +20,7 @@ function Quiz() {
   const theme = useTheme();
   const userTheme = useUserTheme();
   const totalQuizzes = 7;
+
   const [currentQuiz, setCurrentQuiz] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -34,6 +35,7 @@ function Quiz() {
     minute: '',
     second: ''
   });
+  const { hour, minute, second } = userTime;
   const [errorInSeconds, setErrorInSeconds] = useState(null);
   const dataToPost = {
     // 시계종류, 걸린 시간, 정답유무, 오차율
@@ -48,7 +50,12 @@ function Quiz() {
     setIsRunning(false);
     setTimer(0);
   };
+
+  const buttonEnabled = hour != '' && minute != '' && second != '';
+
   const goToNextQuiz = () => {
+    if (!buttonEnabled) return;
+
     if (currentQuiz < totalQuizzes - 1) {
       calculateError();
       setCurrentQuiz(currentQuiz + 1);
@@ -63,19 +70,20 @@ function Quiz() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'hour' && (value < 0 || value > 12)) return;
+    if ((name === 'minute' || name === 'second') && (value < 0 || value > 59))
+      return;
+
     setUserTime((prev) => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const { hour, minute, second } = userTime;
-
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      if (hour != '' && minute != '' && second != '') {
-        goToNextQuiz();
-      }
+      goToNextQuiz();
     }
   };
 
@@ -166,7 +174,7 @@ function Quiz() {
                 onChange={handleInputChange}
                 placeholder='MM'
                 min='0'
-                max='60'
+                max='59'
               />
               <Colon>:</Colon>
               <Input
@@ -177,15 +185,15 @@ function Quiz() {
                 onChange={handleInputChange}
                 placeholder='SS'
                 min='0'
-                max='60'
+                max='59'
               />
             </InputWrapper>
             <BasicButton
+              disabled={!buttonEnabled}
               onClick={() => goToNextQuiz()}
               size={'s'}
               mode={userTheme}
               textProps={{ text: '제출' }}
-              bg={'button'}
             />
           </Row>
         </ProblemSection>
