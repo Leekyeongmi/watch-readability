@@ -1,16 +1,16 @@
-import { CenterColumn, Column, Row } from '../components/layouts/Layout';
+import { CenterColumn, Column } from '../components/layouts/Layout';
 import ThemeSwitcher from '../components/ThemeSwitcher';
 import MovingClock from '../components/MovingClock';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Text } from '../components/atoms/Text';
 import { LAYOUT } from '../constant';
 import BasicButton from '../components/atoms/BasicButton';
 import { useUserTheme } from '../stores/useTheme';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import HeaderSection from '../components/atoms/HeaderSection';
 
 function Intro() {
-  const theme = useTheme();
   const userTheme = useUserTheme();
   const navigate = useNavigate();
   const [randomWatchType, setRandomWatchType] = useState(null);
@@ -28,7 +28,7 @@ function Intro() {
 
   return (
     <IntroPage>
-      <HeaderSection theme={theme}>
+      <HeaderSection>
         <Text typo='head04' color='font'>
           {`안녕하세요?
           여기까지 와주신 것에 감사드립니다
@@ -75,14 +75,6 @@ export default Intro;
 
 const IntroPage = styled(Column)`
   height: 100%;
-`;
-
-const HeaderSection = styled(CenterColumn)`
-  text-align: center;
-  min-height: 9.25rem;
-  gap: 0.5rem;
-  border-bottom: 2px solid ${({ theme }) => theme.colors.grey300};
-  // box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25) !important;
 `;
 
 const ContentSection = styled(Column)`
