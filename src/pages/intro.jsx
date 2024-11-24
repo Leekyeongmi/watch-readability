@@ -13,6 +13,7 @@ function Intro() {
   const theme = useTheme();
   const userTheme = useUserTheme();
   const navigate = useNavigate();
+
   const [randomWatchType, setRandomWatchType] = useState(null);
 
   useEffect(() => {

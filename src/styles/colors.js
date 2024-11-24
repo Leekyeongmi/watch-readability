@@ -72,7 +72,7 @@ export const darkColors = {
   background02: '#1A1A1A',
 
   // 모드 전환
-  font: '#FFF',
+  font: 'white',
   background: '#000',
   button: '#E34FA7'
 };

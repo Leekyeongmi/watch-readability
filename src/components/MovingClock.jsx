@@ -9,21 +9,21 @@ export default function MovingClock({ type = '1' }) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 1000);
+    }, 50);
 
     return () => {
       clearInterval(timer);
     };
   }, []);
 
-  const seconds = currentTime.getSeconds();
-  const minutes = currentTime.getMinutes();
-  const hours = currentTime.getHours() % 12;
+  const seconds =
+    currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+  const minutes = currentTime.getMinutes() + seconds / 60;
+  const hours = (currentTime.getHours() % 12) + minutes / 60;
 
-  const hourRotation = (hours + minutes / 60) * 30;
-  const minuteRotation = (minutes + seconds / 60) * 6;
+  const hourRotation = hours * 30;
+  const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
-
   return (
     <Container>
       <ClockWrapper>
