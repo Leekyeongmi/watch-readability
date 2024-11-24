@@ -83,7 +83,7 @@ const ContentSection = styled(Column)`
   text-align: center;
   height: 100%;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 const ButtonContainer = styled(CenterColumn)`

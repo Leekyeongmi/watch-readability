@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import useThemeStore from '../stores/useTheme';
+import { CenterColumn } from './layouts/Layout';
 
 const ThemeSwitcher = () => {
   const { userTheme, setTheme } = useThemeStore();
@@ -64,7 +65,7 @@ const ToggleCircle = styled.div`
     background-color 0.3s;
 `;
 
-const IconWrapper = styled.div``;
+const IconWrapper = styled(CenterColumn)``;
 const SunIcon = () => (
   <svg
     width='24'
