@@ -39,7 +39,7 @@ function Intro() {
           {`저희는 손목시계 디자인에 의한 시인성,`} <br />
           <strong>즉 “시간을 얼마나 쉽게 알아볼수 있는가”</strong>
           {`에 호기심을 가지고 
-          연구하고 있습니다.여러분이 짧은 테스트에 임해주신다면
+          연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
           저희 연구에 큰 도움이 될 것입니다 !`}
         </Text>
         <ButtonContainer gap='1rem'>
@@ -47,7 +47,7 @@ function Intro() {
             onClick={() => navigate('/quiz')}
             width={'9.375rem'}
             height={'3.75rem'}
-            size={'m'}
+            size={'s'}
             mode={userTheme}
             textProps={{ text: '참여하기' }}
             bg={'button'}
@@ -56,7 +56,7 @@ function Intro() {
             onClick={() => navigate('/result')}
             width={'9.375rem'}
             height={'3.75rem'}
-            size={'m'}
+            size={'s'}
             mode={userTheme}
             textProps={{ text: '연구현황' }}
             bg={'button'}
@@ -86,7 +86,7 @@ const ContentSection = styled(Column)`
   text-align: center;
   height: 100%;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 `;
 
 const ButtonContainer = styled(CenterColumn)`

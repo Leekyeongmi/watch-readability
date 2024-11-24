@@ -24,6 +24,7 @@ export default function MovingClock({ type = '1' }) {
   const hourRotation = hours * 30;
   const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
+
   return (
     <Container>
       <ClockWrapper>
