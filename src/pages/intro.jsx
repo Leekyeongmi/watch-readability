@@ -1,3 +1,4 @@
+import Icon from '../components/atoms/Icon';
 import Clock from '../components/Clock';
 import { Column, Row } from '../components/layouts/Layout';
 import ThemeSwitcher from '../components/ThemeSwitcher';
