@@ -4,6 +4,7 @@ import { Column } from '../layouts/Layout';
 
 export default function BaseLayout() {
   const theme = useTheme();
+
   return (
     <BasicLayout theme={theme}>
       <Outlet />

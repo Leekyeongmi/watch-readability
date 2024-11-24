@@ -7,17 +7,17 @@ import { LAYOUT } from '../constant';
 import BasicButton from '../components/atoms/BasicButton';
 import { useUserTheme } from '../stores/useTheme';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 function Intro() {
   const theme = useTheme();
   const userTheme = useUserTheme();
   const navigate = useNavigate();
+  const [randomWatchType, setRandomWatchType] = useState(null);
 
-  const getRandomOneOrThree = () => {
-    return Math.random() < 0.5 ? 1 : 3;
-  };
-
-  const randomWatchType = getRandomOneOrThree();
+  useEffect(() => {
+    setRandomWatchType(Math.random() < 0.5 ? 1 : 3);
+  }, []);
 
   return (
     <IntroPage>
