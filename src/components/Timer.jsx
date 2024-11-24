@@ -28,6 +28,8 @@ const Timer = ({ time }) => {
 export default Timer;
 
 const TimerWrapper = styled(CenterColumn)`
+  position: sticky;
+  top: 1.25rem;
   align-self: flex-end;
   background-color: ${({ theme }) => theme.colors.grey200};
   width: 6.75rem;
