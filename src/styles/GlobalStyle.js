@@ -30,12 +30,12 @@ html {
 
   ${theme.devices.smallTablet} {
     html {
-      font-size: 18px;
+      font-size: 20px;
     }
     
   ${theme.devices.largeDesktop} {
     html {
-      font-size: 20px;
+      font-size: 22px;
     }
 }
 
