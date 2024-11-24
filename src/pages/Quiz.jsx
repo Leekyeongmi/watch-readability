@@ -156,7 +156,9 @@ function Quiz() {
           <Row gap='0.75rem'>
             <InputWrapper>
               <Input
-                type='number'
+                type='tel'
+                inputMode='numeric'
+                pattern='[0-9]+'
                 name='hour'
                 value={userTime.hour}
                 onChange={handleInputChange}
@@ -167,7 +169,9 @@ function Quiz() {
               />
               <Colon>:</Colon>
               <Input
-                type='number'
+                type='tel'
+                inputMode='numeric'
+                pattern='[0-9]+'
                 name='minute'
                 value={userTime.minute}
                 onKeyDown={handleKeyDown}
@@ -178,7 +182,8 @@ function Quiz() {
               />
               <Colon>:</Colon>
               <Input
-                type='number'
+                type='tel'
+                pattern='[0-9]+'
                 name='second'
                 value={userTime.second}
                 onKeyDown={handleKeyDown}
