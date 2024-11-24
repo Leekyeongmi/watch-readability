@@ -5,7 +5,7 @@ const Text = styled.div`
   word-break: ${(props) => props.wordBreak || 'break-word'};
   margin: ${(props) => props.margin};
   color: ${(props) =>
-    props.color ? props.theme.colors[props.color] : 'black'};
+    props.color ? props.theme.colors[props.color] : props.theme.colors.font};
   ${(props) =>
     props.typo ? props.theme.fonts[props.typo] : props.theme.fonts.body02M};
 `;

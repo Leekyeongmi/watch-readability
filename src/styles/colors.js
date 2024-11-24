@@ -30,7 +30,11 @@ export const lightColors = {
   black: '#000',
 
   background01: '#F9FAFA',
-  background02: '#F1F3F5'
+  background02: '#F1F3F5',
+
+  // 모드 전환
+  font: '#000',
+  background: '#FFF'
 };
 
 export const darkColors = {
@@ -50,7 +54,7 @@ export const darkColors = {
   positive: '#6CDCA8',
   informational: '#66C2FF',
 
-  white: '#000',
+  white: '#FFF',
   grey50: '#3A3A3A',
   grey100: '#323232',
   grey200: '#2A2A2A',
@@ -61,8 +65,12 @@ export const darkColors = {
   grey700: '#0E0E0E',
   grey800: '#0A0A0A',
   grey900: '#050505',
-  black: '#FFF',
+  black: '#000',
 
   background01: '#121212',
-  background02: '#1A1A1A'
+  background02: '#1A1A1A',
+
+  // 모드 전환
+  font: '#FFF',
+  background: '#000'
 };

@@ -27,19 +27,18 @@ export default ThemeSwitcher;
 
 const Container = styled.div`
   display: flex;
-  align-items: center;
   gap: 0.5rem;
 `;
 
 const ToggleSwitch = styled.div`
-  width: 50px;
-  height: 24px;
+  width: 3rem; /* 48px */
+  height: 1.5rem; /* 24px */
   background-color: ${({ theme }) => theme.colors.grey300};
-  border-radius: 12px;
+  border-radius: 0.75rem; /* 12px */
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 2px;
+  padding: 0.125rem; /* 2px */
   position: relative;
   transition: background-color 0.3s;
 
@@ -49,13 +48,15 @@ const ToggleSwitch = styled.div`
 `;
 
 const ToggleCircle = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: ${({ theme }) => theme.colors.white};
+  width: 1.25rem; /* 20px */
+  height: 1.25rem; /* 20px */
+  background-color: ${({ theme }) => theme.colors.background};
   border-radius: 50%;
   position: absolute;
   left: ${({ isDark }) =>
-    isDark ? 'calc(100% - 22px)' : '2px'}; /* 테마에 따라 위치 조정 */
+    isDark
+      ? 'calc(100% - 1.375rem)'
+      : '0.125rem'}; /* 22px -> 1.375rem, 2px -> 0.125rem */
   transition:
     left 0.3s,
     background-color 0.3s;
