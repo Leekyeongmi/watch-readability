@@ -13,11 +13,15 @@ function Intro() {
   const theme = useTheme();
   const userTheme = useUserTheme();
   const navigate = useNavigate();
-
   const [randomWatchType, setRandomWatchType] = useState(null);
 
+  const pickRandomFrom0to6 = () => {
+    return String(Math.floor(Math.random() * 7));
+  };
+
   useEffect(() => {
-    setRandomWatchType(Math.random() < 0.5 ? 1 : 3);
+    const randomNum = pickRandomFrom0to6();
+    setRandomWatchType(randomNum);
   }, []);
 
   if (!randomWatchType) return null;
@@ -77,8 +81,8 @@ const HeaderSection = styled(CenterColumn)`
   text-align: center;
   min-height: 9.25rem;
   gap: 0.5rem;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.grey300};
-  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25) !important;
+  border-bottom: 2px solid ${({ theme }) => theme.colors.grey300};
+  // box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25) !important;
 `;
 
 const ContentSection = styled(Column)`
