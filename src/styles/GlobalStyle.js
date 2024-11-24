@@ -27,11 +27,16 @@ html {
     font-size: 14px;
     }
   }
+
+  ${theme.devices.smallTablet} {
+    html {
+      font-size: 18px;
+    }
     
-${theme.devices.largeDesktop} {
-  html {
-    font-size: 18px;
-  }
+  ${theme.devices.largeDesktop} {
+    html {
+      font-size: 20px;
+    }
 }
 
 body {

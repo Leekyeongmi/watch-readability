@@ -27,6 +27,8 @@ export default ThemeSwitcher;
 
 const Container = styled.div`
   display: flex;
+  align-self: flex-start;
+  align-items: center;
   gap: 0.5rem;
 `;
 

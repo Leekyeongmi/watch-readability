@@ -34,7 +34,8 @@ export const lightColors = {
 
   // 모드 전환
   font: '#000',
-  background: '#FFF'
+  background: '#FFF',
+  button: '#EBEBEB'
 };
 
 export const darkColors = {
@@ -72,5 +73,6 @@ export const darkColors = {
 
   // 모드 전환
   font: '#FFF',
-  background: '#000'
+  background: '#000',
+  button: '#E34FA7'
 };

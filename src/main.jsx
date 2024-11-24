@@ -9,7 +9,6 @@ import { useThemeColors } from './stores/useTheme';
 
 const App = () => {
   const colors = useThemeColors();
-  console.log(colors);
 
   return (
     <ThemeProvider theme={{ ...theme, colors }}>
