@@ -243,6 +243,7 @@ const InputWrapper = styled(CenterRow)`
 `;
 
 const Input = styled.input`
+  width: 4rem;
   text-align: center;
   border: none;
   outline: none;
