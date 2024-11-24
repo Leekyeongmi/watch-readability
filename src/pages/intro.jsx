@@ -20,6 +20,8 @@ function Intro() {
     setRandomWatchType(Math.random() < 0.5 ? 1 : 3);
   }, []);
 
+  if (!randomWatchType) return null;
+
   return (
     <IntroPage>
       <HeaderSection theme={theme}>
@@ -31,7 +33,8 @@ function Intro() {
       </HeaderSection>
       <ContentSection>
         <ThemeSwitcher />
-        <MovingClock type={randomWatchType} />
+        {<MovingClock type={randomWatchType} />}
+
         <Text typo='body03M' color='font'>
           {`저희는 손목시계 디자인에 의한 시인성,`} <br />
           <strong>즉 “시간을 얼마나 쉽게 알아볼수 있는가”</strong>
