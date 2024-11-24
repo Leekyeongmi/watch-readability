@@ -235,6 +235,7 @@ const ProblemSection = styled(CenterColumn)`
 `;
 
 const InputWrapper = styled(CenterRow)`
+  width: 15.125rem;
   height: 3.125rem;
   background-color: ${({ theme }) => theme.colors.grey200};
   border-radius: 0.5rem;
@@ -246,12 +247,12 @@ const Input = styled.input`
   border: none;
   outline: none;
   background-color: transparent;
-  // font-size: 1.5rem;
+  font-size: 1.5rem;
   color: ${({ theme }) => theme.colors.font};
 `;
 
 const Colon = styled.span`
-  // font-size: 1.5rem;
+  font-size: 1.5rem;
   align-self: center;
   margin-bottom: 0.4rem;
 `;
