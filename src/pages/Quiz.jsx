@@ -14,6 +14,8 @@ import { shuffleArray } from '../utils/shuffleArray';
 import BasicButton from '../components/atoms/BasicButton';
 import { useUserTheme } from '../stores/useTheme';
 import { Row } from '../components/layouts/Layout';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '../utils/firebase';
 
 function Quiz() {
   //TODO 3분 이상 지나가면 타이머 멈춤.
@@ -39,10 +41,10 @@ function Quiz() {
   const [errorInSeconds, setErrorInSeconds] = useState(null);
   const dataToPost = {
     // 시계종류, 걸린 시간, 정답유무, 오차율
-    watch: quizArr[currentQuiz],
-    timer,
-    errorInSeconds,
-    userTheme
+    clockId: quizArr[currentQuiz],
+    elapsedTime: timer,
+    errorMargin: errorInSeconds,
+    theme: userTheme
   };
   // console.log(dataToPost, 'data==');
   const startTimer = () => setIsRunning(true);
@@ -52,6 +54,27 @@ function Quiz() {
   };
 
   const buttonEnabled = hour != '' && minute != '' && second != '';
+
+  //TODO
+  async function submitProblemData({
+    clockId,
+    elapsedTime,
+    errorMargin,
+    theme
+  }) {
+    try {
+      await addDoc(collection(firestore, 'problems'), {
+        clockId: clockId,
+        elapsedTime: elapsedTime,
+        errorMargin: errorMargin,
+        theme: theme,
+        timestamp: serverTimestamp()
+      });
+      console.log('데이터 저장 성공');
+    } catch (e) {
+      console.error('데이터 저장 실패: ', e);
+    }
+  }
 
   const goToNextQuiz = () => {
     if (!buttonEnabled) return;
@@ -65,6 +88,7 @@ function Quiz() {
         minute: '',
         second: ''
       });
+      submitProblemData(dataToPost);
     }
   };
 
