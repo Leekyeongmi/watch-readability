@@ -135,20 +135,16 @@ function Quiz() {
       return Math.min(difference, 360 - difference);
     };
 
-    const {
-      hourRotation: randomHourAngle,
-      minuteRotation: randomMinuteAngle,
-      secondRotation: randomSecondAngle
-    } = rotation;
-
-    console.log(
-      randomHourAngle,
-      randomMinuteAngle,
-      randomSecondAngle,
-      '정답==='
-    );
+    const { randomHour, randomMinute, randomSecond } =
+      getTimeFromRotation(rotation);
 
     const { hour, minute, second } = userTime;
+
+    const quiaAngle = {
+      hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
+      minuteRotation: randomMinute * 6,
+      secondRotation: randomSecond * 6
+    };
 
     const userAngle = {
       hourRotation: (hour % 12) * 30 + minute * 0.5,
@@ -161,6 +157,12 @@ function Quiz() {
       minuteRotation: userMinuteAngle,
       secondRotation: userSecondAngle
     } = userAngle;
+
+    const {
+      hourRotation: randomHourAngle,
+      minuteRotation: randomMinuteAngle,
+      secondRotation: randomSecondAngle
+    } = quiaAngle;
 
     const hourErrorAngle = calculateAngleDifference(
       randomHourAngle,

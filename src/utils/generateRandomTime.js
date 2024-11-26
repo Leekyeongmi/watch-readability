@@ -3,6 +3,8 @@ export const generateRandomTime = () => {
   const randomMinute = Math.floor(Math.random() * 60);
   const randomSecond = Math.floor(Math.random() * 60);
 
+  console.log(randomHour, randomMinute, randomSecond, '정답=====');
+
   return {
     hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
     minuteRotation: randomMinute * 6,
