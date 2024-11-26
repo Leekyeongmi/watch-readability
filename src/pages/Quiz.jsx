@@ -140,7 +140,7 @@ function Quiz() {
 
     const { hour, minute, second } = userTime;
 
-    const quiaAngle = {
+    const quizAngle = {
       hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
       minuteRotation: randomMinute * 6,
       secondRotation: randomSecond * 6
@@ -162,7 +162,7 @@ function Quiz() {
       hourRotation: randomHourAngle,
       minuteRotation: randomMinuteAngle,
       secondRotation: randomSecondAngle
-    } = quiaAngle;
+    } = quizAngle;
 
     const hourErrorAngle = calculateAngleDifference(
       randomHourAngle,
