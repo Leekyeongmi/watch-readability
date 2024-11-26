@@ -16,13 +16,14 @@ import { useUserTheme } from '../stores/useTheme';
 import { Row } from '../components/layouts/Layout';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
 
 function Quiz() {
   //TODO 3분 이상 지나가면 타이머 멈춤.
   const theme = useTheme();
   const userTheme = useUserTheme();
   const totalQuizzes = 7;
-
+  const navigate = useNavigate();
   const [currentQuiz, setCurrentQuiz] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -78,6 +79,10 @@ function Quiz() {
 
   const goToNextQuiz = () => {
     if (!buttonEnabled) return;
+
+    if (currentQuiz == totalQuizzes - 1) {
+      navigate('/result');
+    }
 
     if (currentQuiz < totalQuizzes - 1) {
       calculateError();
