@@ -16,6 +16,7 @@ import { Row } from '../components/layouts/Layout';
 function Result() {
   const [stats, setStats] = useState();
   const userTheme = useUserTheme();
+  const [updateTime, setUpdateTime] = useState(null);
   const [rotation, setRotation] = useState({
     hourRotation: 0,
     minuteRotation: 0,
@@ -58,6 +59,7 @@ function Result() {
       .sort((a, b) => a.averageElapsedTime - b.averageElapsedTime);
 
     setStats(result);
+    setUpdateTime(new Date()); // 업데이트 시간을 기록
   }
 
   useEffect(() => {
@@ -74,6 +76,10 @@ function Result() {
       <ContentSection>
         <ThemeSwitcher />
         <Text typo='head01'>{`테스트 페이지 - ${userTheme} 통계 (우선순위 계산식 수정 필요)`}</Text>
+        {updateTime && (
+          <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime.toLocaleString()}`}</Text>
+        )}
+
         {stats?.map((item, index) => {
           return (
             <Item key={index}>
