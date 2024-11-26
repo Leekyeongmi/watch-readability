@@ -39,27 +39,39 @@ function Result() {
       if (!clockStats[clockId]) {
         clockStats[clockId] = {
           totalElapsedTime: 0,
-          totalErrorMargin: 0,
+          totalHourErrorAngle: 0,
+          totalMinuteErrorAngle: 0,
+          totalSecondErrorAngle: 0,
           userCount: 0
         };
       }
 
       clockStats[clockId].totalElapsedTime += data.elapsedTime;
-      clockStats[clockId].totalErrorMargin += data.errorMargin;
+      clockStats[clockId].totalHourErrorAngle += data.hourErrorAngle || 0;
+      clockStats[clockId].totalMinuteErrorAngle += data.minuteErrorAngle || 0;
+      clockStats[clockId].totalSecondErrorAngle += data.secondErrorAngle || 0;
       clockStats[clockId].userCount += 1;
     });
 
     const result = Object.entries(clockStats)
       .map(([clockId, stats]) => ({
         clockId: parseInt(clockId),
-        averageElapsedTime: stats.totalElapsedTime / stats.userCount,
-        averageErrorMargin: stats.totalErrorMargin / stats.userCount,
+        averageElapsedTime:
+          Math.floor((stats.totalElapsedTime / stats.userCount) * 100) / 100,
+        averageHourError:
+          Math.floor((stats.totalHourErrorAngle / stats.userCount) * 100) / 100,
+        averageMinuteError:
+          Math.floor((stats.totalMinuteErrorAngle / stats.userCount) * 100) /
+          100,
+        averageSecondError:
+          Math.floor((stats.totalSecondErrorAngle / stats.userCount) * 100) /
+          100,
         userCount: stats.userCount
       }))
       .sort((a, b) => a.averageElapsedTime - b.averageElapsedTime);
 
     setStats(result);
-    setUpdateTime(new Date()); // 업데이트 시간을 기록
+    setUpdateTime(new Date());
   }
 
   useEffect(() => {
@@ -70,7 +82,7 @@ function Result() {
     const randomTime = generateRandomTime();
     setRotation(randomTime);
   }, []);
-
+  console.log(stats);
   return (
     <ResultPage>
       <ContentSection>
@@ -89,7 +101,9 @@ function Result() {
               </CenterRow>
               <CenterColumn>
                 <Text typo='body03M'>{`평균 소요시간 🎈${item?.averageElapsedTime}초`}</Text>
-                <Text typo='body03M'>{`평균 오차 절대값 🎈${item?.averageErrorMargin}초`}</Text>
+                <Text typo='body03M'>{`평균 시침 오차 각도 🎈${item?.averageHourError}°`}</Text>
+                <Text typo='body03M'>{`평균 분침 오차 각도 🎈${item?.averageMinuteError}°`}</Text>
+                <Text typo='body03M'>{`평균 초침 오차 각도 🎈${item?.averageSecondError}°`}</Text>
                 <Text typo='body03M'>{`참여 유저수 🎈${item?.userCount}명`}</Text>
               </CenterColumn>
             </Item>

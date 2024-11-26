@@ -39,15 +39,24 @@ function Quiz() {
     second: ''
   });
   const { hour, minute, second } = userTime;
-  const [errorInSeconds, setErrorInSeconds] = useState(null);
+  const [errorInAngle, setErrorInAngle] = useState(null);
+  const { hourErrorAngle, minuteErrorAngle, secondErrorAngle } =
+    errorInAngle ?? {
+      hourErrorAngle: 0,
+      mintueErrorAngle: 0,
+      secondErrorAngle: 0
+    };
+
   const dataToPost = {
-    // 시계종류, 걸린 시간, 정답유무, 오차율
+    // 시계종류, 걸린 시간, 정답유무, 오차각도
     clockId: quizArr[currentQuiz],
     elapsedTime: timer,
-    errorMargin: errorInSeconds,
+    hourErrorAngle,
+    minuteErrorAngle,
+    secondErrorAngle,
     theme: userTheme
   };
-  // console.log(dataToPost, 'data==');
+
   const startTimer = () => setIsRunning(true);
   const stopAndResetTimer = () => {
     setIsRunning(false);
@@ -60,14 +69,18 @@ function Quiz() {
   async function submitProblemData({
     clockId,
     elapsedTime,
-    errorMargin,
+    hourErrorAngle,
+    minuteErrorAngle,
+    secondErrorAngle,
     theme
   }) {
     try {
       await addDoc(collection(firestore, 'problems'), {
         clockId: clockId,
         elapsedTime: elapsedTime,
-        errorMargin: errorMargin,
+        hourErrorAngle,
+        minuteErrorAngle,
+        secondErrorAngle,
         theme: theme,
         timestamp: serverTimestamp()
       });
@@ -117,23 +130,60 @@ function Quiz() {
   };
 
   const calculateError = () => {
-    const randomTime = getTimeFromRotation(rotation);
-    const { randomHour, randomMinute, randomSecond } = randomTime;
+    const calculateAngleDifference = (actualAngle, userAngle) => {
+      const difference = Math.abs(actualAngle - userAngle);
+      return Math.min(difference, 360 - difference);
+    };
 
-    const clockTimeInSeconds =
-      randomHour * 3600 + randomMinute * 60 + randomSecond;
+    const {
+      hourRotation: randomHourAngle,
+      minuteRotation: randomMinuteAngle,
+      secondRotation: randomSecondAngle
+    } = rotation;
 
-    let convertedHour = hour == 12 ? 0 : hour;
-    const inputTimeInSeconds =
-      parseInt(convertedHour) * 3600 + parseInt(minute) * 60 + parseInt(second);
+    console.log(
+      randomHourAngle,
+      randomMinuteAngle,
+      randomSecondAngle,
+      '정답==='
+    );
 
-    const errorInSeconds = Math.abs(clockTimeInSeconds - inputTimeInSeconds);
-    setErrorInSeconds(errorInSeconds);
+    const { hour, minute, second } = userTime;
+
+    const userAngle = {
+      hourRotation: (hour % 12) * 30 + minute * 0.5,
+      minuteRotation: minute * 6,
+      secondRotation: second * 6
+    };
+
+    const {
+      hourRotation: userHourAngle,
+      minuteRotation: userMinuteAngle,
+      secondRotation: userSecondAngle
+    } = userAngle;
+
+    const hourErrorAngle = calculateAngleDifference(
+      randomHourAngle,
+      userHourAngle
+    );
+    const minuteErrorAngle = calculateAngleDifference(
+      randomMinuteAngle,
+      userMinuteAngle
+    );
+    const secondErrorAngle = calculateAngleDifference(
+      randomSecondAngle,
+      userSecondAngle
+    );
+
+    setErrorInAngle({ hourErrorAngle, minuteErrorAngle, secondErrorAngle });
+
     alert(
       `테스트용 알러트 : 
-      정답은 ${randomHour + ':' + randomMinute + ':' + randomSecond} 
-      당신의 입력은 ${convertedHour + ':' + minute + ':' + second} 
-      오차 시간은 ${errorInSeconds}초
+      정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
+      당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
+      시침 오차 각도: ${hourErrorAngle}°
+      분침 오차 각도: ${minuteErrorAngle}°
+      초침 오차 각도: ${secondErrorAngle}°
       푸는 데 걸린 시간은 ${timer}초
       유저 테마는 ${userTheme}
       풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
