@@ -1,8 +1,7 @@
 export const generateRandomTime = () => {
   const randomHour = Math.floor(Math.random() * 12);
   const randomMinute = Math.floor(Math.random() * 60);
-  // const randomSecond = Math.floor(Math.random() * 60);
-  const randomSecond = Math.floor(59);
+  const randomSecond = Math.floor(Math.random() * 60);
 
   console.log(randomHour, randomMinute, randomSecond, '정답시간===');
   return getRotationFromTime(randomHour, randomMinute, randomSecond);
