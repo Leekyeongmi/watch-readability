@@ -8,8 +8,7 @@ import Timer from '../components/Timer';
 import { LAYOUT } from '../constant';
 import {
   generateRandomTime,
-  getRotationFromTime,
-  getTimeFromRotation
+  getRotationFromTime
 } from '../utils/generateRandomTime';
 import { shuffleArray } from '../utils/shuffleArray';
 import BasicButton from '../components/atoms/BasicButton';
@@ -20,7 +19,7 @@ import { firestore } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 
 function Quiz() {
-  //TODO 데이터 필터링, 인풋 디자인 수정, 시침-분침-초침 연결성
+  //TODO 데이터 무효화, 인풋 디자인 수정
   const theme = useTheme();
   const userTheme = useUserTheme();
   const totalQuizzes = 7;
@@ -135,25 +134,8 @@ function Quiz() {
       return Math.min(difference, 360 - difference);
     };
 
-    // const { hourRotation, minuteRotation, secondRotation } = rotation;
-    // const { randomHour, randomMinute, randomSecond } =
-    //   getTimeFromRotation(rotation);
-
-    // console.log(
-    //   hourRotation,
-    //   minuteRotation,
-    //   secondRotation,
-    //   '===퀴즈의 각도 in error'
-    // );
-
     const { hour, minute, second } = userTime;
     const userAngle = getRotationFromTime(hour, minute, second);
-
-    // const quizAngle = {
-    //   hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
-    //   minuteRotation: randomMinute * 6,
-    //   secondRotation: randomSecond * 6
-    // };
 
     const {
       hourRotation: userHourAngle,
