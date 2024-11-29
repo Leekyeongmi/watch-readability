@@ -8,6 +8,7 @@ import Timer from '../components/Timer';
 import { LAYOUT } from '../constant';
 import {
   generateRandomTime,
+  getRotationFromTime,
   getTimeFromRotation
 } from '../utils/generateRandomTime';
 import { shuffleArray } from '../utils/shuffleArray';
@@ -19,7 +20,7 @@ import { firestore } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 
 function Quiz() {
-  //TODO 3분 이상 지나가면 타이머 멈춤.
+  //TODO 데이터 필터링, 인풋 디자인 수정, 시침-분침-초침 연결성
   const theme = useTheme();
   const userTheme = useUserTheme();
   const totalQuizzes = 7;
@@ -40,6 +41,7 @@ function Quiz() {
   });
   const { hour, minute, second } = userTime;
   const [errorInAngle, setErrorInAngle] = useState(null);
+
   const { hourErrorAngle, minuteErrorAngle, secondErrorAngle } =
     errorInAngle ?? {
       hourErrorAngle: 0,
@@ -48,7 +50,6 @@ function Quiz() {
     };
 
   const dataToPost = {
-    // 시계종류, 걸린 시간, 정답유무, 오차각도
     clockId: quizArr[currentQuiz],
     elapsedTime: timer,
     hourErrorAngle,
@@ -65,7 +66,6 @@ function Quiz() {
 
   const buttonEnabled = hour != '' && minute != '' && second != '';
 
-  //TODO
   async function submitProblemData({
     clockId,
     elapsedTime,
@@ -135,22 +135,25 @@ function Quiz() {
       return Math.min(difference, 360 - difference);
     };
 
-    const { randomHour, randomMinute, randomSecond } =
-      getTimeFromRotation(rotation);
+    // const { hourRotation, minuteRotation, secondRotation } = rotation;
+    // const { randomHour, randomMinute, randomSecond } =
+    //   getTimeFromRotation(rotation);
+
+    // console.log(
+    //   hourRotation,
+    //   minuteRotation,
+    //   secondRotation,
+    //   '===퀴즈의 각도 in error'
+    // );
 
     const { hour, minute, second } = userTime;
+    const userAngle = getRotationFromTime(hour, minute, second);
 
-    const quizAngle = {
-      hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
-      minuteRotation: randomMinute * 6,
-      secondRotation: randomSecond * 6
-    };
-
-    const userAngle = {
-      hourRotation: (hour % 12) * 30 + minute * 0.5,
-      minuteRotation: minute * 6,
-      secondRotation: second * 6
-    };
+    // const quizAngle = {
+    //   hourRotation: (randomHour % 12) * 30 + randomMinute * 0.5,
+    //   minuteRotation: randomMinute * 6,
+    //   secondRotation: randomSecond * 6
+    // };
 
     const {
       hourRotation: userHourAngle,
@@ -162,7 +165,10 @@ function Quiz() {
       hourRotation: randomHourAngle,
       minuteRotation: randomMinuteAngle,
       secondRotation: randomSecondAngle
-    } = quizAngle;
+    } = rotation;
+
+    console.log(userAngle, '===유저인풋의 각도 in error');
+    console.log(rotation, '===퀴즈의 각도 in error');
 
     const hourErrorAngle = calculateAngleDifference(
       randomHourAngle,

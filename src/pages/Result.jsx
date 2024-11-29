@@ -82,12 +82,12 @@ function Result() {
     const randomTime = generateRandomTime();
     setRotation(randomTime);
   }, []);
-  console.log(stats);
+
   return (
     <ResultPage>
       <ContentSection>
         <ThemeSwitcher />
-        <Text typo='head01'>{`테스트 페이지 - ${userTheme} 통계 (우선순위 계산식 수정 필요)`}</Text>
+        <Text typo='head01'>{`테스트 페이지 - ${userTheme} 통계 (순위 결정 계산식 수정 필요)`}</Text>
         {updateTime && (
           <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime.toLocaleString()}`}</Text>
         )}
