@@ -143,9 +143,8 @@ function Result() {
                 bg={filter === 1 ? 'white' : `${theme.colors.grey200}`}
               ></BasicButton>
             </ButtonContainer>
-            {updateTime && (
-              <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime.toLocaleString()}`}</Text>
-            )}
+
+            <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
           </Column>
         </FilterSection>
       </HeaderSection>
