@@ -194,8 +194,7 @@ function Result() {
           );
         })}
         <CopyRight>
-          <Text typo='body03M' color='black'>{`
-          designer. Chung jinsung
+          <Text typo='body03M'>{`designer. Chung jinsung
           developer. Lee kyeongmi
           professor. Lee byounghak
           
