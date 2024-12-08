@@ -255,5 +255,5 @@ const CopyRight = styled(CenterColumn)`
 
 const Item = styled(CenterRow)`
   // justify-content: space-around;
-  gap: 2.5rem;
+  gap: 1.5rem;
 `;
