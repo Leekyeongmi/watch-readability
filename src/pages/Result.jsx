@@ -125,7 +125,7 @@ function Result() {
             <ButtonContainer>
               <BasicButton
                 onClick={() => setFilter(0)}
-                width={'11rem'}
+                width={'10rem'}
                 height={'1.55rem'}
                 size={'s'}
                 // mode={userTheme}
@@ -134,7 +134,7 @@ function Result() {
               ></BasicButton>
               <BasicButton
                 onClick={() => setFilter(1)}
-                width={'11rem'}
+                width={'10rem'}
                 height={'1.55rem'}
                 size={'s'}
                 shape='round'
@@ -174,7 +174,7 @@ function Result() {
         {stats?.map((item, index) => {
           return (
             <Item key={index}>
-              <CenterRow gap='2rem'>
+              <CenterRow gap='0.5rem'>
                 <Text typo='head01'>{`${index + 1}`}</Text>
                 <StaticClock type={item?.clockId} rotation={rotation} />
               </CenterRow>
@@ -213,12 +213,15 @@ export default Result;
 
 const ResultPage = styled(Column)`
   height: 100%;
+  box-sizing: border-box;
+  width: 100%;
 `;
 
 const FilterSection = styled(CenterColumn)`
-  align-self: flex-start;
+  // align-self: flex-start;
   gap: 1rem;
   padding: ${LAYOUT.PADDING_X}rem;
+  box-sizing: border-box;
 `;
 
 const ButtonContainer = styled(CenterRow)`
@@ -228,23 +231,29 @@ const ButtonContainer = styled(CenterRow)`
 `;
 
 const ButtonContainer2 = styled(CenterRow)`
-  align-self: flex-start;
-  gap: 2rem;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const ContentSection = styled(Column)`
   height: 100%;
-  gap: 1rem;
+  gap: 1.5rem;
+  width: 100%;
   align-self: flex-start;
+
   padding: ${LAYOUT.PADDING_X}rem;
+  box-sizing: border-box;
 `;
 
 const CopyRight = styled(CenterColumn)`
   gap: 0.25rem;
   text-align: center;
-  align-self: flex-start;
+  margin-top: 3rem;
+  // align-self: flex-start;
 `;
 
 const Item = styled(CenterRow)`
-  justify-content: space-around;
+  // justify-content: space-around;
+  gap: 2.5rem;
 `;

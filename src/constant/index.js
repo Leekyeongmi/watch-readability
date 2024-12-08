@@ -16,8 +16,8 @@ const WatchTypes = {
 };
 
 const LAYOUT = {
-  PADDING_X: 1.25,
-  PADDING_Y: 1.25
+  PADDING_X: 1,
+  PADDING_Y: 1
 };
 
 export { WatchTypes, LAYOUT };
