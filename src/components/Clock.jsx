@@ -5,6 +5,7 @@ import { CenterColumn } from './layouts/Layout';
 
 export default function Clock({ type, rotation }) {
   const { hourRotation, minuteRotation, secondRotation } = rotation;
+  console.log('hi')
 
   return (
     <Container>
