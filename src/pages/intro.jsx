@@ -31,7 +31,7 @@ function Intro() {
       <HeaderSection>
         <Text typo='head04' color='font'>
           {`안녕하세요?
-          여기까지 와주신 것에 감사드립니다
+          여기까지 와주신 것에 감사드립니다????
           `}
         </Text>
       </HeaderSection>
