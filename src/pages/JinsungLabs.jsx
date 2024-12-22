@@ -1,7 +1,7 @@
 function JinsungLabs() {
   return (
     <>
-      <h1>진성 랩adfsadfsdddjdsfkhsfk</h1>
+      <span>저장하면 바로바로 반영됨</span>
     </>
   );
 }
