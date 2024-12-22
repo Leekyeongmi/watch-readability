@@ -1,7 +1,7 @@
 function JinsungLabs() {
   return (
     <>
-      <h1>Jinsung's Labs</h1>
+      <h1>진성 랩adfsadfsdddjdsfkhsfk</h1>
     </>
   );
 }
