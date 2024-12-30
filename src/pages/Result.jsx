@@ -168,7 +168,7 @@ function Result() {
             textProps={{ text: 'retry' }}
             bg={`button`}
           ></BasicButton>
-          <ThemeSwitcher />
+          {/* <ThemeSwitcher /> */}
         </ButtonContainer2>
 
         {stats?.map((item, index) => {

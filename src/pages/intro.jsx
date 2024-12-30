@@ -36,7 +36,7 @@ function Intro() {
         </Text>
       </HeaderSection>
       <ContentSection>
-        <ThemeSwitcher />
+        {/* <ThemeSwitcher /> */}
         {<MovingClock type={randomWatchType} />}
 
         <Text typo='body03M' color='font'>

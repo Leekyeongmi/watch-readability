@@ -14,7 +14,7 @@ export default function BaseLayout() {
 
 const BasicLayout = styled(Column)`
   position: relative;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.background02};
   overflow-x: hidden;
   height: 100svh;
 `;
