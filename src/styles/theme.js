@@ -10,6 +10,26 @@ const FONT = ({ weight, size, lineHeight }) => {
 };
 
 const fonts = {
+  head1: FONT({
+    weight: 600,
+    size: 1.125,
+    lineHeight: 187.5
+  }),
+  head2: FONT({
+    weight: 400,
+    size: 1.125,
+    lineHeight: 187.5
+  }),
+  head3: FONT({
+    weight: 600,
+    size: 0.938,
+    lineHeight: 168.75
+  }),
+  head4: FONT({
+    weight: 400,
+    size: 0.938,
+    lineHeight: 168.75
+  }),
   head01: FONT({
     weight: 700,
     size: 1.75,

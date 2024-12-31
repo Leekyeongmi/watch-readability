@@ -35,7 +35,7 @@ export const lightColors = {
   // 모드 전환
   font: '#000',
   background: '#FFF',
-  button: '#EBEBEB'
+  button: 'white'
 };
 
 export const darkColors = {
