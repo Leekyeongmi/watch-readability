@@ -45,14 +45,13 @@ function Intro() {
       <ContentSection>
         <ClockWrapper>
           <div style={{ position: 'absolute', top: -13 }}>
-            {showImage && ( // showImage 상태가 true일 때만 이미지 표시
-              <Image
-                width='90px'
-                height='90px'
-                src='/santa.png'
-                alt='santa.png'
-              />
-            )}
+            <AnimatedImage
+              width='90px'
+              height='90px'
+              src='/santa.png'
+              alt='santa.png'
+              show={showImage}
+            />
           </div>
           <MovingClock type={randomWatchType} />
         </ClockWrapper>
@@ -109,4 +108,15 @@ const ButtonContainer = styled(CenterColumn)`
 
 const ClockWrapper = styled(CenterColumn)`
   position: relative;
+`;
+
+const AnimatedImage = styled(Image)`
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+
+  ${({ show }) =>
+    show &&
+    `
+    opacity: 1; 
+  `}
 `;
