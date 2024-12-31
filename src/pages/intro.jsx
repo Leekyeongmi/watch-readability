@@ -14,6 +14,7 @@ function Intro() {
   const userTheme = useUserTheme();
   const navigate = useNavigate();
   const [randomWatchType, setRandomWatchType] = useState(null);
+  const [showImage, setShowImage] = useState(false); // 이미지 표시 여부 상태 추가
 
   const pickRandomFrom0to6 = () => {
     return String(Math.floor(Math.random() * 7));
@@ -22,6 +23,12 @@ function Intro() {
   useEffect(() => {
     const randomNum = pickRandomFrom0to6();
     setRandomWatchType(randomNum);
+
+    const timer = setTimeout(() => {
+      setShowImage(true);
+    }, 750);
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!randomWatchType) return null;
@@ -38,12 +45,14 @@ function Intro() {
       <ContentSection>
         <ClockWrapper>
           <div style={{ position: 'absolute', top: -13 }}>
-            <Image
-              width='90px'
-              height='90px'
-              src='/santa.png'
-              alt='santa.png'
-            />
+            {showImage && ( // showImage 상태가 true일 때만 이미지 표시
+              <Image
+                width='90px'
+                height='90px'
+                src='/santa.png'
+                alt='santa.png'
+              />
+            )}
           </div>
           <MovingClock type={randomWatchType} />
         </ClockWrapper>
