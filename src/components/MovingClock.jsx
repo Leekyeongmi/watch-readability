@@ -45,7 +45,7 @@ export default function MovingClock({ type = '1' }) {
 
           setAnimationTime({
             hours: animationTime.hours, // 시침은 유지
-            minutes: 10 + progress * 120, // 분침이 정확히 한 바퀴만 돌도록 설정
+            minutes: 10 + progress * 180, // 분침이 정확히 한 바퀴만 돌도록 설정
             seconds: animationTime.seconds // 초침은 유지
           });
 
