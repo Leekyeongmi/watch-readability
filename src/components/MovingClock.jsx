@@ -37,7 +37,7 @@ export default function MovingClock({ type = '1' }) {
       } else if (animationPhase === 2) {
         // 2단계: 분침이 시계를 한 바퀴 돌기
         const startTime = new Date();
-        const animationDuration = 1500; // 1초 동안 애니메이션
+        const animationDuration = 1250; // 1초 동안 애니메이션
         const animationInterval = setInterval(() => {
           const now = new Date();
           const elapsed = now - startTime;
