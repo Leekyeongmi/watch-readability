@@ -59,7 +59,7 @@ export default function MovingClock({ type = '1' }) {
         const startTime = new Date();
         const animationInterval = setInterval(() => {
           const now = new Date();
-          const animationDuration = 750;
+          const animationDuration = 500;
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDuration, 1);
 
