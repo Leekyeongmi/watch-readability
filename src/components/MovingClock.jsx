@@ -44,14 +44,14 @@ export default function MovingClock({ type = '1' }) {
           const progress = Math.min(elapsed / animationDuration, 1);
 
           setAnimationTime({
-            hours: animationTime.hours, // 시침은 유지
-            minutes: 10 + progress * 120, // 분침이 정확히 한 바퀴만 돌도록 설정
-            seconds: animationTime.seconds // 초침은 유지
+            hours: animationTime.hours,
+            minutes: 10 + progress * 120,
+            seconds: animationTime.seconds
           });
 
           if (progress === 1) {
             clearInterval(animationInterval);
-            setAnimationPhase(3); // 다음 단계로 이동
+            setAnimationPhase(3);
           }
         }, 1);
       } else if (animationPhase === 3) {
@@ -75,11 +75,10 @@ export default function MovingClock({ type = '1' }) {
           const startSecond = 30;
 
           // 시계 방향 거리 계산
-          const hourDistance = (targetHours - startHour + 12) % 12; // 시침 이동 거리
-          const minuteDistance = (targetMinutes - startMinute + 60) % 60; // 분침 이동 거리
-          const secondDistance = (targetSeconds - startSecond + 60) % 60; // 초침 이동 거리
+          const hourDistance = (targetHours - startHour + 12) % 12;
+          const minuteDistance = (targetMinutes - startMinute + 60) % 60;
+          const secondDistance = (targetSeconds - startSecond + 60) % 60;
 
-          // 현재 위치 업데이트 (progress에 따라 이동)
           setAnimationTime({
             hours: startHour + progress * hourDistance,
             minutes: startMinute + progress * minuteDistance,
@@ -93,7 +92,6 @@ export default function MovingClock({ type = '1' }) {
         }, 1);
       }
     } else {
-      // 시간이 1초씩 흐르도록 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
       }, 30);
