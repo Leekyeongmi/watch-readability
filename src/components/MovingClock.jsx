@@ -11,7 +11,7 @@ export default function MovingClock({ type = '1' }) {
     seconds: 30
   });
 
-  const animationDuration = 500;
+  const animationDuration = 1000;
 
   useEffect(() => {
     if (isAnimating) {
@@ -33,11 +33,11 @@ export default function MovingClock({ type = '1' }) {
             clearInterval(animationInterval);
             setAnimationPhase(2); // 다음 단계로 이동
           }
-        }, 10);
+        }, 5);
       } else if (animationPhase === 2) {
         // 2단계: 분침이 시계를 한 바퀴 돌기
         const startTime = new Date();
-        const animationDuration = 1000; // 1초 동안 애니메이션
+        const animationDuration = 1500; // 1초 동안 애니메이션
         const animationInterval = setInterval(() => {
           const now = new Date();
           const elapsed = now - startTime;
@@ -53,34 +53,50 @@ export default function MovingClock({ type = '1' }) {
             clearInterval(animationInterval);
             setAnimationPhase(3); // 다음 단계로 이동
           }
-        }, 10);
+        }, 1);
       } else if (animationPhase === 3) {
         // 3단계: 현재 시간으로 이동
         const startTime = new Date();
         const animationInterval = setInterval(() => {
           const now = new Date();
+          const animationDuration = 750;
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDuration, 1);
 
+          // 목표 시간 계산
+          const targetHours = currentTime.getHours() % 12;
+          const targetMinutes = currentTime.getMinutes();
+          const targetSeconds =
+            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+
+          // 현재 애니메이션 시작 시간 (10시 10분 10초)
+          const startHour = 10;
+          const startMinute = 10;
+          const startSecond = 30;
+
+          // 시계 방향 거리 계산
+          const hourDistance = (targetHours - startHour + 12) % 12; // 시침 이동 거리
+          const minuteDistance = (targetMinutes - startMinute + 60) % 60; // 분침 이동 거리
+          const secondDistance = (targetSeconds - startSecond + 60) % 60; // 초침 이동 거리
+
+          // 현재 위치 업데이트 (progress에 따라 이동)
           setAnimationTime({
-            hours: progress * (currentTime.getHours() % 12),
-            minutes: progress * currentTime.getMinutes(),
-            seconds:
-              progress *
-              (currentTime.getSeconds() + currentTime.getMilliseconds() / 1000)
+            hours: startHour + progress * hourDistance,
+            minutes: startMinute + progress * minuteDistance,
+            seconds: startSecond + progress * secondDistance
           });
 
           if (progress === 1) {
             clearInterval(animationInterval);
             setIsAnimating(false);
           }
-        }, 10);
+        }, 1);
       }
     } else {
       // 시간이 1초씩 흐르도록 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
-      }, 25);
+      }, 30);
 
       return () => {
         clearInterval(timer);
