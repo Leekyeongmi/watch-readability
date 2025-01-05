@@ -37,8 +37,9 @@ function Intro() {
     <IntroPage>
       <HeaderSection>
         <Text typo='head2' color='black'>
-          {`안녕하세요?
-          여기까지 와주신 것에 감사드립니다.
+          {`시간 가독성/판독성 연구 
+          a comparicon of the readability 
+          & legibility on time
           `}
         </Text>
       </HeaderSection>
@@ -56,11 +57,10 @@ function Intro() {
           <MovingClock type={randomWatchType} />
         </ClockWrapper>
         <Text typo='head4' color='font'>
-          {`저희는 손목시계 디자인에 의한 시인성,`} <br />즉{' '}
-          <strong>“시간을 얼마나 쉽게 알아볼수 있는가”</strong>
-          {`에 호기심을 가지고 
-          연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
-          저희 연구에 큰 도움이 될 것입니다 !`}
+          {`저희는 손목시계 디자인의 7가지 기준을 만들고`}
+          <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,
+          {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
+          연구에 큰 도움이 될 것입니다!`}
         </Text>
         <ButtonContainer gap='0.625rem'>
           <BasicButton
