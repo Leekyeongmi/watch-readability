@@ -13,7 +13,7 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 1800; // 2단계 지속 시간
-  const transitionDuration = 500; // 부드러운 전환 지속 시간
+  const smoothTransitionDuration = 500; // 부드러운 전환 지속 시간
 
   const easeOut = (x) => 1 - Math.pow(1 - x, 3);
 
@@ -74,19 +74,23 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
-            // 전환 단계 시작
-            const transitionStartTime = performance.now();
+
+            // 전환 애니메이션 시작
+            const transitionStart = performance.now();
             const transitionInterval = setInterval(() => {
               const now = performance.now();
-              const transitionElapsed = now - transitionStartTime;
-              let transitionProgress = Math.min(transitionElapsed / transitionDuration, 1);
-              transitionProgress = easeOut(transitionProgress); // 부드러운 전환
+              const transitionElapsed = now - transitionStart;
+              let transitionProgress = Math.min(
+                transitionElapsed / smoothTransitionDuration,
+                1
+              );
+              transitionProgress = easeOut(transitionProgress); // ease-out 적용
 
-              // 실시간 현재 시간으로 부드럽게 이동
               const realTimeHours = currentTime.getHours() % 12;
               const realTimeMinutes = currentTime.getMinutes();
               const realTimeSeconds =
-                currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+                currentTime.getSeconds() +
+                currentTime.getMilliseconds() / 1000;
 
               setAnimationTime({
                 hours:
@@ -94,15 +98,17 @@ export default function MovingClock({ type = '1' }) {
                   transitionProgress * (realTimeHours - animationTime.hours),
                 minutes:
                   animationTime.minutes +
-                  transitionProgress * (realTimeMinutes - animationTime.minutes),
+                  transitionProgress *
+                    (realTimeMinutes - animationTime.minutes),
                 seconds:
                   animationTime.seconds +
-                  transitionProgress * (realTimeSeconds - animationTime.seconds),
+                  transitionProgress *
+                    (realTimeSeconds - animationTime.seconds),
               });
 
               if (transitionProgress === 1) {
                 clearInterval(transitionInterval);
-                setIsAnimating(false);
+                setIsAnimating(false); // 전환 완료
               }
             }, 5);
           }
