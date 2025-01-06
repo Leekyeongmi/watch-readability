@@ -8,14 +8,11 @@ export default function MovingClock({ type = '1' }) {
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
     minutes: 10,
-    seconds: 30,
+    seconds: 30
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 1800; // 2단계 지속 시간
-  const smoothTransitionDuration = 500; // 부드러운 전환 지속 시간
-
-  const easeOut = (x) => 1 - Math.pow(1 - x, 3);
 
   useEffect(() => {
     if (isAnimating) {
@@ -30,7 +27,7 @@ export default function MovingClock({ type = '1' }) {
           setAnimationTime({
             hours: 10,
             minutes: 10,
-            seconds: 30,
+            seconds: 30
           });
 
           if (progress === 1) {
@@ -69,48 +66,12 @@ export default function MovingClock({ type = '1' }) {
           setAnimationTime({
             hours: startHours + progress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + progress * secondDistance,
+            seconds: startSeconds + progress * secondDistance
           });
 
           if (progress === 1) {
             clearInterval(interval);
-
-            // 전환 애니메이션 시작
-            const transitionStart = performance.now();
-            const transitionInterval = setInterval(() => {
-              const now = performance.now();
-              const transitionElapsed = now - transitionStart;
-              let transitionProgress = Math.min(
-                transitionElapsed / smoothTransitionDuration,
-                1
-              );
-              transitionProgress = easeOut(transitionProgress); // ease-out 적용
-
-              const realTimeHours = currentTime.getHours() % 12;
-              const realTimeMinutes = currentTime.getMinutes();
-              const realTimeSeconds =
-                currentTime.getSeconds() +
-                currentTime.getMilliseconds() / 1000;
-
-              setAnimationTime({
-                hours:
-                  animationTime.hours +
-                  transitionProgress * (realTimeHours - animationTime.hours),
-                minutes:
-                  animationTime.minutes +
-                  transitionProgress *
-                    (realTimeMinutes - animationTime.minutes),
-                seconds:
-                  animationTime.seconds +
-                  transitionProgress *
-                    (realTimeSeconds - animationTime.seconds),
-              });
-
-              if (transitionProgress === 1) {
-                clearInterval(transitionInterval);
-                setIsAnimating(false); // 전환 완료
-              }
-            }, 5);
+            setIsAnimating(false); // 애니메이션 종료
           }
         }, 1);
       }
@@ -124,7 +85,7 @@ export default function MovingClock({ type = '1' }) {
         clearInterval(timer);
       };
     }
-  }, [isAnimating, animationPhase, currentTime, animationTime]);
+  }, [isAnimating, animationPhase, currentTime]);
 
   // 초, 분, 시 계산
   const seconds = isAnimating
