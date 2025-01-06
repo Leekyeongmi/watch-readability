@@ -63,13 +63,14 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
-          // `ease-out` 이징 함수를 적용한 부드러운 전환
-          const easingProgress = progress < 1 ? Math.pow(progress, 3) : 1; // 부드러운 종료를 위한 cubic easing
+          // `ease-out` 이징 함수를 적용한 부드러운 전환 (시작과 끝 모두 적용)
+          const easingProgressStart = progress < 1 ? Math.pow(progress, 3) : 1; // 시작 부분 부드럽게
+          const easingProgressEnd = progress < 1 ? Math.pow(progress, 3) : 1;   // 끝 부분 부드럽게
 
           setAnimationTime({
-            hours: startHours + easingProgress * hourDistance,
-            minutes: startMinutes + easingProgress * currentMinuteDistance,
-            seconds: startSeconds + easingProgress * secondDistance
+            hours: startHours + easingProgressStart * hourDistance,
+            minutes: startMinutes + easingProgressStart * currentMinuteDistance,
+            seconds: startSeconds + easingProgressStart * secondDistance
           });
 
           if (progress === 1) {
