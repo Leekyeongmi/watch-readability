@@ -12,7 +12,7 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 1500; // 2단계 지속 시간
+  const animationDurationPhase2 = 1800; // 2단계 지속 시간
 
   useEffect(() => {
     if (isAnimating) {
@@ -60,7 +60,7 @@ export default function MovingClock({ type = '1' }) {
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
           // 분침 두 바퀴 회전 + 현재 시간 이동
-          const totalMinuteDistance = 180 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
+          const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
           setAnimationTime({
