@@ -1,3 +1,7 @@
+# Let's adjust the code according to the latest request
+
+# The code now retains the initial smooth start from 1st phase and only applies easing effect in the second phase.
+code = """
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
@@ -66,7 +70,6 @@ export default function MovingClock({ type = '1' }) {
           // 부드러운 전환이 끝날 부분에만 적용 (끝에 가까워질수록 ease-out 효과 적용)
           const easeProgress = progress < 1 ? Math.pow(progress, 3) : 1;
 
-          // 시간, 분, 초 계산 (현재 시간으로 맞춰지는 부분에서 부드럽게 이어지도록)
           setAnimationTime({
             hours: startHours + easeProgress * hourDistance,
             minutes: startMinutes + easeProgress * currentMinuteDistance,
@@ -116,3 +119,6 @@ export default function MovingClock({ type = '1' }) {
     />
   );
 }
+"""
+
+code
