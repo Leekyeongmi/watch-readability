@@ -17,6 +17,8 @@ import { Row } from '../components/layouts/Layout';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
+import Picker from 'react-mobile-picker';
+import { Text } from '../components/atoms/Text';
 
 function Quiz() {
   //TODO 데이터 무효화, 인풋 디자인 수정
@@ -34,9 +36,9 @@ function Quiz() {
   });
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
-    hour: '',
-    minute: '',
-    second: ''
+    hour: '10',
+    minute: '10',
+    second: '30'
   });
   const { hour, minute, second } = userTime;
   const [errorInAngle, setErrorInAngle] = useState(null);
@@ -126,6 +128,12 @@ function Quiz() {
     if (event.key === 'Enter') {
       goToNextQuiz();
     }
+  };
+
+  const selections = {
+    hour: Array.from({ length: 12 }, (_, i) => String(i + 1)), // 1 to 12
+    minute: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')), // 00 to 59
+    second: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')) // 00 to 59
   };
 
   const calculateError = () => {
@@ -219,57 +227,56 @@ function Quiz() {
         </ProgressBar>
       </HeaderSection>
       <ContentSection>
-        <Timer time={timer} />
+        <TimerWrapper>
+          <Timer time={timer} />
+        </TimerWrapper>
         <ProblemSection>
           <StaticClock type={quizArr[currentQuiz]} rotation={rotation} />
-          <Row gap='0.75rem'>
-            <InputWrapper>
-              <Input
-                type='tel'
-                inputMode='numeric'
-                pattern='[0-9]+'
-                name='hour'
-                value={userTime.hour}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder='HH'
-                min='0'
-                max='12'
-              />
-              <Colon>:</Colon>
-              <Input
-                type='tel'
-                inputMode='numeric'
-                pattern='[0-9]+'
-                name='minute'
-                value={userTime.minute}
-                onKeyDown={handleKeyDown}
-                onChange={handleInputChange}
-                placeholder='MM'
-                min='0'
-                max='59'
-              />
-              <Colon>:</Colon>
-              <Input
-                type='tel'
-                pattern='[0-9]+'
-                name='second'
-                value={userTime.second}
-                onKeyDown={handleKeyDown}
-                onChange={handleInputChange}
-                placeholder='SS'
-                min='0'
-                max='59'
-              />
-            </InputWrapper>
-            <BasicButton
-              disabled={!buttonEnabled}
-              onClick={() => goToNextQuiz()}
-              size={'s'}
-              mode={userTheme}
-              textProps={{ text: '제출' }}
-            />
-          </Row>
+          <DisplayContainer>
+            <DisplayWrapper>
+              <Text typo='head01' color='black'>
+                {`${userTime.hour} : ${userTime.minute} : ${userTime.second}`}
+              </Text>
+              <ButtonWrapper>
+                <BasicButton
+                  disabled={!buttonEnabled}
+                  onClick={() => goToNextQuiz()}
+                  size={'s'}
+                  mode={userTheme}
+                  bg={'white'}
+                  textProps={{ text: '제출' }}
+                  width={'4.625rem'}
+                />
+              </ButtonWrapper>
+            </DisplayWrapper>
+          </DisplayContainer>
+
+          <TimePickerWrapper>
+            <Picker
+              value={userTime}
+              onChange={setUserTime}
+              wheelMode='natural'
+              itemHeight={35}
+              height={213}
+            >
+              {Object.keys(selections).map((name) => (
+                <Picker.Column key={name} name={name}>
+                  {selections[name].map((option) => (
+                    <Picker.Item key={option} value={option}>
+                      {({ selected }) => (
+                        <Text
+                          typo='head2'
+                          color={selected ? 'black' : 'grey200'}
+                        >
+                          {option}
+                        </Text>
+                      )}
+                    </Picker.Item>
+                  ))}
+                </Picker.Column>
+              ))}
+            </Picker>
+          </TimePickerWrapper>
         </ProblemSection>
       </ContentSection>
     </QuizPage>
@@ -300,7 +307,6 @@ const Dot = styled.div`
 
 const ContentSection = styled(Column)`
   height: 100%;
-  padding: ${LAYOUT.PADDING_X}rem;
 `;
 
 const ProblemSection = styled(CenterColumn)`
@@ -308,26 +314,28 @@ const ProblemSection = styled(CenterColumn)`
   height: 100%;
 `;
 
-const InputWrapper = styled(CenterRow)`
-  width: 15.125rem;
-  height: 3.125rem;
-  background-color: ${({ theme }) => theme.colors.grey200};
-  border-radius: 0.5rem;
-  color: ${({ theme }) => theme.colors.font};
+const DisplayWrapper = styled(CenterRow)`
+  position: relative;
 `;
 
-const Input = styled.input`
-  width: 4rem;
-  text-align: center;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.colors.font};
+const TimePickerWrapper = styled(Column)`
+  height: 213px;
+  width: 198.5px;
+  background-color: ${({ theme }) => theme.colors.background01};
+  border-radius: 18px;
 `;
 
-const Colon = styled.span`
-  font-size: 1.5rem;
-  align-self: center;
-  margin-bottom: 0.4rem;
+const ButtonWrapper = styled(Row)`
+  position: absolute;
+  left: calc(100% + 2rem);
+`;
+
+const DisplayContainer = styled(CenterRow)`
+  background-color: ${({ theme }) => theme.colors.grey400};
+  width: 100%;
+  height: 44px;
+`;
+
+const TimerWrapper = styled.div`
+  padding: ${LAYOUT.PADDING_X}rem;
 `;

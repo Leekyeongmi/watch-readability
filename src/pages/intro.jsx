@@ -58,7 +58,8 @@ function Intro() {
         </ClockWrapper>
         <Text typo='head4' color='font'>
           {`저희는 손목시계 디자인의 7가지 기준을 만들고`} <br />
-          <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교, <br />
+          <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,{' '}
+          <br />
           {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
           연구에 큰 도움이 될 것입니다!`}
         </Text>
@@ -72,6 +73,7 @@ function Intro() {
             textProps={{ text: '참여하기' }}
             bg={'button'}
             style={{ fontWeight: 'bold' }}
+            shape={'round'}
           ></BasicButton>
           <BasicButton
             onClick={() => navigate('/result')}
@@ -81,6 +83,7 @@ function Intro() {
             mode={userTheme}
             textProps={{ text: '연구현황' }}
             bg={'button'}
+            shape={'round'}
           ></BasicButton>
         </ButtonContainer>
       </ContentSection>
