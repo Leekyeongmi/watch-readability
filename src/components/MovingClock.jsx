@@ -12,7 +12,7 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 3000; // 2단계 지속 시간 (부드러운 전환을 위해 길게 설정)
+  const animationDurationPhase2 = 4000; // 2단계 지속 시간 (더 길게 설정하여 점차적으로 느려지도록 조정)
 
   useEffect(() => {
     if (isAnimating) {
@@ -63,8 +63,8 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
-          // 강한 'ease-out' 효과 (progress 값이 커질수록 급격하게 느려지도록)
-          const easeProgress = Math.pow(progress, 5);  // progress가 커질수록 점점 급격하게 느려지도록 설정
+          // 강한 'ease-out' 효과 (progress 값이 커질수록 점점 급격하게 느려지도록 설정)
+          const easeProgress = Math.pow(progress, 10);  // progress가 커질수록 급격하게 느려지도록 설정
 
           setAnimationTime({
             hours: startHours + easeProgress * hourDistance,
