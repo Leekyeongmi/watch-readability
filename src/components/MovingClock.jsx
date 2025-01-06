@@ -10,21 +10,12 @@ export default function MovingClock({ type = '1' }) {
     minutes: 10,
     seconds: 30,
   });
+  const [transitioning, setTransitioning] = useState(false);
 
   const animationDuration = [1000, 1800]; // 각 단계별 지속 시간
+  const smoothTransitionDuration = 500; // 전환 애니메이션 시간
 
-  // Ease-out 보간 함수
   const easeOut = (x) => 1 - Math.pow(1 - x, 3);
-
-  const applyEaseOutAtEnd = (progress) => {
-    const easeThreshold = 0.8; // 마지막 20%에만 ease-out 적용
-    if (progress < easeThreshold) {
-      return progress; // 선형 구간
-    }
-    // 마지막 구간: ease-out 적용
-    const easedProgress = easeOut((progress - easeThreshold) / (1 - easeThreshold));
-    return easeThreshold + easedProgress * (1 - easeThreshold);
-  };
 
   const animateClock = (startValues, endValues, duration, onComplete) => {
     const startTime = performance.now();
@@ -33,8 +24,30 @@ export default function MovingClock({ type = '1' }) {
       const elapsed = currentTime - startTime;
       let progress = Math.min(elapsed / duration, 1);
 
-      // 마지막 구간에만 ease-out 적용
-      progress = applyEaseOutAtEnd(progress);
+      // 보간 처리
+      setAnimationTime({
+        hours: startValues.hours + progress * (endValues.hours - startValues.hours),
+        minutes: startValues.minutes + progress * (endValues.minutes - startValues.minutes),
+        seconds: startValues.seconds + progress * (endValues.seconds - startValues.seconds),
+      });
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        onComplete && onComplete();
+      }
+    };
+
+    requestAnimationFrame(step);
+  };
+
+  const smoothTransition = (startValues, endValues, onComplete) => {
+    const startTime = performance.now();
+
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      let progress = Math.min(elapsed / smoothTransitionDuration, 1);
+      progress = easeOut(progress); // 전환에만 ease-out 적용
 
       // 보간 처리
       setAnimationTime({
@@ -71,25 +84,40 @@ export default function MovingClock({ type = '1' }) {
             seconds: currentTime.getSeconds() + currentTime.getMilliseconds() / 1000,
           },
           animationDuration[1],
-          () => setIsAnimating(false)
+          () => {
+            setIsAnimating(false);
+            setTransitioning(true); // 전환 애니메이션 활성화
+          }
         );
       }
+    } else if (transitioning) {
+      // 부드러운 전환 실행
+      smoothTransition(
+        animationTime,
+        {
+          hours: currentTime.getHours() % 12,
+          minutes: currentTime.getMinutes(),
+          seconds: currentTime.getSeconds() + currentTime.getMilliseconds() / 1000,
+        },
+        () => setTransitioning(false)
+      );
     } else {
+      // 실시간 업데이트
       const timer = setInterval(() => setCurrentTime(new Date()), 30);
       return () => clearInterval(timer);
     }
-  }, [isAnimating, animationPhase, currentTime]);
+  }, [isAnimating, animationPhase, transitioning, currentTime]);
 
   // 시간 각도 계산
-  const seconds = isAnimating
+  const seconds = transitioning || isAnimating
     ? animationTime.seconds
     : currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
-  const minutes = isAnimating
+  const minutes = transitioning || isAnimating
     ? animationTime.minutes
     : currentTime.getMinutes() + seconds / 60;
 
-  const hours = isAnimating
+  const hours = transitioning || isAnimating
     ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
