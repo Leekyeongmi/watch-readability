@@ -13,7 +13,7 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 1800; // 2단계 지속 시간
-  const transitionDuration = 500; // 실시간 전환 부드러운 지속 시간
+  const transitionDuration = 500; // 전환 부드러운 지속 시간
 
   useEffect(() => {
     if (isAnimating) {
@@ -33,7 +33,7 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
-            setAnimationPhase(2); // 다음 단계로 전환
+            setAnimationPhase(2); // 2단계로 전환
           }
         }, 5);
       } else if (animationPhase === 2) {
@@ -70,7 +70,7 @@ export default function MovingClock({ type = '1' }) {
           if (progress === 1) {
             clearInterval(interval);
 
-            // 부드러운 전환 시작
+            // 부드러운 전환 시작 (ease-out)
             const transitionStart = performance.now();
             const transitionInterval = setInterval(() => {
               const now = performance.now();
@@ -80,8 +80,9 @@ export default function MovingClock({ type = '1' }) {
                 1
               );
 
+              // ease-out 방식
               const easedProgress =
-                1 - Math.pow(1 - transitionProgress, 3); // ease-out
+                1 - Math.pow(1 - transitionProgress, 3);
 
               const realTimeHours = currentTime.getHours() % 12;
               const realTimeMinutes = currentTime.getMinutes();
@@ -103,7 +104,7 @@ export default function MovingClock({ type = '1' }) {
 
               if (transitionProgress === 1) {
                 clearInterval(transitionInterval);
-                setIsAnimating(false); // 실시간 모드 전환 완료
+                setIsAnimating(false); // 실시간 모드로 전환 완료
               }
             }, 5);
           }
