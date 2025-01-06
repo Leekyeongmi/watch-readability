@@ -12,8 +12,7 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 1800; // 2단계 지속 시간
-  const easeOutDuration = 3000; // 전환 시간 3000ms로 더 길게 설정
+  const animationDurationPhase2 = 3000; // 2단계 지속 시간 (부드러운 전환을 위해 길게 설정)
 
   useEffect(() => {
     if (isAnimating) {
@@ -33,7 +32,7 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
-            setAnimationPhase(2); // 2단계로 전환
+            setAnimationPhase(2); // 다음 단계로 전환
           }
         }, 5);
       } else if (animationPhase === 2) {
@@ -64,10 +63,13 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
+          // `ease-out` 이징 함수를 적용한 부드러운 전환
+          const easingProgress = progress < 1 ? Math.pow(progress, 3) : 1; // 부드러운 종료를 위한 cubic easing
+
           setAnimationTime({
-            hours: startHours + progress * hourDistance,
-            minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + progress * secondDistance
+            hours: startHours + easingProgress * hourDistance,
+            minutes: startMinutes + easingProgress * currentMinuteDistance,
+            seconds: startSeconds + easingProgress * secondDistance
           });
 
           if (progress === 1) {
@@ -77,31 +79,13 @@ export default function MovingClock({ type = '1' }) {
         }, 1);
       }
     } else {
-      // 부드러운 ease-out 전환 처리
-      const easeOutStartTime = new Date();
-      const easeOutInterval = setInterval(() => {
-        const now = new Date();
-        const elapsed = now - easeOutStartTime;
-        const easeOutProgress = Math.min(elapsed / easeOutDuration, 1);
-        
-        // ease-out 효과를 적용하여 부드럽게 전환
-        const easedHours = animationTime.hours + (currentTime.getHours() % 12 - animationTime.hours) * easeOutProgress;
-        const easedMinutes = animationTime.minutes + (currentTime.getMinutes() - animationTime.minutes) * easeOutProgress;
-        const easedSeconds = animationTime.seconds + (currentTime.getSeconds() + currentTime.getMilliseconds() / 1000 - animationTime.seconds) * easeOutProgress;
-
-        setAnimationTime({
-          hours: easedHours,
-          minutes: easedMinutes,
-          seconds: easedSeconds
-        });
-
-        if (easeOutProgress === 1) {
-          clearInterval(easeOutInterval); // ease-out 종료
-        }
-      }, 1);
+      // 현재 시간 업데이트
+      const timer = setInterval(() => {
+        setCurrentTime(new Date());
+      }, 30);
 
       return () => {
-        clearInterval(easeOutInterval);
+        clearInterval(timer);
       };
     }
   }, [isAnimating, animationPhase, currentTime]);
