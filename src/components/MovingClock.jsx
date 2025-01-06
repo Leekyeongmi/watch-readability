@@ -12,7 +12,7 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 4000; // 2단계 지속 시간 (좀 더 길게 설정)
+  const animationDurationPhase2 = 4000; // 2단계 지속 시간 (부드러운 전환을 위해 길게 설정)
 
   useEffect(() => {
     if (isAnimating) {
@@ -63,8 +63,8 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
-          // 분침에만 강력한 'ease-out' 효과를 적용
-          const easeProgress = Math.pow(progress, 4);  // 분침만 느려지게 처리
+          // 분침의 끝부분에만 느려지는 효과 적용
+          const easeProgress = progress < 1 ? Math.pow(progress, 3) : 1;  // 애니메이션 끝에만 부드럽게 느려짐
 
           setAnimationTime({
             hours: startHours + progress * hourDistance, // 시침은 일정하게 이동
