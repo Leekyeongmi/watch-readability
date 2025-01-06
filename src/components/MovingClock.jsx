@@ -12,13 +12,7 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 1800; // 2단계 지속 시간
-
-  const transitionStyle = (progress) => {
-    // 'ease-out' 효과로 끝날 때 서서히 감속
-    const easing = `cubic-bezier(0.68, -0.55, 0.27, 1.55)`; // 끝 부분에서 부드럽게 느려짐
-    return `all ${progress * 1000}ms ${easing}`; // 진행 속도 조절 (1000ms)
-  };
+  const animationDurationPhase2 = 3000; // 2단계 지속 시간 (부드러운 전환을 위해 길게 설정)
 
   useEffect(() => {
     if (isAnimating) {
@@ -69,15 +63,15 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 240 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
           const currentMinuteDistance = progress * totalMinuteDistance;
 
-          // 부드럽게 전환되는 구간을 위해 transition을 적용
-          setAnimationTime({
-            hours: startHours + progress * hourDistance,
-            minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + progress * secondDistance
-          });
+          // 부드러운 전환이 끝날 부분에만 적용 (끝에 가까워질수록 ease-out 효과 적용)
+          const easeProgress = progress < 1 ? Math.pow(progress, 3) : 1;
 
-          // 전환 효과 추가
-          const transitionDuration = transitionStyle(progress);
+          // 시간, 분, 초 계산 (현재 시간으로 맞춰지는 부분에서 부드럽게 이어지도록)
+          setAnimationTime({
+            hours: startHours + easeProgress * hourDistance,
+            minutes: startMinutes + easeProgress * currentMinuteDistance,
+            seconds: startSeconds + easeProgress * secondDistance
+          });
 
           if (progress === 1) {
             clearInterval(interval);
