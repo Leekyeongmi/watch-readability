@@ -69,6 +69,7 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
+
             // 부드러운 전환 시작
             const transitionStart = performance.now();
             const transitionInterval = setInterval(() => {
