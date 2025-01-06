@@ -16,6 +16,16 @@ export default function MovingClock({ type = '1' }) {
   // Ease-out 보간 함수
   const easeOut = (x) => 1 - Math.pow(1 - x, 3);
 
+  const applyEaseOutAtEnd = (progress) => {
+    const easeThreshold = 0.8; // 마지막 20%에만 ease-out 적용
+    if (progress < easeThreshold) {
+      return progress; // 선형 구간
+    }
+    // 마지막 구간: ease-out 적용
+    const easedProgress = easeOut((progress - easeThreshold) / (1 - easeThreshold));
+    return easeThreshold + easedProgress * (1 - easeThreshold);
+  };
+
   const animateClock = (startValues, endValues, duration, onComplete) => {
     const startTime = performance.now();
 
@@ -23,8 +33,8 @@ export default function MovingClock({ type = '1' }) {
       const elapsed = currentTime - startTime;
       let progress = Math.min(elapsed / duration, 1);
 
-      // Ease-out 적용
-      progress = easeOut(progress);
+      // 마지막 구간에만 ease-out 적용
+      progress = applyEaseOutAtEnd(progress);
 
       // 보간 처리
       setAnimationTime({
