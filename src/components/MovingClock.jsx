@@ -13,7 +13,7 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 1800; // 2단계 지속 시간
-  const transitionDuration = 500; // 실시간으로 전환될 때 부드럽게 하는 지속 시간
+  const transitionDuration = 500; // 부드럽게 전환되는 시간
 
   useEffect(() => {
     if (isAnimating) {
