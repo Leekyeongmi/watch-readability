@@ -1,3 +1,7 @@
+# The implementation plan involves adjusting the minute hand to slow down towards the end of its animation.
+# For this, we need to modify the second phase where the minute hand rotates, ensuring that it gradually slows down as it reaches the target time.
+
+# Reverting to previous logic with specific changes for the minute hand.
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
@@ -66,12 +70,12 @@ export default function MovingClock({ type = '1' }) {
           // 부드러운 전환이 끝날 부분에만 적용 (끝에 가까워질수록 ease-out 효과 적용)
           const easeProgress = progress < 1 ? Math.pow(progress, 3) : 1;
 
-          // 분침의 마지막 부분에서 느려지기 시작하도록 처리
-          const easeMinute = progress < 0.8 ? 1 : Math.pow(1 - (progress - 0.8) / 0.2, 3);
+          // 분침만 끝날 때 느려지도록 변경
+          const slowedMinuteProgress = progress < 0.8 ? progress : 0.8 + (1 - progress) * 0.2;
 
           setAnimationTime({
             hours: startHours + easeProgress * hourDistance,
-            minutes: startMinutes + easeMinute * currentMinuteDistance,
+            minutes: startMinutes + slowedMinuteProgress * currentMinuteDistance,
             seconds: startSeconds + easeProgress * secondDistance
           });
 
