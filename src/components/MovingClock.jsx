@@ -34,7 +34,7 @@ export default function MovingClock({ type = '1' }) {
             clearInterval(interval);
             setAnimationPhase(2); // 다음 단계로 전환
           }
-        }, 5);
+        }, 30);
       } else if (animationPhase === 2) {
         // 2단계: 분침이 2바퀴 돌고 초침/시침과 함께 현재 시간으로 이동
         const startTime = new Date();
@@ -73,7 +73,7 @@ export default function MovingClock({ type = '1' }) {
             clearInterval(interval);
             setIsAnimating(false); // 애니메이션 종료
           }
-        }, 1);
+        }, 30);
       }
     } else {
       // 현재 시간 업데이트
