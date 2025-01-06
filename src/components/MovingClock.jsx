@@ -10,7 +10,7 @@ export default function MovingClock({ type = '1' }) {
     minutes: 10,
     seconds: 30
   });
-  
+
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 1800; // 2단계 지속 시간
   const easeOutDuration = 300; // 2단계 끝에서 부드럽게 전환되는 시간
@@ -33,7 +33,7 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
-            setAnimationPhase(2); // 다음 단계로 전환
+            setAnimationPhase(2); // 2단계로 전환
           }
         }, 5);
       } else if (animationPhase === 2) {
@@ -77,13 +77,31 @@ export default function MovingClock({ type = '1' }) {
         }, 1);
       }
     } else {
-      // 현재 시간 업데이트
-      const timer = setInterval(() => {
-        setCurrentTime(new Date());
-      }, 30);
+      // 부드러운 ease-out 전환 처리
+      const easeOutStartTime = new Date();
+      const easeOutInterval = setInterval(() => {
+        const now = new Date();
+        const elapsed = now - easeOutStartTime;
+        const easeOutProgress = Math.min(elapsed / easeOutDuration, 1);
+        
+        // ease-out 효과를 적용하여 부드럽게 전환
+        const easedHours = animationTime.hours + (currentTime.getHours() % 12 - animationTime.hours) * easeOutProgress;
+        const easedMinutes = animationTime.minutes + (currentTime.getMinutes() - animationTime.minutes) * easeOutProgress;
+        const easedSeconds = animationTime.seconds + (currentTime.getSeconds() + currentTime.getMilliseconds() / 1000 - animationTime.seconds) * easeOutProgress;
+
+        setAnimationTime({
+          hours: easedHours,
+          minutes: easedMinutes,
+          seconds: easedSeconds
+        });
+
+        if (easeOutProgress === 1) {
+          clearInterval(easeOutInterval); // ease-out 종료
+        }
+      }, 1);
 
       return () => {
-        clearInterval(timer);
+        clearInterval(easeOutInterval);
       };
     }
   }, [isAnimating, animationPhase, currentTime]);
