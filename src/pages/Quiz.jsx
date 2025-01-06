@@ -103,9 +103,9 @@ function Quiz() {
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
-        hour: '',
-        minute: '',
-        second: ''
+        hour: '10',
+        minute: '10',
+        second: '30'
       });
       submitProblemData(dataToPost);
     }
