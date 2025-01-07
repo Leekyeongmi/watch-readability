@@ -137,7 +137,6 @@ function Result() {
                 width={'10rem'}
                 height={'1.55rem'}
                 size={'s'}
-                shape='round'
                 // mode={userTheme}
                 textProps={{ text: '정확한 판독성' }}
                 bg={filter === 1 ? 'white' : `${theme.colors.grey200}`}
