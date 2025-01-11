@@ -77,11 +77,9 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 120 + minuteDistance;
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
-          // 시침 애니메이션 수정 부분
-          const currentHourDistance = adjustedProgress * hourDistance;
-
-          // 정확한 목표 각도 계산
-          const targetHourRotation = (targetHours + targetMinutes / 60) * 30; // 목표 각도
+          // 시침 애니메이션 수정 부분: 작은 범위는 선형, 큰 범위는 ease-in-out
+          const currentHourDistance =
+            Math.abs(hourDistance) < 6 ? progress * hourDistance : easeInOut(progress) * hourDistance; // 6시간 이상 차이일 때만 ease-in-out 적용
 
           setAnimationTime({
             hours: startHours + currentHourDistance,
