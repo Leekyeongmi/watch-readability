@@ -81,8 +81,9 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
-          // 시침 각도 보정
-          const fixedHourAngle = adjustedProgress * hourDistance * 30; // 1시간에 30도
+          // 시침 보정
+          const totalHourDistance = hourDistance + (minuteDistance / 60); // 1시간 당 30도이므로 분침 이동까지 고려한 거리
+          const fixedHourAngle = adjustedProgress * totalHourDistance * 30; // 1시간에 30도
 
           // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
           setAnimationTime({
