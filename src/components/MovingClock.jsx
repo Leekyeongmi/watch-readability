@@ -13,17 +13,15 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
-  const additionalTime = 5000; // 오차를 수정할 추가 시간 (5초)
+  const additionalTime = 5000; // 추가된 5초 오차
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
     const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
-      // Ease-in 구간
       return Math.pow(progress * 2, easeInPower) / 2;
     } else {
-      // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
   };
@@ -79,6 +77,7 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
+          // 5초의 오차를 시작 부분에서 반영
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
