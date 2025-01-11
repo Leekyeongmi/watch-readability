@@ -11,11 +11,9 @@ export default function MovingClock({ type = '1' }) {
     seconds: 30
   });
 
-  const [currentTimeTransition, setCurrentTimeTransition] = useState(false);
-
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
-  const transitionDuration = 1000; // 현재시간으로의 부드러운 전환
+  const transitionDuration = 1000; // 전환 구간의 지속 시간 (현재 시간으로 전환)
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
@@ -64,7 +62,8 @@ export default function MovingClock({ type = '1' }) {
           // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
           const targetMinutes = currentTime.getMinutes();
-          const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+          const targetSeconds =
+            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
           // 시작 시간 (10시 10분 30초)
           const startHours = 10;
@@ -76,18 +75,46 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 애니메이션 업데이트
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
+
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * minuteDistance,
+            minutes: startMinutes + currentMinuteDistance,
             seconds: startSeconds + adjustedProgress * secondDistance
           });
 
           if (progress === 1) {
             clearInterval(interval);
-            setCurrentTimeTransition(true); // 전환 시작
+            setAnimationPhase(3); // 2단계 후 전환 구간 시작
           }
         }, 1);
+      } else if (animationPhase === 3) {
+        // 3단계: 현재 시간으로 부드럽게 전환
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          const now = new Date();
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / transitionDuration, 1);
+
+          // 현재 시간과 애니메이션 시간이 점차적으로 일치하도록 보정
+          const targetHours = currentTime.getHours() % 12;
+          const targetMinutes = currentTime.getMinutes();
+          const targetSeconds =
+            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+
+          setAnimationTime({
+            hours: targetHours,
+            minutes: targetMinutes,
+            seconds: targetSeconds
+          });
+
+          if (progress === 1) {
+            clearInterval(interval);
+            setIsAnimating(false); // 애니메이션 종료
+          }
+        }, 5);
       }
     } else {
       // 현재 시간 업데이트
@@ -100,35 +127,6 @@ export default function MovingClock({ type = '1' }) {
       };
     }
   }, [isAnimating, animationPhase, currentTime]);
-
-  // 두 번째 애니메이션: 현재 시간으로 천천히 전환
-  useEffect(() => {
-    if (currentTimeTransition) {
-      const startTime = new Date();
-      const interval = setInterval(() => {
-        const now = new Date();
-        const elapsed = now - startTime;
-        const progress = Math.min(elapsed / transitionDuration, 1);
-
-        // 현재 시간 계산
-        const targetHours = currentTime.getHours() % 12;
-        const targetMinutes = currentTime.getMinutes();
-        const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
-
-        // 애니메이션 업데이트
-        setAnimationTime({
-          hours: animationTime.hours + progress * (targetHours - animationTime.hours),
-          minutes: animationTime.minutes + progress * (targetMinutes - animationTime.minutes),
-          seconds: animationTime.seconds + progress * (targetSeconds - animationTime.seconds)
-        });
-
-        if (progress === 1) {
-          clearInterval(interval);
-          setIsAnimating(false); // 애니메이션 종료
-        }
-      }, 1);
-    }
-  }, [currentTimeTransition, currentTime]);
 
   // 초, 분, 시 계산
   const seconds = isAnimating
