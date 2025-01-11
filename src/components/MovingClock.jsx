@@ -28,25 +28,13 @@ export default function MovingClock({ type = '1' }) {
   };
 
   useEffect(() => {
-    let accumulatedElapsed = 0; // 경과 시간 누적 변수
-    let lastUpdateTime = Date.now(); // 마지막 업데이트 시점
-
-    const updateElapsed = () => {
-      const currentTimeMillis = Date.now();
-      const elapsed = currentTimeMillis - lastUpdateTime;
-      lastUpdateTime = currentTimeMillis;
-
-      accumulatedElapsed += elapsed;
-    };
-
     if (isAnimating) {
       if (animationPhase === 1) {
         // 1단계: 10시 10분 30초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
-          updateElapsed(); // 경과 시간 갱신
-
-          const elapsed = accumulatedElapsed;
+          const now = new Date();
+          const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase1, 1);
 
           setAnimationTime({
@@ -64,11 +52,11 @@ export default function MovingClock({ type = '1' }) {
         // 2단계: 현재 시간으로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
-          updateElapsed(); // 경과 시간 갱신
-
-          const elapsed = accumulatedElapsed;
+          const now = new Date();
+          const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase2, 1);
-          const adjustedProgress = easeInOut(progress);
+
+          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
           // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
@@ -85,14 +73,16 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 분침 두 바퀴 회전 + 현재 시간 이동
-          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
-          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
+          // 각 시간 단위별로 보정
+          const correctedSecondDistance = adjustedProgress * secondDistance;
+          const correctedMinuteDistance = adjustedProgress * minuteDistance;
+          const correctedHourDistance = adjustedProgress * hourDistance;
 
+          // 새로운 시간값 업데이트
           setAnimationTime({
-            hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance
+            hours: startHours + correctedHourDistance,
+            minutes: startMinutes + correctedMinuteDistance,
+            seconds: startSeconds + correctedSecondDistance
           });
 
           if (progress === 1) {
