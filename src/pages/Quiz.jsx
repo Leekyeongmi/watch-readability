@@ -36,8 +36,8 @@ function Quiz() {
   });
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
-    hour: '10',
-    minute: '10',
+    hour: '6',
+    minute: '30',
     second: '30'
   });
   const { hour, minute, second } = userTime;
