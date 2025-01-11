@@ -16,7 +16,7 @@ export default function MovingClock({ type = '1' }) {
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
-    const easeInPower = 2;  // ease-in 강도
+    const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
       // Ease-in 구간
