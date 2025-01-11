@@ -43,7 +43,7 @@ export default function MovingClock({ type = '1' }) {
           setAnimationTime({
             hours: 10,
             minutes: 10,
-            seconds: 30
+            seconds: 35
           });
 
           if (progress === 1) {
