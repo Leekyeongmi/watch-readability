@@ -25,19 +25,19 @@ export default function MovingClock({ type = '1' }) {
       // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
-  };  
+  };
 
   useEffect(() => {
-    const phaseStartTime = performance.now(); // 각 단계 시작 시간
     let animationFrame;
+    const startTime = performance.now(); // 애니메이션 시작 시간
 
-    const animate = (timestamp) => {
-      const elapsed = timestamp - phaseStartTime;
+    const animate = () => {
+      const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / (animationPhase === 1 ? animationDurationPhase1 : animationDurationPhase2), 1);
-      const easedProgress = easeInOut(progress);
+      const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
       if (animationPhase === 1) {
-        // 1단계: 고정된 10:10:30으로 설정
+        // 1단계: 10시 10분 30초로 이동
         setAnimationTime({
           hours: 10,
           minutes: 10,
@@ -48,6 +48,7 @@ export default function MovingClock({ type = '1' }) {
           setAnimationPhase(2); // 2단계로 전환
         }
       } else if (animationPhase === 2) {
+        // 2단계: 현재 시간으로 이동
         const targetHours = currentTime.getHours() % 12;
         const targetMinutes = currentTime.getMinutes();
         const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
@@ -60,11 +61,16 @@ export default function MovingClock({ type = '1' }) {
         const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
         const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-        // 애니메이션 시간
+        // 애니메이션 종료 직전에 현재 시간에 가까워지도록 설정
+        const finalHours = startHours + adjustedProgress * hourDistance;
+        const finalMinutes = startMinutes + adjustedProgress * minuteDistance;
+        const finalSeconds = startSeconds + adjustedProgress * secondDistance;
+
+        // 애니메이션 끝나고 현재 시간으로 전환되도록
         setAnimationTime({
-          hours: startHours + easedProgress * hourDistance,
-          minutes: startMinutes + easedProgress * minuteDistance,
-          seconds: startSeconds + easedProgress * secondDistance,
+          hours: finalHours,
+          minutes: finalMinutes,
+          seconds: finalSeconds
         });
 
         if (progress === 1) {
@@ -73,21 +79,24 @@ export default function MovingClock({ type = '1' }) {
       }
 
       if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
+        animationFrame = requestAnimationFrame(animate); // 계속 애니메이션 진행
       }
     };
 
     if (isAnimating) {
       animationFrame = requestAnimationFrame(animate);
     } else {
+      // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
       }, 30);
 
-      return () => clearInterval(timer);
+      return () => {
+        clearInterval(timer);
+      };
     }
 
-    return () => cancelAnimationFrame(animationFrame);
+    return () => cancelAnimationFrame(animationFrame); // cleanup
   }, [isAnimating, animationPhase, currentTime]);
 
   // 초, 분, 시 계산
