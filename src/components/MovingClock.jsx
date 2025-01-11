@@ -104,10 +104,13 @@ export default function MovingClock({ type = '1' }) {
           const targetSeconds =
             currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
+          const adjustedProgress = easeInOut(progress);
+
+          // 부드럽게 현재 시간으로 전환
           setAnimationTime({
-            hours: targetHours,
-            minutes: targetMinutes,
-            seconds: targetSeconds
+            hours: (startTime.getHours() % 12) + adjustedProgress * (targetHours - startTime.getHours()),
+            minutes: startTime.getMinutes() + adjustedProgress * (targetMinutes - startTime.getMinutes()),
+            seconds: startTime.getSeconds() + adjustedProgress * (targetSeconds - startTime.getSeconds())
           });
 
           if (progress === 1) {
