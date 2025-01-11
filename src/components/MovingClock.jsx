@@ -80,6 +80,9 @@ export default function MovingClock({ type = '1' }) {
           // 시침 애니메이션 수정 부분
           const currentHourDistance = adjustedProgress * hourDistance;
 
+          // 정확한 목표 각도 계산
+          const targetHourRotation = (targetHours + targetMinutes / 60) * 30; // 목표 각도
+
           setAnimationTime({
             hours: startHours + currentHourDistance,
             minutes: startMinutes + currentMinuteDistance,
