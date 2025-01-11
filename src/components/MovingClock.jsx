@@ -25,18 +25,28 @@ export default function MovingClock({ type = '1' }) {
       // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
-  };  
+  };
 
   useEffect(() => {
     let accumulatedElapsed = 0; // 경과 시간 누적 변수
+    let lastUpdateTime = Date.now(); // 마지막 업데이트 시점
+
+    const updateElapsed = () => {
+      const currentTimeMillis = Date.now();
+      const elapsed = currentTimeMillis - lastUpdateTime;
+      lastUpdateTime = currentTimeMillis;
+
+      accumulatedElapsed += elapsed;
+    };
 
     if (isAnimating) {
       if (animationPhase === 1) {
         // 1단계: 10시 10분 30초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
-          const now = new Date();
-          const elapsed = now - startTime + accumulatedElapsed; // 누적 경과 시간
+          updateElapsed(); // 경과 시간 갱신
+
+          const elapsed = accumulatedElapsed;
           const progress = Math.min(elapsed / animationDurationPhase1, 1);
 
           setAnimationTime({
@@ -54,17 +64,16 @@ export default function MovingClock({ type = '1' }) {
         // 2단계: 현재 시간으로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
-          const now = new Date();
-          const elapsed = now - startTime + accumulatedElapsed; // 누적 경과 시간
-          const progress = Math.min(elapsed / animationDurationPhase2, 1);
+          updateElapsed(); // 경과 시간 갱신
 
-          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
+          const elapsed = accumulatedElapsed;
+          const progress = Math.min(elapsed / animationDurationPhase2, 1);
+          const adjustedProgress = easeInOut(progress);
 
           // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
           const targetMinutes = currentTime.getMinutes();
-          const targetSeconds =
-            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+          const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
           // 시작 시간 (10시 10분 30초)
           const startHours = 10;
@@ -87,7 +96,6 @@ export default function MovingClock({ type = '1' }) {
           });
 
           if (progress === 1) {
-            accumulatedElapsed += elapsed; // 경과 시간 누적
             clearInterval(interval);
             setIsAnimating(false); // 애니메이션 종료
           }
