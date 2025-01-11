@@ -77,15 +77,23 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 분침 두 바퀴 회전 + 현재 시간 이동
-          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
-          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
+          // 각 바늘의 독립적인 애니메이션 처리
 
-          // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
+          // 시침 애니메이션: startHours에서 targetHours로 이동
+          const currentHour = startHours + adjustedProgress * hourDistance;
+
+          // 분침 애니메이션: startMinutes에서 targetMinutes로 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinute = startMinutes + adjustedProgress * totalMinuteDistance;
+
+          // 초침 애니메이션: startSeconds에서 targetSeconds로 이동 (5초 오차 추가)
+          const currentSecond = startSeconds + adjustedProgress * secondDistance + additionalTime;
+
+          // 최종 시간 업데이트
           setAnimationTime({
-            hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
+            hours: currentHour,
+            minutes: currentMinute,
+            seconds: currentSecond
           });
 
           if (progress === 1) {
