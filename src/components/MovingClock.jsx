@@ -12,7 +12,18 @@ export default function MovingClock({ type = '1' }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 4000; // 2단계 지속 시간 (더 길게 설정하여 점차적으로 느려지도록 조정)
+  const animationDurationPhase2 = 4000; // 2단계 지속 시간
+
+  // Ease-in-out 함수
+  const easeInOut = (progress) => {
+    if (progress < 0.5) {
+      // Ease-in 구간
+      return Math.pow(progress * 2, 3) / 2;
+    } else {
+      // Ease-out 구간
+      return 1 - Math.pow(2 * (1 - progress), 3) / 2;
+    }
+  };
 
   useEffect(() => {
     if (isAnimating) {
@@ -36,12 +47,14 @@ export default function MovingClock({ type = '1' }) {
           }
         }, 5);
       } else if (animationPhase === 2) {
-        // 2단계: 분침이 2바퀴 돌고 초침/시침과 함께 현재 시간으로 이동
+        // 2단계: 현재 시간으로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase2, 1);
+
+          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
           // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
@@ -61,15 +74,12 @@ export default function MovingClock({ type = '1' }) {
 
           // 분침 두 바퀴 회전 + 현재 시간 이동
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
-          const currentMinuteDistance = progress * totalMinuteDistance;
-
-          // 강한 'ease-out' 효과 (progress 값이 커질수록 점점 급격하게 느려지도록 설정)
-          const easeProgress = Math.pow(progress, 3);  // progress가 커질수록 급격하게 느려지도록 설정
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
           setAnimationTime({
-            hours: startHours + easeProgress * hourDistance,
-            minutes: startMinutes + easeProgress * currentMinuteDistance,
-            seconds: startSeconds + easeProgress * secondDistance
+            hours: startHours + adjustedProgress * hourDistance,
+            minutes: startMinutes + currentMinuteDistance,
+            seconds: startSeconds + adjustedProgress * secondDistance
           });
 
           if (progress === 1) {
