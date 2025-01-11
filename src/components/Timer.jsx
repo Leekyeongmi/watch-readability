@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Text } from './atoms/Text';
-import { CenterColumn, Column } from './layouts/Layout';
+import { CenterColumn } from './layouts/Layout';
 
 const Timer = ({ time }) => {
   const theme = useTheme();
@@ -18,7 +17,7 @@ const Timer = ({ time }) => {
 
   return (
     <TimerWrapper theme={theme}>
-      <Text typo='head03' color={'negative'}>
+      <Text typo='head4' color={'primary500'}>
         {formatTime(time)}
       </Text>
     </TimerWrapper>
@@ -31,7 +30,6 @@ const TimerWrapper = styled(CenterColumn)`
   position: sticky;
   top: 1.25rem;
   align-self: flex-end;
-  background-color: ${({ theme }) => theme.colors.grey200};
-  width: 6.75rem;
-  height: 2.25rem;
+  // background-color: ${({ theme }) => theme.colors.grey200};
+  width: auto;
 `;

@@ -26,7 +26,7 @@ const fonts = {
     lineHeight: 168.75
   }),
   head4: FONT({
-    weight: 400,
+    weight: 300,
     size: 0.938,
     lineHeight: 168.75
   }),

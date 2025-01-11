@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import HeaderSection from '../components/atoms/HeaderSection';
 import { CenterColumn, CenterRow, Column } from '../components/layouts/Layout';
 import StaticClock from '../components/StaticClock';
@@ -12,18 +12,16 @@ import {
 } from '../utils/generateRandomTime';
 import { shuffleArray } from '../utils/shuffleArray';
 import BasicButton from '../components/atoms/BasicButton';
-import { useUserTheme } from '../stores/useTheme';
+
 import { Row } from '../components/layouts/Layout';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
 import Picker from 'react-mobile-picker';
 import { Text } from '../components/atoms/Text';
+import HomeButton from '../components/components/HomeButton';
 
 function Quiz() {
-  //TODO 데이터 무효화, 인풋 디자인 수정
-  const theme = useTheme();
-  const userTheme = useUserTheme();
   const totalQuizzes = 7;
   const navigate = useNavigate();
   const [currentQuiz, setCurrentQuiz] = useState(0);
@@ -40,24 +38,6 @@ function Quiz() {
     minute: '30',
     second: '30'
   });
-  const { hour, minute, second } = userTime;
-  const [errorInAngle, setErrorInAngle] = useState(null);
-
-  const { hourErrorAngle, minuteErrorAngle, secondErrorAngle } =
-    errorInAngle ?? {
-      hourErrorAngle: 0,
-      mintueErrorAngle: 0,
-      secondErrorAngle: 0
-    };
-
-  const dataToPost = {
-    clockId: quizArr[currentQuiz],
-    elapsedTime: timer,
-    hourErrorAngle,
-    minuteErrorAngle,
-    secondErrorAngle,
-    theme: userTheme
-  };
 
   const startTimer = () => setIsRunning(true);
   const stopAndResetTimer = () => {
@@ -65,16 +45,19 @@ function Quiz() {
     setTimer(0);
   };
 
-  const buttonEnabled = hour != '' && minute != '' && second != '';
-
   async function submitProblemData({
     clockId,
     elapsedTime,
     hourErrorAngle,
     minuteErrorAngle,
-    secondErrorAngle,
-    theme
+    secondErrorAngle
   }) {
+    console.log(elapsedTime, hourErrorAngle, minuteErrorAngle);
+    if (elapsedTime >= 60 || hourErrorAngle >= 90 || minuteErrorAngle >= 90) {
+      alert('시간이 너무 많이 초과하였거나 오차범위가 넓어서 전송하지 않겠음');
+      return;
+    }
+
     try {
       await addDoc(collection(firestore, 'problems'), {
         clockId: clockId,
@@ -82,7 +65,6 @@ function Quiz() {
         hourErrorAngle,
         minuteErrorAngle,
         secondErrorAngle,
-        theme: theme,
         timestamp: serverTimestamp()
       });
       console.log('데이터 저장 성공');
@@ -92,8 +74,6 @@ function Quiz() {
   }
 
   const goToNextQuiz = () => {
-    if (!buttonEnabled) return;
-
     if (currentQuiz == totalQuizzes - 1) {
       navigate('/result');
     }
@@ -107,26 +87,6 @@ function Quiz() {
         minute: '10',
         second: '30'
       });
-      submitProblemData(dataToPost);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === 'hour' && (value < 0 || value > 12)) return;
-    if ((name === 'minute' || name === 'second') && (value < 0 || value > 59))
-      return;
-
-    setUserTime((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      goToNextQuiz();
     }
   };
 
@@ -163,17 +123,24 @@ function Quiz() {
     const hourErrorAngle = calculateAngleDifference(
       randomHourAngle,
       userHourAngle
-    );
+    ).toFixed(2);
     const minuteErrorAngle = calculateAngleDifference(
       randomMinuteAngle,
       userMinuteAngle
-    );
+    ).toFixed(2);
     const secondErrorAngle = calculateAngleDifference(
       randomSecondAngle,
       userSecondAngle
-    );
+    ).toFixed(2);
 
-    setErrorInAngle({ hourErrorAngle, minuteErrorAngle, secondErrorAngle });
+    const dataToPost = {
+      clockId: quizArr[currentQuiz],
+      elapsedTime: timer,
+      hourErrorAngle,
+      minuteErrorAngle,
+      secondErrorAngle
+    };
+    submitProblemData(dataToPost);
 
     alert(
       `테스트용 알러트 : 
@@ -183,7 +150,6 @@ function Quiz() {
       분침 오차 각도: ${minuteErrorAngle}°
       초침 오차 각도: ${secondErrorAngle}°
       푸는 데 걸린 시간은 ${timer}초
-      유저 테마는 ${userTheme}
       풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
       `
     );
@@ -218,7 +184,6 @@ function Quiz() {
         <ProgressBar>
           {Array.from({ length: totalQuizzes }).map((_, index) => (
             <Dot
-              theme={theme}
               key={index}
               solved={index < currentQuiz}
               active={index === currentQuiz}
@@ -229,6 +194,7 @@ function Quiz() {
       <ContentSection>
         <TimerWrapper>
           <Timer time={timer} />
+          <HomeButton />
         </TimerWrapper>
         <ProblemSection>
           <StaticClock type={quizArr[currentQuiz]} rotation={rotation} />
@@ -239,24 +205,24 @@ function Quiz() {
               </Text>
               <ButtonWrapper>
                 <BasicButton
-                  disabled={!buttonEnabled}
                   onClick={() => goToNextQuiz()}
                   size={'s'}
-                  mode={userTheme}
+                  width={'4.68rem'}
+                  height={'1.5rem'}
+                  shape={'round'}
                   bg={'white'}
-                  textProps={{ text: '제출' }}
-                  width={'4.625rem'}
+                  textProps={{ text: '제출', typo: 'head4' }}
                 />
               </ButtonWrapper>
             </DisplayWrapper>
           </DisplayContainer>
-
           <TimePickerWrapper>
             <Picker
               value={userTime}
               onChange={setUserTime}
               wheelMode='natural'
               itemHeight={35}
+              onAnimationIteration={true}
               height={213}
             >
               {Object.keys(selections).map((name) => (
@@ -286,7 +252,7 @@ function Quiz() {
 export default Quiz;
 
 const QuizPage = styled(Column)`
-  height: 100%;
+  height: 100svh;
 `;
 
 const ProgressBar = styled.div`
@@ -300,9 +266,9 @@ const Dot = styled.div`
   height: 1.125rem;
   border-radius: 50%;
   border: 2px solid
-    ${({ active, theme }) => (active ? theme.colors.font : 'transparent')};
+    ${({ active, theme }) => (active ? theme.colors.primary500 : 'transparent')};
   background-color: ${({ theme, solved }) =>
-    solved ? theme.colors.font : theme.colors.grey300};
+    solved ? theme.colors.primary500 : theme.colors.grey300};
 `;
 
 const ContentSection = styled(Column)`
@@ -310,7 +276,7 @@ const ContentSection = styled(Column)`
 `;
 
 const ProblemSection = styled(CenterColumn)`
-  gap: 2.5rem;
+  justify-content: space-evenly;
   height: 100%;
 `;
 
@@ -319,7 +285,6 @@ const DisplayWrapper = styled(CenterRow)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  height: 213px;
   width: 198.5px;
   background-color: ${({ theme }) => theme.colors.background01};
   border-radius: 18px;
@@ -336,6 +301,6 @@ const DisplayContainer = styled(CenterRow)`
   height: 44px;
 `;
 
-const TimerWrapper = styled.div`
+const TimerWrapper = styled(Row)`
   padding: ${LAYOUT.PADDING_X}rem;
 `;
