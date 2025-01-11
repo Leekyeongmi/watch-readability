@@ -11,24 +11,29 @@ export default function MovingClock({ type = '1' }) {
     seconds: 35,
   });
 
-  const animationDurationPhase1 = 1000; // 첫 단계 지속 시간
-  const animationDurationPhase2 = 4000; // 두 번째 단계 지속 시간
+  const animationDurationPhase1 = 1000; // 1단계 지속 시간
+  const animationDurationPhase2 = 4000; // 2단계 지속 시간
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
-    const easeInPower = 3;
-    const easeOutPower = 2;
+    const easeInPower = 3; // ease-in 강도
+    const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
+      // Ease-in 구간
       return Math.pow(progress * 2, easeInPower) / 2;
     } else {
+      // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
   };
 
+  // 오차 선반영을 위해 5초 추가된 구간의 조정
+  const additionalTime = 5; // 예상되는 오차 시간 (5초)
+
   useEffect(() => {
     if (isAnimating) {
       if (animationPhase === 1) {
-        // 첫 단계: 10시 10분 35초로 이동
+        // 1단계: 10시 10분 35초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -43,18 +48,18 @@ export default function MovingClock({ type = '1' }) {
 
           if (progress === 1) {
             clearInterval(interval);
-            setAnimationPhase(2);
+            setAnimationPhase(2); // 다음 단계로 전환
           }
         }, 5);
       } else if (animationPhase === 2) {
-        // 두 번째 단계: 현재 시간으로 이동
+        // 2단계: 현재 시간으로 이동 (5초의 오차를 선반영)
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase2, 1);
 
-          const adjustedProgress = easeInOut(progress);
+          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
           // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
@@ -72,24 +77,26 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 초침, 분침, 시침 각각 애니메이션 적용
+          // 최종 도달 시간을 위한 거리 계산 (5초 추가 선반영)
+          const totalSecondDistance = secondDistance + additionalTime;
+
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + adjustedProgress * minuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance,
+            seconds: startSeconds + adjustedProgress * totalSecondDistance,
           });
 
           if (progress === 1) {
             clearInterval(interval);
-            setIsAnimating(false);
+            setIsAnimating(false); // 애니메이션 종료
           }
         }, 1);
       }
     } else {
-      // 애니메이션 종료 후 현재 시간 업데이트
+      // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
-      }, 1000);
+      }, 30);
 
       return () => {
         clearInterval(timer);
