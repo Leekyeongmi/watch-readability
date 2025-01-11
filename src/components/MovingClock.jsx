@@ -68,13 +68,17 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 시침의 정확한 이동 계산
+          // 시침 이동 보정
           const currentHour = startHours + adjustedProgress * hourDistance;
-          
-          // 분침과 초침의 이동
+          // 분침과 초침 이동
           const totalMinuteDistance = 120 + minuteDistance;
           const currentMinute = startMinutes + adjustedProgress * totalMinuteDistance;
           const currentSecond = startSeconds + adjustedProgress * secondDistance + additionalTime;
+
+          // 최종 위치에 도달하기 전에 정확한 보정
+          const finalHourAngle = currentHour * 30;
+          const finalMinuteAngle = currentMinute * 6;
+          const finalSecondAngle = currentSecond * 6;
 
           setAnimationTime({
             hours: currentHour,
