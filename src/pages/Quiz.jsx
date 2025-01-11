@@ -253,6 +253,7 @@ export default Quiz;
 
 const QuizPage = styled(Column)`
   height: 100svh;
+  overflow-y: hidden;
 `;
 
 const ProgressBar = styled.div`
