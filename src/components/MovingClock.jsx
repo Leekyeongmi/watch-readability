@@ -1,5 +1,3 @@
-# 현재 코드에 기반하여 오차를 예측하고 그에 맞춰 애니메이션을 조정하는 방식으로 수정하겠습니다.
-
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
@@ -15,6 +13,7 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
+  const additionalTime = 5000; // 오차를 수정할 추가 시간 (5초)
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
@@ -76,14 +75,14 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 오차 계산: 애니메이션 마지막에 목표 시간보다 더 진행한 값을 보정
-          const elapsedTime = (new Date() - startTime) / animationDurationPhase2;
-          const correction = elapsedTime * (secondDistance / 2); // 예시로 초침 오차를 보정
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * minuteDistance,
-            seconds: startSeconds + adjustedProgress * (secondDistance - correction)
+            minutes: startMinutes + currentMinuteDistance,
+            seconds: startSeconds + adjustedProgress * secondDistance
           });
 
           if (progress === 1) {
@@ -129,5 +128,3 @@ export default function MovingClock({ type = '1' }) {
     />
   );
 }
-
-
