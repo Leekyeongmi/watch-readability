@@ -14,7 +14,7 @@ export default function MovingClock({ type = '1' }) {
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
 
-  // Ease-in-out 함수 (혹은 선형 보간법 사용)
+  // Ease-in-out 함수
   const easeInOut = (progress) => {
     const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
@@ -25,60 +25,84 @@ export default function MovingClock({ type = '1' }) {
       // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
-  };
+  };  
 
   useEffect(() => {
-    let startTime;
-    let animationFrameId;
-
-    const updateAnimation = () => {
-      const now = new Date();
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / animationDurationPhase2, 1);
-      const adjustedProgress = easeInOut(progress); // ease-in-out 적용
-
-      // 현재 시간 계산
-      const targetHours = currentTime.getHours() % 12;
-      const targetMinutes = currentTime.getMinutes();
-      const targetSeconds =
-        currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
-
-      // 시작 시간 (10시 10분 30초)
-      const startHours = 10;
-      const startMinutes = 10;
-      const startSeconds = 30;
-
-      // 애니메이션 거리 계산
-      const hourDistance = (targetHours - startHours + 12) % 12;
-      const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
-      const secondDistance = (targetSeconds - startSeconds + 60) % 60;
-
-      // 분침 두 바퀴 회전 + 현재 시간 이동
-      const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
-      const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
-
-      setAnimationTime({
-        hours: startHours + adjustedProgress * hourDistance,
-        minutes: startMinutes + currentMinuteDistance,
-        seconds: startSeconds + adjustedProgress * secondDistance
-      });
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(updateAnimation); // 애니메이션 계속 진행
-      } else {
-        setIsAnimating(false); // 애니메이션 종료
-      }
-    };
+    let accumulatedElapsed = 0; // 경과 시간 누적 변수
 
     if (isAnimating) {
       if (animationPhase === 1) {
-        startTime = new Date();
-        setAnimationPhase(2); // 1단계가 끝나면 2단계로 진행
-        animationFrameId = requestAnimationFrame(updateAnimation);
-      }
-    }
+        // 1단계: 10시 10분 30초로 이동
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          const now = new Date();
+          const elapsed = now - startTime + accumulatedElapsed; // 누적 경과 시간
+          const progress = Math.min(elapsed / animationDurationPhase1, 1);
 
-    return () => cancelAnimationFrame(animationFrameId); // 컴포넌트가 언마운트될 때 애니메이션 종료
+          setAnimationTime({
+            hours: 10,
+            minutes: 10,
+            seconds: 30
+          });
+
+          if (progress === 1) {
+            clearInterval(interval);
+            setAnimationPhase(2); // 다음 단계로 전환
+          }
+        }, 5);
+      } else if (animationPhase === 2) {
+        // 2단계: 현재 시간으로 이동
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          const now = new Date();
+          const elapsed = now - startTime + accumulatedElapsed; // 누적 경과 시간
+          const progress = Math.min(elapsed / animationDurationPhase2, 1);
+
+          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
+
+          // 현재 시간 계산
+          const targetHours = currentTime.getHours() % 12;
+          const targetMinutes = currentTime.getMinutes();
+          const targetSeconds =
+            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+
+          // 시작 시간 (10시 10분 30초)
+          const startHours = 10;
+          const startMinutes = 10;
+          const startSeconds = 30;
+
+          // 애니메이션 거리 계산
+          const hourDistance = (targetHours - startHours + 12) % 12;
+          const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
+          const secondDistance = (targetSeconds - startSeconds + 60) % 60;
+
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
+
+          setAnimationTime({
+            hours: startHours + adjustedProgress * hourDistance,
+            minutes: startMinutes + currentMinuteDistance,
+            seconds: startSeconds + adjustedProgress * secondDistance
+          });
+
+          if (progress === 1) {
+            accumulatedElapsed += elapsed; // 경과 시간 누적
+            clearInterval(interval);
+            setIsAnimating(false); // 애니메이션 종료
+          }
+        }, 1);
+      }
+    } else {
+      // 현재 시간 업데이트
+      const timer = setInterval(() => {
+        setCurrentTime(new Date());
+      }, 30);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
   }, [isAnimating, animationPhase, currentTime]);
 
   // 초, 분, 시 계산
@@ -88,4 +112,21 @@ export default function MovingClock({ type = '1' }) {
 
   const minutes = isAnimating
     ? animationTime.minutes
-    : currentTime.getMinutes() + seconds / 
+    : currentTime.getMinutes() + seconds / 60;
+
+  const hours = isAnimating
+    ? animationTime.hours
+    : (currentTime.getHours() % 12) + minutes / 60;
+
+  // 각도 계산
+  const hourRotation = hours * 30;
+  const minuteRotation = minutes * 6;
+  const secondRotation = seconds * 6;
+
+  return (
+    <Clock
+      type={type}
+      rotation={{ hourRotation, minuteRotation, secondRotation }}
+    />
+  );
+}
