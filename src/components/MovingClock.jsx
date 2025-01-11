@@ -26,13 +26,17 @@ export default function MovingClock({ type = '1' }) {
   useEffect(() => {
     let animationFrame;
     let startTime = performance.now();
+    let phaseStartTime = startTime; // 각 단계 시작 시간
 
     const animate = (timestamp) => {
-      const elapsed = timestamp - startTime;
+      const elapsed = timestamp - phaseStartTime; // 현재 단계에서의 경과 시간
       const progress = Math.min(elapsed / (animationPhase === 1 ? animationDurationPhase1 : animationDurationPhase2), 1);
       const easedProgress = easeInOut(progress);
 
+      console.log("Progress:", progress, "Phase:", animationPhase);
+
       if (animationPhase === 1) {
+        // 1단계: 고정된 10:10:30으로 설정
         animationTime.current = {
           hours: 10,
           minutes: 10,
@@ -40,8 +44,8 @@ export default function MovingClock({ type = '1' }) {
         };
 
         if (progress === 1) {
-          setAnimationPhase(2);
-          startTime = performance.now(); // 2단계 시작
+          setAnimationPhase(2);  // 2단계로 전환
+          phaseStartTime = timestamp; // 2단계 시작
         }
       } else if (animationPhase === 2) {
         const targetHours = currentTime.getHours() % 12;
@@ -63,10 +67,11 @@ export default function MovingClock({ type = '1' }) {
         };
 
         if (progress === 1) {
-          setIsAnimating(false);
+          setIsAnimating(false); // 애니메이션 종료
         }
       }
 
+      // 애니메이션이 끝나지 않았다면 계속 호출
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
       }
