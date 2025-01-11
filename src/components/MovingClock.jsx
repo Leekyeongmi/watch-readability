@@ -36,6 +36,7 @@ export default function MovingClock({ type = '1' }) {
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase1, 1);
 
+          // 10시 10분 30초로 초기화
           setAnimationTime({
             hours: 10,
             minutes: 10,
