@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
   font-display: swap;
   -webkit-user-drag: none;
   box-sizing:border-box;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
