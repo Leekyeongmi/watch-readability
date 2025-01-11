@@ -16,14 +16,16 @@ export default function MovingClock({ type = '1' }) {
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
+    const easeInPower = 1;  // ease-in 강도
+    const easeOutPower = 1; // ease-out 강도
     if (progress < 0.5) {
       // Ease-in 구간
-      return Math.pow(progress * 2, 3) / 2;
+      return Math.pow(progress * 2, easeInPower) / 2;
     } else {
       // Ease-out 구간
-      return 1 - Math.pow(2 * (1 - progress), 3) / 2;
+      return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
-  };
+  };  
 
   useEffect(() => {
     if (isAnimating) {
