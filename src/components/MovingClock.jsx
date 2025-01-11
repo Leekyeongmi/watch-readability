@@ -98,19 +98,23 @@ export default function MovingClock({ type = '1' }) {
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / transitionDuration, 1);
 
-          // 현재 시간과 애니메이션 시간이 점차적으로 일치하도록 보정
+          // 시작 시간과 목표 시간의 차이 계산
+          const startHours = animationTime.hours;
+          const startMinutes = animationTime.minutes;
+          const startSeconds = animationTime.seconds;
+
           const targetHours = currentTime.getHours() % 12;
           const targetMinutes = currentTime.getMinutes();
           const targetSeconds =
             currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
+          // 전환을 위한 보간 (지금과 목표 시간 간의 차이)
           const adjustedProgress = easeInOut(progress);
 
-          // 부드럽게 현재 시간으로 전환
           setAnimationTime({
-            hours: (startTime.getHours() % 12) + adjustedProgress * (targetHours - startTime.getHours()),
-            minutes: startTime.getMinutes() + adjustedProgress * (targetMinutes - startTime.getMinutes()),
-            seconds: startTime.getSeconds() + adjustedProgress * (targetSeconds - startTime.getSeconds())
+            hours: startHours + adjustedProgress * (targetHours - startHours),
+            minutes: startMinutes + adjustedProgress * (targetMinutes - startMinutes),
+            seconds: startSeconds + adjustedProgress * (targetSeconds - startSeconds)
           });
 
           if (progress === 1) {
