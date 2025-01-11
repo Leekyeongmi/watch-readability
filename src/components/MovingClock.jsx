@@ -119,8 +119,8 @@ export default function MovingClock({ type = '1' }) {
     ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
-  // 각도 계산
-  const hourRotation = hours * 30;
+  // 각도 계산 (시침 계산 수정)
+  const hourRotation = (hours % 12) * 30 + (minutes / 60) * 30; // 시침 각도 계산 수정
   const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
 

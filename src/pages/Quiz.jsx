@@ -83,8 +83,8 @@ function Quiz() {
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
-        hour: '10',
-        minute: '10',
+        hour: '6',
+        minute: '30',
         second: '30'
       });
     }
