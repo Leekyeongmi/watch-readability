@@ -77,13 +77,14 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 분침 두 바퀴 회전 + 현재 시간 이동
+          // 시침에 대한 각도 조정
+          const totalHourDistance = hourDistance + (minuteDistance / 60);
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
           // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
           setAnimationTime({
-            hours: startHours + adjustedProgress * hourDistance,
+            hours: startHours + adjustedProgress * totalHourDistance,
             minutes: startMinutes + currentMinuteDistance,
             seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
           });
