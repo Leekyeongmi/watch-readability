@@ -1,106 +1,118 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
 export default function MovingClock({ type = '1' }) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isAnimating, setIsAnimating] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(1);
-  const animationTime = useRef({
+  const [animationTime, setAnimationTime] = useState({
     hours: 10,
     minutes: 10,
-    seconds: 30,
+    seconds: 30
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
-  const easeInOutPower = 3; // ease-in-out 강도
 
+  // Ease-in-out 함수
   const easeInOut = (progress) => {
+    const easeInPower = 3;  // ease-in 강도
+    const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
-      return Math.pow(progress * 2, easeInOutPower) / 2; // ease-in
+      // Ease-in 구간
+      return Math.pow(progress * 2, easeInPower) / 2;
     } else {
-      return 1 - Math.pow(2 * (1 - progress), easeInOutPower) / 2; // ease-out
+      // Ease-out 구간
+      return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
-  };
+  };  
 
   useEffect(() => {
-    let animationFrame;
-    let startTime = performance.now();
-    let phaseStartTime = startTime; // 각 단계 시작 시간
-
-    const animate = (timestamp) => {
-      const elapsed = timestamp - phaseStartTime; // 현재 단계에서의 경과 시간
-      const progress = Math.min(elapsed / (animationPhase === 1 ? animationDurationPhase1 : animationDurationPhase2), 1);
-      const easedProgress = easeInOut(progress);
-
-      console.log("Progress:", progress, "Phase:", animationPhase);
-
-      if (animationPhase === 1) {
-        // 1단계: 고정된 10:10:30으로 설정
-        animationTime.current = {
-          hours: 10,
-          minutes: 10,
-          seconds: 30,
-        };
-
-        if (progress === 1) {
-          setAnimationPhase(2);  // 2단계로 전환
-          phaseStartTime = timestamp; // 2단계 시작
-        }
-      } else if (animationPhase === 2) {
-        const targetHours = currentTime.getHours() % 12;
-        const targetMinutes = currentTime.getMinutes();
-        const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
-
-        const startHours = 10;
-        const startMinutes = 10;
-        const startSeconds = 30;
-
-        const hourDistance = (targetHours - startHours + 12) % 12;
-        const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
-        const secondDistance = (targetSeconds - startSeconds + 60) % 60;
-
-        animationTime.current = {
-          hours: startHours + easedProgress * hourDistance,
-          minutes: startMinutes + easedProgress * minuteDistance,
-          seconds: startSeconds + easedProgress * secondDistance,
-        };
-
-        if (progress === 1) {
-          setIsAnimating(false); // 애니메이션 종료
-        }
-      }
-
-      // 애니메이션이 끝나지 않았다면 계속 호출
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
     if (isAnimating) {
-      animationFrame = requestAnimationFrame(animate);
+      if (animationPhase === 1) {
+        // 1단계: 10시 10분 30초로 이동
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          const now = new Date();
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / animationDurationPhase1, 1);
+
+          setAnimationTime({
+            hours: 10,
+            minutes: 10,
+            seconds: 30
+          });
+
+          if (progress === 1) {
+            clearInterval(interval);
+            setAnimationPhase(2); // 다음 단계로 전환
+          }
+        }, 5);
+      } else if (animationPhase === 2) {
+        // 2단계: 현재 시간으로 이동
+        const startTime = new Date();
+        const interval = setInterval(() => {
+          const now = new Date();
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / animationDurationPhase2, 1);
+
+          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
+
+          // 현재 시간 계산
+          const targetHours = currentTime.getHours() % 12;
+          const targetMinutes = currentTime.getMinutes();
+          const targetSeconds =
+            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+
+          // 시작 시간 (10시 10분 30초)
+          const startHours = 10;
+          const startMinutes = 10;
+          const startSeconds = 30;
+
+          // 애니메이션 거리 계산
+          const hourDistance = (targetHours - startHours + 12) % 12;
+          const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
+          const secondDistance = (targetSeconds - startSeconds + 60) % 60;
+
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
+
+          setAnimationTime({
+            hours: startHours + adjustedProgress * hourDistance,
+            minutes: startMinutes + currentMinuteDistance,
+            seconds: startSeconds + adjustedProgress * secondDistance
+          });
+
+          if (progress === 1) {
+            clearInterval(interval);
+            setIsAnimating(false); // 애니메이션 종료
+          }
+        }, 1);
+      }
     } else {
+      // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
       }, 30);
 
-      return () => clearInterval(timer);
+      return () => {
+        clearInterval(timer);
+      };
     }
-
-    return () => cancelAnimationFrame(animationFrame);
   }, [isAnimating, animationPhase, currentTime]);
 
   // 초, 분, 시 계산
   const seconds = isAnimating
-    ? animationTime.current.seconds
+    ? animationTime.seconds
     : currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
   const minutes = isAnimating
-    ? animationTime.current.minutes
+    ? animationTime.minutes
     : currentTime.getMinutes() + seconds / 60;
 
   const hours = isAnimating
-    ? animationTime.current.hours
+    ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
   // 각도 계산
