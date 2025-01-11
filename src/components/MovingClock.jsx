@@ -19,10 +19,8 @@ export default function MovingClock({ type = '1' }) {
     const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
-      // Ease-in 구간
       return Math.pow(progress * 2, easeInPower) / 2;
     } else {
-      // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
   };
@@ -33,7 +31,6 @@ export default function MovingClock({ type = '1' }) {
   useEffect(() => {
     if (isAnimating) {
       if (animationPhase === 1) {
-        // 1단계: 10시 10분 30초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -52,44 +49,33 @@ export default function MovingClock({ type = '1' }) {
           }
         }, 5);
       } else if (animationPhase === 2) {
-        // 2단계: 현재 시간으로 이동 (5초의 오차를 선반영)
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase2, 1);
+          const adjustedProgress = easeInOut(progress);
 
-          const adjustedProgress = easeInOut(progress); // ease-in-out 적용
-
-          // 현재 시간 계산
           const targetHours = currentTime.getHours() % 12;
           const targetMinutes = currentTime.getMinutes();
-          const targetSeconds =
-            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+          const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
-          // 시작 시간 (10시 10분 30초)
           const startHours = 10;
           const startMinutes = 10;
           const startSeconds = 30;
 
-          // 애니메이션 거리 계산
           const hourDistance = (targetHours - startHours + 12) % 12;
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 각 바늘의 독립적인 애니메이션 처리
-
-          // 시침 애니메이션: startHours에서 targetHours로 이동
+          // 시침의 정확한 이동 계산
           const currentHour = startHours + adjustedProgress * hourDistance;
-
-          // 분침 애니메이션: startMinutes에서 targetMinutes로 이동
-          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          
+          // 분침과 초침의 이동
+          const totalMinuteDistance = 120 + minuteDistance;
           const currentMinute = startMinutes + adjustedProgress * totalMinuteDistance;
-
-          // 초침 애니메이션: startSeconds에서 targetSeconds로 이동 (5초 오차 추가)
           const currentSecond = startSeconds + adjustedProgress * secondDistance + additionalTime;
 
-          // 최종 시간 업데이트
           setAnimationTime({
             hours: currentHour,
             minutes: currentMinute,
@@ -103,7 +89,6 @@ export default function MovingClock({ type = '1' }) {
         }, 1);
       }
     } else {
-      // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
       }, 30);
@@ -114,7 +99,6 @@ export default function MovingClock({ type = '1' }) {
     }
   }, [isAnimating, animationPhase, currentTime]);
 
-  // 초, 분, 시 계산
   const seconds = isAnimating
     ? animationTime.seconds
     : currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
@@ -127,7 +111,6 @@ export default function MovingClock({ type = '1' }) {
     ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
-  // 각도 계산
   const hourRotation = hours * 30;
   const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
