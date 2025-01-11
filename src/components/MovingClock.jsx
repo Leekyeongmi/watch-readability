@@ -27,11 +27,13 @@ export default function MovingClock({ type = '1' }) {
     }
   };
 
+  // 오차 선반영을 위해 5초 추가된 구간의 조정
   const additionalTime = 5; // 예상되는 오차 시간 (5초)
 
   useEffect(() => {
     if (isAnimating) {
       if (animationPhase === 1) {
+        // 1단계: 10시 10분 30초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -50,6 +52,7 @@ export default function MovingClock({ type = '1' }) {
           }
         }, 5);
       } else if (animationPhase === 2) {
+        // 2단계: 현재 시간으로 이동 (5초의 오차를 선반영)
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -74,15 +77,13 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          const totalMinuteDistance = 120 + minuteDistance;
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
-          // 시침 애니메이션 수정 부분: 작은 범위는 선형, 큰 범위는 ease-in-out
-          const currentHourDistance =
-            Math.abs(hourDistance) < 6 ? progress * hourDistance : easeInOut(progress) * hourDistance; // 6시간 이상 차이일 때만 ease-in-out 적용
-
+          // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
           setAnimationTime({
-            hours: startHours + currentHourDistance,
+            hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
             seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
           });
@@ -94,6 +95,7 @@ export default function MovingClock({ type = '1' }) {
         }, 1);
       }
     } else {
+      // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
       }, 30);
@@ -117,8 +119,8 @@ export default function MovingClock({ type = '1' }) {
     ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
-  // 각도 계산
-  const hourRotation = hours * 30;
+  // 각도 계산 (시침 계산 수정)
+  const hourRotation = (hours % 12) * 30 + (minutes / 60) * 30; // 시침 각도 계산 수정
   const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
 
