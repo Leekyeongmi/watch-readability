@@ -198,7 +198,8 @@ function Result() {
           professor. Lee byounghak
           
           2024 
-          Seoul national university of science & technology
+          Seoul national university of 
+          science & technology
           M.F.A in visual design
           
           `}</Text>
