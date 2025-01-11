@@ -5,8 +5,6 @@ export default function MovingClock({ type = '1' }) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isAnimating, setIsAnimating] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(1);
-
-  // 애니메이션 상태를 useRef로 관리
   const animationTime = useRef({
     hours: 10,
     minutes: 10,
@@ -27,7 +25,7 @@ export default function MovingClock({ type = '1' }) {
 
   useEffect(() => {
     let animationFrame;
-    const startTime = performance.now();
+    let startTime = performance.now();
 
     const animate = (timestamp) => {
       const elapsed = timestamp - startTime;
@@ -35,17 +33,17 @@ export default function MovingClock({ type = '1' }) {
       const easedProgress = easeInOut(progress);
 
       if (animationPhase === 1) {
-        // 1단계: 고정된 10:10:30으로 설정
         animationTime.current = {
           hours: 10,
           minutes: 10,
           seconds: 30,
         };
+
         if (progress === 1) {
           setAnimationPhase(2);
+          startTime = performance.now(); // 2단계 시작
         }
       } else if (animationPhase === 2) {
-        // 2단계: 현재 시간으로 이동
         const targetHours = currentTime.getHours() % 12;
         const targetMinutes = currentTime.getMinutes();
         const targetSeconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
