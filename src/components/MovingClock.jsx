@@ -8,7 +8,7 @@ export default function MovingClock({ type = '1' }) {
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
     minutes: 10,
-    seconds: 35,
+    seconds: 35
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
@@ -16,7 +16,7 @@ export default function MovingClock({ type = '1' }) {
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
-    const easeInPower = 3; // ease-in 강도
+    const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
       // Ease-in 구간
@@ -33,7 +33,7 @@ export default function MovingClock({ type = '1' }) {
   useEffect(() => {
     if (isAnimating) {
       if (animationPhase === 1) {
-        // 1단계: 10시 10분 35초로 이동
+        // 1단계: 10시 10분 30초로 이동
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -43,7 +43,7 @@ export default function MovingClock({ type = '1' }) {
           setAnimationTime({
             hours: 10,
             minutes: 10,
-            seconds: 35,
+            seconds: 35
           });
 
           if (progress === 1) {
@@ -67,23 +67,28 @@ export default function MovingClock({ type = '1' }) {
           const targetSeconds =
             currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
-          // 시작 시간 (10시 10분 35초)
+          // 시작 시간 (10시 10분 30초)
           const startHours = 10;
           const startMinutes = 10;
-          const startSeconds = 35;
+          const startSeconds = 30;
 
           // 애니메이션 거리 계산
           const hourDistance = (targetHours - startHours + 12) % 12;
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 최종 도달 시간을 위한 거리 계산 (5초 추가 선반영)
-          const totalSecondDistance = secondDistance + additionalTime;
+          // 분침 두 바퀴 회전 + 현재 시간 이동
+          const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
+          const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
+          // 시침 각도 보정
+          const fixedHourAngle = adjustedProgress * hourDistance * 30; // 1시간에 30도
+
+          // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
           setAnimationTime({
-            hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * minuteDistance,
-            seconds: startSeconds + adjustedProgress * totalSecondDistance,
+            hours: startHours + fixedHourAngle / 360,  // 시침 오차 보정
+            minutes: startMinutes + currentMinuteDistance,
+            seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
           });
 
           if (progress === 1) {
