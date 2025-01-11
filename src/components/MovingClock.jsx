@@ -8,7 +8,7 @@ export default function MovingClock({ type = '1' }) {
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
     minutes: 10,
-    seconds: 30
+    seconds: 35
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
