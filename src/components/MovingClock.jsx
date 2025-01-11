@@ -77,11 +77,11 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
-          // 5초의 오차를 시작 부분에서 반영
+          // 오차를 반영: 5초 뒤로 시작
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance
+            seconds: startSeconds + adjustedProgress * secondDistance + 5 // 여기에 오차 추가
           });
 
           if (progress === 1) {
