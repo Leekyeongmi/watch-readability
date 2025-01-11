@@ -27,13 +27,13 @@ function Result() {
 
   async function calculateStats(filter) {
     const q = query(collection(firestore, 'problems'));
-
     const querySnapshot = await getDocs(q);
 
     const clockStats = {};
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const clockId = data.clockId;
+      console.log(data, 'data=');
 
       if (!clockStats[clockId]) {
         clockStats[clockId] = {
@@ -51,7 +51,7 @@ function Result() {
       clockStats[clockId].totalSecondErrorAngle += data.secondErrorAngle || 0;
       clockStats[clockId].userCount += 1;
     });
-
+    console.log(clockStats);
     const result = Object.entries(clockStats)
       .map(([clockId, stats]) => {
         const averageElapsedTime =
@@ -92,6 +92,7 @@ function Result() {
       });
 
     setStats(result);
+    console.log(result);
     setUpdateTime(new Date());
   }
 

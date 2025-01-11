@@ -136,9 +136,9 @@ function Quiz() {
     const dataToPost = {
       clockId: quizArr[currentQuiz],
       elapsedTime: timer,
-      hourErrorAngle,
-      minuteErrorAngle,
-      secondErrorAngle
+      hourErrorAngle: parseFloat(hourErrorAngle),
+      minuteErrorAngle: parseFloat(minuteErrorAngle),
+      secondErrorAngle: parseFloat(secondErrorAngle)
     };
     submitProblemData(dataToPost);
 
@@ -220,7 +220,7 @@ function Quiz() {
             <Picker
               value={userTime}
               onChange={setUserTime}
-              wheelMode='natural'
+              wheelMode='normal'
               itemHeight={35}
               onAnimationIteration={true}
               height={213}
