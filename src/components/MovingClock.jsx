@@ -64,7 +64,7 @@ export default function MovingClock({ type = '1' }) {
           const currentMinuteDistance = progress * totalMinuteDistance;
 
           // 강한 'ease-out' 효과 (progress 값이 커질수록 점점 급격하게 느려지도록 설정)
-          const easeProgress = Math.pow(progress, 120);  // progress가 커질수록 급격하게 느려지도록 설정
+          const easeProgress = Math.pow(progress, 3);  // progress가 커질수록 급격하게 느려지도록 설정
 
           setAnimationTime({
             hours: startHours + easeProgress * hourDistance,
