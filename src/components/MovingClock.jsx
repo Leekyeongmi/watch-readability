@@ -13,18 +13,22 @@ export default function MovingClock({ type = '1' }) {
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
   const animationDurationPhase2 = 4000; // 2단계 지속 시간
-  const additionalTime = 5000; // 추가된 5초 오차
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
     const easeInPower = 3;  // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
+      // Ease-in 구간
       return Math.pow(progress * 2, easeInPower) / 2;
     } else {
+      // Ease-out 구간
       return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
     }
   };
+
+  // 오차 선반영을 위해 5초 추가된 구간의 조정
+  const additionalTime = 5; // 예상되는 오차 시간 (5초)
 
   useEffect(() => {
     if (isAnimating) {
@@ -36,7 +40,6 @@ export default function MovingClock({ type = '1' }) {
           const elapsed = now - startTime;
           const progress = Math.min(elapsed / animationDurationPhase1, 1);
 
-          // 10시 10분 30초로 초기화
           setAnimationTime({
             hours: 10,
             minutes: 10,
@@ -49,7 +52,7 @@ export default function MovingClock({ type = '1' }) {
           }
         }, 5);
       } else if (animationPhase === 2) {
-        // 2단계: 현재 시간으로 이동
+        // 2단계: 현재 시간으로 이동 (5초의 오차를 선반영)
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
@@ -78,11 +81,11 @@ export default function MovingClock({ type = '1' }) {
           const totalMinuteDistance = 120 + minuteDistance; // 두 바퀴(120분) + 현재 시간까지 거리
           const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
-          // 오차를 반영: 5초 뒤로 시작
+          // 5초 추가된 오차를 반영하여 최종 도달 시간 조정
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance + 5 // 여기에 오차 추가
+            seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
           });
 
           if (progress === 1) {
