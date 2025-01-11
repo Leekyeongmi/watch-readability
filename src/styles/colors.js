@@ -5,7 +5,7 @@ export const lightColors = {
   primary200: '#FF99CF',
   primary300: '#FF66B8',
   primary400: '#FF33A0',
-  primary500: '#FF1B94',
+  primary500: '#00FF00',
   primary600: '#0060CC',
   primary700: '#990052',
   primary800: '#001833',

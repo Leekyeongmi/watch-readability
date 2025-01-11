@@ -1,13 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 import Image from './atoms/Image';
 import { CenterColumn } from './layouts/Layout';
 
-export default function Clock({ type, rotation }) {
+export default function Clock({ type, rotation, rank }) {
   const { hourRotation, minuteRotation, secondRotation } = rotation;
+
   return (
     <Container>
-      <ClockWrapper>
+      <ClockWrapper rank={rank}>
         <ClockFace src={`/${type}/index.svg`} />
         <HourHand
           src={`/${type}/hour-hand.svg`}
@@ -39,10 +39,29 @@ const ClockHand = ({ src, rotation, zIndex = 1 }) => {
 
 const Container = styled(CenterColumn)``;
 
+// 사이즈를 순위에 따라 조정
 const ClockWrapper = styled.div`
   position: relative;
-  width: 10.188rem;
-  height: 10.188rem;
+  width: ${({ rank }) =>
+    rank === 1
+      ? '9.375rem'
+      : rank === 2
+        ? '8.125rem'
+        : rank === 3
+          ? '6.875rem'
+          : rank >= 4
+            ? '5.625rem'
+            : '9.375rem'};
+  height: ${({ rank }) =>
+    rank === 1
+      ? '9.375rem'
+      : rank === 2
+        ? '8.125rem'
+        : rank === 3
+          ? '6.875rem'
+          : rank >= 4
+            ? '5.625rem'
+            : '9.375rem'};
 `;
 
 const ClockFace = styled(Image)`
