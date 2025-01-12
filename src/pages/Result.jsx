@@ -172,7 +172,7 @@ function Result() {
                 rotation={rotation}
                 rank={index + 1}
               />
-              <DataContainer gap='1rem'>
+              <DataContainer gap='0.75rem'>
                 <Column>
                   <Text typo='head4'>{`평균 소요시간`}</Text>
                   <Text typo='head4'>{`시인성 점수`}</Text>
