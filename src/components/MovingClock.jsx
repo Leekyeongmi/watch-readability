@@ -67,17 +67,23 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          const newHours = startHours + adjustedProgress * hourDistance;
-          const newMinutes = startMinutes + adjustedProgress * (minuteDistance + 120);
-          const newSeconds = startSeconds + adjustedProgress * secondDistance + additionalTime;
+          // 초침의 보정: 애니메이션 종료 지점에서만 적용
+          const correctedSeconds = startSeconds + adjustedProgress * secondDistance + additionalTime;
+
+          // 시침과 분침 각도 차이 반영
+          const totalMinuteDistance = minuteDistance + 120; // 두 바퀴(120분)
+          const correctedMinutes = startMinutes + adjustedProgress * totalMinuteDistance;
+          
+          const totalHourDistance = hourDistance;
+          const correctedHours = startHours + adjustedProgress * totalHourDistance;
 
           // 로그 출력 (추적)
-          console.log(`Hours: ${newHours}, Minutes: ${newMinutes}, Seconds: ${newSeconds}`);
+          console.log(`Hours: ${correctedHours}, Minutes: ${correctedMinutes}, Seconds: ${correctedSeconds}`);
 
           setAnimationTime({
-            hours: newHours,
-            minutes: newMinutes,
-            seconds: newSeconds,
+            hours: correctedHours,
+            minutes: correctedMinutes,
+            seconds: correctedSeconds,
           });
 
           if (progress === 1) {
