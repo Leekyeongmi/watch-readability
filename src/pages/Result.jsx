@@ -183,7 +183,7 @@ function Result() {
                       {/* <Text typo='head4'>{`평균 초침 오차 각도 ${item?.averageSecondError}°`}</Text> */}
                     </>
                   )}
-                  <Text typo='head4'>{`참여wk수`}</Text>
+                  <Text typo='head4'>{`참여자수`}</Text>
                 </Column>
                 <Column>
                   <Text typo='head4'>{`${item?.averageElapsedTime}sec`}</Text>
