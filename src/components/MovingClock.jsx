@@ -8,7 +8,7 @@ export default function MovingClock({ type = '1' }) {
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
     minutes: 10,
-    seconds: 35,
+    seconds: 35, // 초침 시작 지점 35초 유지
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
@@ -55,35 +55,36 @@ export default function MovingClock({ type = '1' }) {
 
           const adjustedProgress = easeInOut(progress);
 
+          // 타겟 시간 계산
           const targetHours = currentTime.getHours() % 12;
           const targetMinutes = currentTime.getMinutes();
           const targetSeconds =
             currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
 
+          // 시작 시간 (10시 10분 35초)
           const startHours = 10;
           const startMinutes = 10;
-          const startSeconds = 30;
+          const startSeconds = 35;
 
           const hourDistance = (targetHours - startHours + 12) % 12;
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
-          // 초침의 부드러운 보정 처리
-          const adjustedSeconds =
-            adjustedProgress * secondDistance + startSeconds;
-
-          // 애니메이션 종료 시 정확히 동기화
-          const finalSeconds =
-            progress === 1 ? targetSeconds : adjustedSeconds % 60;
-
+          // 애니메이션 시간 업데이트
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * (minuteDistance + 120), // 두 바퀴(120분) + 현재 시간까지
-            seconds: finalSeconds,
+            minutes: startMinutes + adjustedProgress * (minuteDistance + 120), // 두 바퀴(120분) + 현재 시간
+            seconds: startSeconds + adjustedProgress * secondDistance,
           });
 
           if (progress === 1) {
+            // 애니메이션 종료 시 정확히 현재 시간으로 동기화
             clearInterval(interval);
+            setAnimationTime({
+              hours: targetHours,
+              minutes: targetMinutes,
+              seconds: targetSeconds,
+            });
             setIsAnimating(false);
           }
         }, 1);
@@ -99,6 +100,7 @@ export default function MovingClock({ type = '1' }) {
     }
   }, [isAnimating, animationPhase, currentTime]);
 
+  // 초, 분, 시 계산
   const seconds = isAnimating
     ? animationTime.seconds
     : currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
@@ -111,6 +113,7 @@ export default function MovingClock({ type = '1' }) {
     ? animationTime.hours
     : (currentTime.getHours() % 12) + minutes / 60;
 
+  // 각도 계산
   const hourRotation = hours * 30;
   const minuteRotation = minutes * 6;
   const secondRotation = seconds * 6;
