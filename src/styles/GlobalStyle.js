@@ -23,7 +23,7 @@ html {
 
 html,
 body {
-    overscroll-behavior-y: none;
+    overscroll-behavior: none;
     overflow-y:hidden;
 }
 
