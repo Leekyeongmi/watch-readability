@@ -174,8 +174,8 @@ function Result() {
               />
               <DataContainer gap='0.75rem'>
                 <Column>
-                  <Text typo='head4'>{`평균 소요시간`}</Text>
-                  <Text typo='head4'>{`시인성 점수`}</Text>
+                  <Text typo='head4'>{`평균소요시간`}</Text>
+                  <Text typo='head4'>{`시인성점수`}</Text>
                   {filter === 1 && (
                     <>
                       {/* <Text typo='head4'>{`평균 시침 오차 각도 ${item?.averageHourError}°`}</Text> */}
@@ -183,7 +183,7 @@ function Result() {
                       {/* <Text typo='head4'>{`평균 초침 오차 각도 ${item?.averageSecondError}°`}</Text> */}
                     </>
                   )}
-                  <Text typo='head4'>{`참여 유저수`}</Text>
+                  <Text typo='head4'>{`참여wk수`}</Text>
                 </Column>
                 <Column>
                   <Text typo='head4'>{`${item?.averageElapsedTime}sec`}</Text>
