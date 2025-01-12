@@ -1,5 +1,11 @@
 import { Text } from '../components/atoms/Text';
-import { CenterColumn, CenterRow, Column } from '../components/layouts/Layout';
+import {
+  CenterColumn,
+  CenterRow,
+  Column,
+  Row
+} from '../components/layouts/Layout';
+import css from 'styled-components';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useState } from 'react';
@@ -10,7 +16,6 @@ import styled from 'styled-components';
 import { LAYOUT } from '../constant';
 import HeaderSection from '../components/atoms/HeaderSection';
 import BasicButton from '../components/atoms/BasicButton';
-import theme from '../styles/theme';
 import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/components/HomeButton';
 
@@ -33,7 +38,6 @@ function Result() {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const clockId = data.clockId;
-      console.log(data, 'data=');
 
       if (!clockStats[clockId]) {
         clockStats[clockId] = {
@@ -51,7 +55,7 @@ function Result() {
       clockStats[clockId].totalSecondErrorAngle += data.secondErrorAngle || 0;
       clockStats[clockId].userCount += 1;
     });
-    console.log(clockStats);
+
     const result = Object.entries(clockStats)
       .map(([clockId, stats]) => {
         const averageElapsedTime =
@@ -92,7 +96,6 @@ function Result() {
       });
 
     setStats(result);
-    console.log(result);
     setUpdateTime(new Date());
   }
 
@@ -109,36 +112,44 @@ function Result() {
     <ResultPage>
       <HeaderSection>
         <FilterSection>
-          <Text typo='head04' color='font'>
-            {`연구에 참여해주셔서 감사합니다 !`}
-          </Text>
-          <Column gap='0.5rem'>
-            <ButtonContainer>
-              <BasicButton
-                onClick={() => setFilter(0)}
-                width={'10rem'}
-                height={'1.55rem'}
-                size={'s'}
-                textProps={{ text: '빠른 가독성' }}
-                bg={filter === 0 ? 'white' : `${theme.colors.grey200}`}
-              ></BasicButton>
-              <BasicButton
-                onClick={() => setFilter(1)}
-                width={'10rem'}
-                height={'1.55rem'}
-                size={'s'}
-                textProps={{ text: '정확한 판독성' }}
-                bg={filter === 1 ? 'white' : `${theme.colors.grey200}`}
-              ></BasicButton>
-            </ButtonContainer>
-
-            <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-          </Column>
+          <FilterContainer>
+            <FilterItem isSelected={filter === 0} onClick={() => setFilter(0)}>
+              <Text
+                style={{
+                  textDecoration: filter === 0 ? 'underline' : 'none'
+                }}
+                typo='head5'
+                color={filter === 0 ? 'primary500' : 'font'}
+              >{`빠른 가독성`}</Text>
+              <Text
+                style={{
+                  textDecoration: filter === 0 ? 'underline' : 'none'
+                }}
+                typo='head4'
+                color={filter === 0 ? 'primary500' : 'font'}
+              >{`(소요 시간 빠른 순)`}</Text>
+            </FilterItem>
+            <FilterItem isSelected={filter === 1} onClick={() => setFilter(1)}>
+              <Text
+                style={{
+                  textDecoration: filter === 1 ? 'underline' : 'none'
+                }}
+                typo='head5'
+                color={filter === 1 ? 'primary500' : 'font'}
+              >{`정확한 판독성`}</Text>
+              <Text
+                style={{
+                  textDecoration: filter === 1 ? 'underline' : 'none'
+                }}
+                typo='head4'
+                color={filter === 1 ? 'primary500' : 'font'}
+              >{`(정확도순)`}</Text>
+            </FilterItem>
+          </FilterContainer>
         </FilterSection>
       </HeaderSection>
       <ContentSection>
-        <ButtonContainer2>
-          <HomeButton />
+        <ButtonContainer>
           <BasicButton
             onClick={() => navigate('/quiz')}
             width={'4.68rem'}
@@ -148,31 +159,38 @@ function Result() {
             textProps={{ text: 'retry', typo: 'head4' }}
             bg='white'
           />
-        </ButtonContainer2>
-
+          <HomeButton />
+        </ButtonContainer>
+        <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
         {stats?.map((item, index) => {
           return (
             <Item key={index}>
-              <CenterRow gap='0.5rem'>
-                <Text typo='head01'>{`${index + 1}`}</Text>
-                <StaticClock
-                  type={item?.clockId}
-                  rotation={rotation}
-                  rank={index + 1}
-                />
-              </CenterRow>
-              <CenterColumn>
-                <Text typo='body03M'>{`평균 소요시간 🎈${item?.averageElapsedTime}sec`}</Text>
-                <Text typo='body03M'>{`종합 시인성 점수 🎈${item?.errorScore}점`}</Text>
-                {filter === 1 && (
-                  <>
-                    <Text typo='body03M'>{`- 평균 시침 오차 각도 🎈${item?.averageHourError}°`}</Text>
-                    <Text typo='body03M'>{`- 평균 분침 오차 각도 🎈${item?.averageMinuteError}°`}</Text>
-                    <Text typo='body03M'>{`- 평균 초침 오차 각도 🎈${item?.averageSecondError}°`}</Text>
-                  </>
-                )}
-                <Text typo='body03M'>{`참여 유저수 🎈${item?.userCount}명`}</Text>
-              </CenterColumn>
+              <Text typo='head01'>{`${index + 1}`}</Text>
+
+              <StaticClock
+                type={item?.clockId}
+                rotation={rotation}
+                rank={index + 1}
+              />
+              <DataContainer gap='1rem'>
+                <Column>
+                  <Text typo='head4'>{`평균 소요시간`}</Text>
+                  <Text typo='head4'>{`시인성 점수`}</Text>
+                  {filter === 1 && (
+                    <>
+                      {/* <Text typo='head4'>{`평균 시침 오차 각도 ${item?.averageHourError}°`}</Text> */}
+                      {/* <Text typo='head4'>{`평균 분침 오차 각도 ${item?.averageMinuteError}°`}</Text> */}
+                      {/* <Text typo='head4'>{`평균 초침 오차 각도 ${item?.averageSecondError}°`}</Text> */}
+                    </>
+                  )}
+                  <Text typo='head4'>{`참여 유저수`}</Text>
+                </Column>
+                <Column>
+                  <Text typo='head4'>{`${item?.averageElapsedTime}sec`}</Text>
+                  <Text typo='head4'>{`${item?.errorScore}점`}</Text>
+                  <Text typo='head4'>{`${item?.userCount}명`}</Text>
+                </Column>
+              </DataContainer>
             </Item>
           );
         })}
@@ -209,15 +227,12 @@ const FilterSection = styled(CenterColumn)`
   box-sizing: border-box;
 `;
 
-const ButtonContainer = styled(CenterRow)`
-  background-color: ${({ theme }) => theme.colors.grey200};
-  border-radius: 0.5rem;
-  padding: 0.2rem;
+const FilterContainer = styled(CenterRow)`
+  gap: 3rem;
 `;
 
-const ButtonContainer2 = styled(CenterRow)`
-  gap: 1rem;
-  // width: 100%;
+const ButtonContainer = styled(CenterRow)`
+  gap: 1.25rem;
   box-sizing: border-box;
   align-self: flex-start;
 `;
@@ -226,8 +241,6 @@ const ContentSection = styled(Column)`
   height: 100%;
   gap: 1.5rem;
   width: 100%;
-  align-self: flex-start;
-
   padding: ${LAYOUT.PADDING_X}rem;
   box-sizing: border-box;
 `;
@@ -236,10 +249,19 @@ const CopyRight = styled(CenterColumn)`
   gap: 0.25rem;
   text-align: center;
   margin-top: 3rem;
-  // align-self: flex-start;
 `;
 
 const Item = styled(CenterRow)`
-  // justify-content: space-around;
+  justify-content: space-around;
   gap: 1.5rem;
+`;
+
+const FilterItem = styled(Column)`
+  gap: 0.5rem;
+  cursor: pointer;
+`;
+
+const DataContainer = styled(Row)`
+  width: 10rem;
+  justify-content: flex-start;
 `;

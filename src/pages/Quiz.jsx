@@ -252,9 +252,8 @@ function Quiz() {
 export default Quiz;
 
 const QuizPage = styled(Column)`
-  height: 100svh;
+  height: 100%;
   overflow-y: hidden;
-  overscroll-behavior: contain;
 `;
 
 const ProgressBar = styled.div`
