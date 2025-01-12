@@ -21,8 +21,13 @@ html {
   font-size: 16px;
 }
 
-html, body {
-  overscroll-behavior: none;
+// html, body {
+//   overscroll-behavior: none;
+// }
+
+html,
+body {
+    overscroll-behavior-y: contain;
 }
 
 @media screen and (max-width: ${theme.deviceSizes.mobile}) {
