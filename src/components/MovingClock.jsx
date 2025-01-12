@@ -17,8 +17,8 @@ export default function MovingClock({ type = '1' }) {
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
-    const easeInPower = 3; // ease-in 강도
-    const easeOutPower = 2; // ease-out 강도
+    const easeInPower = 3;
+    const easeOutPower = 2;
     if (progress < 0.5) {
       return Math.pow(progress * 2, easeInPower) / 2;
     } else {
@@ -68,22 +68,17 @@ export default function MovingClock({ type = '1' }) {
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
+          // 초침의 부드러운 보정 처리
           const adjustedSeconds =
-            progress < 1
-              ? startSeconds + adjustedProgress * secondDistance + additionalTime
-              : targetSeconds; // 애니메이션 종료 시 정확히 동기화
+            adjustedProgress * secondDistance + startSeconds;
 
-          // 초침 오차 보정: 종료 직전 5도 현상을 없애기 위해 보정
+          // 애니메이션 종료 시 정확히 동기화
           const finalSeconds =
-            progress === 1
-              ? targetSeconds
-              : adjustedSeconds > 60
-              ? adjustedSeconds - 60
-              : adjustedSeconds;
+            progress === 1 ? targetSeconds : adjustedSeconds % 60;
 
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * minuteDistance,
+            minutes: startMinutes + adjustedProgress * (minuteDistance + 120), // 두 바퀴(120분) + 현재 시간까지
             seconds: finalSeconds,
           });
 
