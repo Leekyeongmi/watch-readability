@@ -27,7 +27,7 @@ html {
 
 html,
 body {
-    overscroll-behavior-y: contain;
+    overscroll-behavior-y: none;
 }
 
 @media screen and (max-width: ${theme.deviceSizes.mobile}) {
