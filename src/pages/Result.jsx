@@ -243,6 +243,7 @@ const ContentSection = styled(Column)`
   width: 100%;
   padding: ${LAYOUT.PADDING_X}rem;
   box-sizing: border-box;
+  overflow-y: scroll;
 `;
 
 const CopyRight = styled(CenterColumn)`
