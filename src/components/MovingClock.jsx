@@ -66,15 +66,20 @@ export default function MovingClock({ type = '1' }) {
           const startMinutes = 10;
           const startSeconds = 35;
 
+          // 시침, 분침, 초침 이동 거리 계산
           const hourDistance = (targetHours - startHours + 12) % 12;
           const minuteDistance = (targetMinutes - startMinutes + 60) % 60;
           const secondDistance = (targetSeconds - startSeconds + 60) % 60;
 
           // 애니메이션 시간 업데이트
+          const newHours = startHours + adjustedProgress * hourDistance;
+          const newMinutes = startMinutes + adjustedProgress * (minuteDistance + 120); // 두 바퀴(120분) + 현재 시간
+          const newSeconds = startSeconds + adjustedProgress * secondDistance;
+
           setAnimationTime({
-            hours: startHours + adjustedProgress * hourDistance,
-            minutes: startMinutes + adjustedProgress * (minuteDistance + 120), // 두 바퀴(120분) + 현재 시간
-            seconds: startSeconds + adjustedProgress * secondDistance,
+            hours: newHours,
+            minutes: newMinutes,
+            seconds: newSeconds,
           });
 
           if (progress === 1) {
