@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from "react";
 
-const ExperimentalTimeTypography = () => {
+const SwissTypographyClock = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [currentMessage, setCurrentMessage] = useState("TIME WAITS FOR NO ONE.");
+  const [currentMessage, setCurrentMessage] = useState("TIME IS NOW.");
   const [messageLetters, setMessageLetters] = useState([]);
 
   const messages = [
-    "TIME IS A FRAGMENT OF OUR MIND.",
-    "EVERY SECOND IS UNIQUE.",
-    "THE CLOCK NEVER STOPS.",
-    "WHAT TIME IS IT REALLY?",
-    "WE ARE ALL PRISONERS OF TIME.",
-    "CAN YOU ESCAPE THE PRESENT?",
-    "TICK, TOCK, LIFE MOVES ON.",
-    "TIME WAITS FOR NO ONE.",
-    "THE FUTURE IS NOW.",
-    "MEMORIES ARE SHAPED BY TIME.",
+    "TIME IS NOW.",
+    "ORDER AND CHAOS.",
+    "EVERY SECOND COUNTS.",
+    "THE FUTURE IS HERE.",
+    "TIME MOVES RELENTLESSLY.",
+    "DESIGNING THE PRESENT.",
+    "THE PULSE OF NOW.",
   ];
 
   useEffect(() => {
-    // Set the current time every second
+    // Update time every second
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
 
-    // Cycle messages every 4 seconds
+    // Cycle messages every 5 seconds
     const messageTimer = setInterval(() => {
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       setCurrentMessage(randomMessage);
       setMessageLetters(randomMessage.split(""));
-    }, 4000);
+    }, 5000);
 
     // Initialize message letters
     setMessageLetters(currentMessage.split(""));
@@ -47,27 +44,25 @@ const ExperimentalTimeTypography = () => {
 
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
-      // Calculate random offset based on mouse position
-      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 200 + Math.random() * 50 - 25;
-      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 200 + Math.random() * 50 - 25;
-      const scale = Math.random() * 1.5 + 0.5;
-      const rotate = Math.random() * 360;
+      // Calculate small movement based on mouse position
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 20;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 20;
 
       return (
         <span
           key={index}
           style={{
-            position: "absolute",
-            top: `${50 + offsetY}%`,
-            left: `${50 + offsetX}%`,
-            fontSize: `${Math.random() * 2 + 1.5}rem`,
+            position: "relative",
+            display: "inline-block",
+            fontSize: "3rem",
             fontWeight: "bold",
-            color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.random()})`,
-            transform: `rotate(${rotate}deg) scale(${scale})`,
-            transition: "transform 1s ease, opacity 1s ease",
+            margin: "0 5px",
+            color: "#222",
+            transform: `translate(${offsetX}px, ${offsetY}px)`,
+            transition: "transform 0.3s ease",
           }}
         >
-          {char === " " ? "\u00A0" : char}
+          {char}
         </span>
       );
     });
@@ -79,39 +74,59 @@ const ExperimentalTimeTypography = () => {
       style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#000",
-        color: "#fff",
+        background: "linear-gradient(0deg, #fff, #ddd)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         overflow: "hidden",
-        position: "relative",
       }}
     >
-      {/* Time Display */}
+      {/* Background Grid */}
       <div
         style={{
           position: "absolute",
-          top: "10%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontSize: "6rem",
-          fontWeight: "bold",
-          textAlign: "center",
-          letterSpacing: "5px",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "grid",
+          gridTemplateColumns: "repeat(10, 1fr)",
+          gridTemplateRows: "repeat(10, 1fr)",
+          gap: "1px",
+          backgroundColor: "#fff",
         }}
       >
-        {time.toLocaleTimeString()}
+        {Array.from({ length: 100 }).map((_, i) => (
+          <div
+            key={i}
+            style={{
+              backgroundColor: i % 2 === 0 ? "#ddd" : "#fff",
+              transition: "background-color 0.3s ease",
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* Time Display */}
+      <div
+        style={{
+          zIndex: 10,
+          fontSize: "6rem",
+          fontWeight: "bold",
+          marginBottom: "20px",
+          color: "#000",
+        }}
+      >
+        {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
       </div>
 
       {/* Interactive Letters */}
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          overflow: "hidden",
+          zIndex: 10,
+          textAlign: "center",
         }}
       >
         {renderLetters()}
@@ -120,4 +135,4 @@ const ExperimentalTimeTypography = () => {
   );
 };
 
-export default ExperimentalTimeTypography;
+export default SwissTypographyClock;
