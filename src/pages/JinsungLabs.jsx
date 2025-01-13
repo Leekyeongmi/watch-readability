@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const InteractiveClock = () => {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+const InteractiveClockNoWebcam = () => {
   const [time, setTime] = useState(new Date());
-  const [hovered, setHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Update the time every second
@@ -12,74 +10,74 @@ const InteractiveClock = () => {
       setTime(new Date());
     }, 1000);
 
-    // Access webcam
-    const startWebcam = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      } catch (err) {
-        console.error("Webcam access denied or not available:", err);
-      }
-    };
-
-    startWebcam();
-
-    return () => {
-      clearInterval(timer);
-      if (videoRef.current.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      }
-    };
+    return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    // Draw webcam feed to canvas
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const video = videoRef.current;
-
-    const drawToCanvas = () => {
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Draw time
-        context.font = "30px Arial";
-        context.fillStyle = hovered ? "red" : "white";
-        const currentTime = time.toLocaleTimeString();
-        const textWidth = context.measureText(currentTime).width;
-        context.fillText(currentTime, (canvas.width - textWidth) / 2, canvas.height - 30);
-      }
-      requestAnimationFrame(drawToCanvas);
-    };
-
-    drawToCanvas();
-  }, [time, hovered]);
+  const handleMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
 
   return (
     <div
+      onMouseMove={handleMouseMove}
       style={{
+        width: "100vw",
+        height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#333",
+        position: "relative",
+        backgroundColor: "#1a1a1a",
         color: "white",
         fontFamily: "Arial, sans-serif",
         overflow: "hidden",
       }}
     >
-      <canvas
-        ref={canvasRef}
-        width={640}
-        height={480}
-        style={{ border: "5px solid white", borderRadius: "8px" }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      />
-      <video ref={videoRef} style={{ display: "none" }} />
+      {/* Clock Display */}
+      <div
+        style={{
+          position: "absolute",
+          top: `${mousePosition.y - 50}px`,
+          left: `${mousePosition.x - 50}px`,
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          border: "2px solid white",
+          transition: "background-color 0.3s ease",
+        }}
+      >
+        <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+          {time.toLocaleTimeString()}
+        </span>
+      </div>
+
+      {/* Animated Lines */}
+      {[...Array(12)].map((_, i) => {
+        const angle = (i * 30 * Math.PI) / 180;
+        const x = Math.cos(angle) * 200 + window.innerWidth / 2;
+        const y = Math.sin(angle) * 200 + window.innerHeight / 2;
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              top: `${y}px`,
+              left: `${x}px`,
+              width: "2px",
+              height: "50px",
+              backgroundColor: "white",
+              transform: `rotate(${i * 30}deg)`,
+              transformOrigin: "center top",
+            }}
+          ></div>
+        );
+      })}
     </div>
   );
 };
 
-export default InteractiveClock;
+export default InteractiveClockNoWebcam;
