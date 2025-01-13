@@ -90,10 +90,11 @@ const App = () => {
   const timeRelatedWords = [
     'time', 'clock', 'second', 'minute', 'hour', 'past', 'future', 'now', 'today', 'tomorrow', 
     'yesterday', 'duration', 'moment', 'tick', 'tock', 'alarm', 'sunrise', 'sunset', 'calendar', 
-    'epoch', 'timeless', 'timepiece', 'lifetime', 'timing', 'chronology', 'age', 'decade', 'century'
+    'epoch', 'timeless', 'timepiece', 'lifetime', 'timing', 'chronology', 'age', 'decade', 'century',
+    'count', 'days', 'history', 'interval', 'past', 'present', 'future'
   ];
 
-  // "시간"과 연관된 단어만 빨간색으로 강조
+  // "시간"과 연관된 단어만 빨간색으로 강조, 문장 부호는 제외
   const applyRedHighlight = (message) => {
     const words = message.split(" ");
     const highlightedWords = words.map(word => {
@@ -103,7 +104,14 @@ const App = () => {
       }
       return word;
     });
-    return highlightedWords.join(" ");
+
+    // 문장부호 제외
+    return highlightedWords.join(" ").replace(/([.,!?;:()'"-])/g, '$1');
+  };
+
+  // 클릭시 작은 애니메이션 추가
+  const handleClick = () => {
+    alert('시간에 대해 생각해보세요!');
   };
 
   return (
@@ -122,6 +130,7 @@ const App = () => {
         position: 'relative',
         cursor: 'pointer',
       }}
+      onClick={handleClick} // 클릭 이벤트 추가
     >
       {/* 현재 시간 표시 (고정폭 폰트 적용) */}
       <div
