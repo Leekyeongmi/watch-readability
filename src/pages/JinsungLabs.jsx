@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const App = () => {
   const [time, setTime] = useState('');
   const [messages, setMessages] = useState([]);
-  const [randomMessage, setRandomMessage] = useState('');
-  const [bgColor, setBgColor] = useState('black');
   const [isClicked, setIsClicked] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
   const randomMessages = [
     "Time flies when you're having fun.",
@@ -68,27 +67,7 @@ const App = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // 랜덤 메시지 표시
-  useEffect(() => {
-    const messageIntervalId = setInterval(() => {
-      const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-      setRandomMessage(randomMessage);
-      setMessages(prevMessages => [...prevMessages, randomMessage]);
-    }, 4000);
-
-    return () => clearInterval(messageIntervalId);
-  }, []);
-
-  // 화면 내에서만 위치가 랜덤하게 생성되도록 제한
-  const getRandomPosition = () => {
-    const maxX = window.innerWidth - 300; // 텍스트 크기를 고려한 최대 X값
-    const maxY = window.innerHeight - 100; // 텍스트 크기를 고려한 최대 Y값
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
-    return { x: randomX, y: randomY };
-  };
-
-  // 시간과 관련된 단어를 더 폭넓게 고려
+  // 랜덤 메시지와 시간 관련 단어
   const timeRelatedWords = [
     'time', 'clock', 'second', 'minute', 'hour', 'past', 'future', 'now', 'today', 'tomorrow', 
     'yesterday', 'duration', 'moment', 'tick', 'tock', 'alarm', 'sunrise', 'sunset', 'calendar', 
@@ -96,29 +75,32 @@ const App = () => {
     'count', 'days', 'history', 'interval', 'past', 'present', 'future'
   ];
 
-  // "시간"과 연관된 단어만 빨간색으로 강조, 문장 부호는 제외
+  // 시간 관련 단어만 빨간색 강조
   const applyRedHighlight = (message) => {
     const words = message.split(" ");
     const highlightedWords = words.map(word => {
-      // 시간 관련 단어일 경우 빨간색 적용
       if (timeRelatedWords.some(keyword => word.toLowerCase().includes(keyword))) {
         return `<span style="color: red">${word}</span>`;
       }
       return word;
     });
-
-    // 문장부호 제외
-    return highlightedWords.join(" ").replace(/([.,!?;:()'"-])/g, '$1');
+    return highlightedWords.join(" ");
   };
 
-  // 클릭시 시간 흐름에 맞춰 배경 색상 변화
+  // 클릭 시 텍스트 누적 효과와 사라짐
   const handleClick = () => {
+    setClickCount(prevCount => prevCount + 1);
+    setMessages(prevMessages => [
+      ...prevMessages,
+      randomMessages[Math.floor(Math.random() * randomMessages.length)]
+    ]);
     setIsClicked(true);
-    setBgColor(`#${Math.floor(Math.random()*16777215).toString(16)}`); // 랜덤한 배경색 변화
+
+    // 텍스트가 사라지도록 일정 시간이 지난 후
     setTimeout(() => {
+      setMessages(prevMessages => prevMessages.slice(1));
       setIsClicked(false);
-      setBgColor('black'); // 클릭 후 배경을 원래 상태로 복귀
-    }, 2000);
+    }, 3000); // 3초 후 텍스트 사라짐
   };
 
   return (
@@ -129,23 +111,21 @@ const App = () => {
         height: '100vh',
         overflow: 'hidden',
         fontFamily: 'monospace', // 고정폭 폰트 적용
-        backgroundColor: bgColor, // 동적으로 변경되는 배경 색상
+        backgroundColor: 'black',
         color: 'white',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
         cursor: 'pointer',
-        transition: 'background-color 0.5s ease', // 배경색 변화 애니메이션
       }}
       onClick={handleClick} // 클릭 이벤트 추가
     >
-      {/* 현재 시간 표시 (고정폭 폰트 적용) */}
+      {/* 현재 시간 표시 */}
       <div
         style={{
           fontSize: '6rem',
           fontWeight: 'bold',
-          fontFamily: 'monospace', // 고정폭 폰트 적용
           position: 'absolute',
           zIndex: 10,
         }}
@@ -153,7 +133,7 @@ const App = () => {
         {time}
       </div>
 
-      {/* 랜덤 텍스트 표시 */}
+      {/* 랜덤 메시지 표시 */}
       <div
         style={{
           position: 'absolute',
@@ -163,7 +143,6 @@ const App = () => {
         }}
       >
         {messages.map((message, index) => {
-          const { x, y } = getRandomPosition();
           const highlightedMessage = applyRedHighlight(message);
 
           return (
@@ -171,34 +150,21 @@ const App = () => {
               key={index}
               style={{
                 position: 'absolute',
-                transform: `translate(${x}px, ${y}px)`,
+                transform: `translate(-50%, -50%)`,
                 whiteSpace: 'nowrap',
-                fontFamily: 'monospace', // 고정폭 폰트 적용
+                fontFamily: 'monospace',
                 fontSize: '1.5rem',
                 lineHeight: 1.5,
                 textAlign: 'center',
                 color: 'white',
+                opacity: isClicked ? 1 : 0.7, // 클릭 시 가시성 변화
+                transition: 'opacity 0.5s ease', // 애니메이션을 통한 부드러운 변환
+                marginTop: 50 * index + 'px', // 누적 효과
               }}
-              dangerouslySetInnerHTML={{ __html: highlightedMessage }} // 빨간색 강조된 HTML을 렌더링
+              dangerouslySetInnerHTML={{ __html: highlightedMessage }}
             />
           );
         })}
-
-        {/* 랜덤 메시지 중 하나를 중앙에 겹쳐서 표시 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '3rem',
-            color: 'white',
-            fontFamily: 'monospace', // 고정폭 폰트 적용
-            zIndex: 20,
-            textAlign: 'center',
-          }}
-          dangerouslySetInnerHTML={{ __html: applyRedHighlight(randomMessage) }} // 빨간색 강조된 HTML을 렌더링
-        />
       </div>
     </div>
   );
