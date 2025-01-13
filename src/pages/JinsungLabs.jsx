@@ -43,6 +43,7 @@
             font-size: 2rem;
             color: red;
             will-change: transform;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -65,10 +66,10 @@
             "Time is money."
         ];
 
-        // Display current time in 12-hour format
+        // Display current time in 12-hour format, without AM/PM
         function updateTime() {
             const now = new Date();
-            const hours = now.getHours() % 12 || 12; // 12-hour format
+            const hours = now.getHours() % 12 || 12; // 12-hour format without AM/PM
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
             const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
@@ -110,6 +111,16 @@
 
         // Initial call to randomize text
         setInterval(randomizeText, 4000);
+
+        // Rotate text in a clock-wise direction
+        const rotateText = document.querySelectorAll('.random-message');
+        rotateText.forEach((text) => {
+            let rotation = 0;
+            setInterval(() => {
+                rotation += 15; // Rotate 15 degrees clockwise every interval
+                text.style.transform = `rotate(${rotation}deg)`;
+            }, 100); // Adjust rotation speed if needed
+        });
     </script>
 </body>
 </html>
