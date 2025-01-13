@@ -1,126 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Typography</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            cursor: pointer;
-        }
+import React, { useEffect, useState } from 'react';
 
-        .time {
-            font-size: 6rem;
-            font-weight: bold;
-            position: absolute;
-            z-index: 10;
-        }
+const App = () => {
+  const [currentTime, setCurrentTime] = useState('');
+  const [bgClass, setBgClass] = useState('');
 
-        .grid-text {
-            position: absolute;
-            font-size: 3rem;
-            line-height: 1.5;
-            color: rgba(255, 255, 255, 0.8);
-            z-index: 5;
-            white-space: nowrap;
-            will-change: transform;
-        }
+  const randomMessages = [
+    "Time flies when you're having fun.",
+    "The clock is ticking.",
+    "Every second counts.",
+    "What is time?",
+    "Time waits for no one.",
+    "The present is a gift.",
+    "Time and tide wait for none.",
+    "Time is money.",
+    "We are prisoners of time."
+  ];
 
-        .random-message {
-            position: absolute;
-            z-index: 1;
-            font-size: 2rem;
-            color: red;
-            will-change: transform;
-            white-space: nowrap;
-        }
-    </style>
-</head>
-<body>
-    <div class="time" id="current-time"></div>
-    <div id="text-background"></div>
+  // Update current time in 12-hour format without AM/PM
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = now.getHours() % 12 || 12;
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      setCurrentTime(`${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`);
+    };
 
-    <script>
-        const timeElement = document.getElementById("current-time");
-        const textBackground = document.getElementById("text-background");
+    const updateBackgroundColor = () => {
+      const now = new Date();
+      const hours = now.getHours();
 
-        const randomMessages = [
-            "Time flies when you're having fun.",
-            "The clock is ticking.",
-            "Every second counts.",
-            "What is time?",
-            "Time waits for no one.",
-            "The present is a gift.",
-            "Time and tide wait for none.",
-            "Time is money."
-        ];
+      if (hours >= 6 && hours < 12) {
+        setBgClass('morning');
+      } else if (hours >= 12 && hours < 18) {
+        setBgClass('afternoon');
+      } else if (hours >= 18 && hours < 21) {
+        setBgClass('evening');
+      } else {
+        setBgClass('night');
+      }
+    };
 
-        // Display current time in 12-hour format, without AM/PM
-        function updateTime() {
-            const now = new Date();
-            const hours = now.getHours() % 12 || 12; // 12-hour format without AM/PM
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-            const timeString = `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-            timeElement.textContent = timeString;
-        }
+    const intervalId = setInterval(updateTime, 1000);
+    const colorIntervalId = setInterval(updateBackgroundColor, 60000);
+    updateTime(); // Initial call
+    updateBackgroundColor(); // Initial call to set background
 
-        // Randomly display messages in the background grid
-        function randomizeText() {
-            const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("random-message");
-            messageElement.textContent = randomMessage;
+    return () => {
+      clearInterval(intervalId);
+      clearInterval(colorIntervalId);
+    };
+  }, []);
 
-            const randomX = Math.random() * window.innerWidth;
-            const randomY = Math.random() * window.innerHeight;
-            messageElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  const randomizeText = () => {
+    const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('random-message');
+    messageElement.textContent = randomMessage;
 
-            textBackground.appendChild(messageElement);
+    const randomX = Math.random() * window.innerWidth;
+    const randomY = Math.random() * window.innerHeight;
+    messageElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
 
-            // Remove text after it finishes displaying
-            setTimeout(() => {
-                messageElement.remove();
-            }, 5000);
-        }
+    document.getElementById('text-background').appendChild(messageElement);
 
-        // Mouse interaction logic
-        let mouseMovementTimer;
-        document.addEventListener('mousemove', (e) => {
-            clearTimeout(mouseMovementTimer);
+    setTimeout(() => {
+      messageElement.remove();
+    }, 5000);
+  };
 
-            // Trigger random message generation only after mouse has moved a certain distance
-            mouseMovementTimer = setTimeout(() => {
-                randomizeText();
-            }, 150);
-        });
+  useEffect(() => {
+    const mouseMovementTimer = setTimeout(randomizeText, 150);
+    return () => clearTimeout(mouseMovementTimer);
+  }, [randomizeText]);
 
-        // Initialize and update time
-        setInterval(updateTime, 1000);
+  return (
+    <div className={`App ${bgClass}`} style={{ cursor: 'pointer', height: '100vh', position: 'relative' }}>
+      <div className="time" id="current-time" style={{ fontSize: '6rem', fontWeight: 'bold', position: 'absolute', zIndex: 10 }}>
+        {currentTime}
+      </div>
+      <div id="text-background"></div>
+    </div>
+  );
+};
 
-        // Initial call to randomize text
-        setInterval(randomizeText, 4000);
-
-        // Rotate text in a clock-wise direction
-        const rotateText = document.querySelectorAll('.random-message');
-        rotateText.forEach((text) => {
-            let rotation = 0;
-            setInterval(() => {
-                rotation += 15; // Rotate 15 degrees clockwise every interval
-                text.style.transform = `rotate(${rotation}deg)`;
-            }, 100); // Adjust rotation speed if needed
-        });
-    </script>
-</body>
-</html>
+export default App;
