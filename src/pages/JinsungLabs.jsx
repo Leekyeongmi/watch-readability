@@ -109,7 +109,7 @@ const InteractiveTypography = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        textAlign: 'left',
+        textAlign: 'left', // Now using left-aligned text for background typography
         padding: 0,
         margin: 0,
         zIndex: 0,
