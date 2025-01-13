@@ -51,7 +51,9 @@ const InteractiveTypography = () => {
       const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 200 + Math.random() * 30 - 15;
       const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 200 + Math.random() * 30 - 15;
       const scale = 1 + (Math.sin(mousePosition.x / window.innerWidth * Math.PI) * 0.2);
-      const rotation = Math.random() * 15 - 7.5;
+      const rotation = [0, 45, 90, 180][Math.floor(Math.random() * 4)];
+
+      const isRed = Math.random() < 0.1; // 10% chance of being red
 
       return (
         <span
@@ -60,7 +62,7 @@ const InteractiveTypography = () => {
             display: 'inline-block',
             fontSize: `${Math.random() * 4 + 2}rem`,
             fontWeight: 'bold',
-            color: '#fff',
+            color: isRed ? '#ff4f58' : '#fff', // Red color as an accent
             transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale}) rotate(${rotation}deg)`,
             transition: 'transform 0.4s ease, opacity 0.4s ease',
             position: 'absolute',
@@ -95,7 +97,7 @@ const InteractiveTypography = () => {
         zIndex: 0,
       }}
     >
-      {/* Background with flowing typography */}
+      {/* Background with grid and flowing typography */}
       <div
         style={{
           position: 'absolute',
@@ -108,7 +110,23 @@ const InteractiveTypography = () => {
           zIndex: 0,
         }}
       >
-        {renderLetters()}
+        {/* Creating a grid system in the background */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(10, 1fr)',
+            gridTemplateRows: 'repeat(10, 1fr)',
+            gap: '5px',
+            zIndex: 0,
+          }}
+        >
+          {renderLetters()}
+        </div>
       </div>
 
       {/* Display Time */}
