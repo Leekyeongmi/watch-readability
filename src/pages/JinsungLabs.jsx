@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-const InteractiveClockNoWebcam = () => {
+const InteractiveAnalogClock = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -17,6 +17,24 @@ const InteractiveClockNoWebcam = () => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
+  const calculateHandStyle = (angle, length, thickness) => ({
+    position: "absolute",
+    width: `${thickness}px`,
+    height: `${length}px`,
+    backgroundColor: "white",
+    transformOrigin: "center bottom",
+    transform: `rotate(${angle}deg)`,
+    top: "50%",
+    left: "50%",
+    marginLeft: `-${thickness / 2}px`,
+    marginTop: `-${length}px`,
+  });
+
+  // Calculate angles for clock hands
+  const secondAngle = time.getSeconds() * 6; // 360° / 60s
+  const minuteAngle = time.getMinutes() * 6 + time.getSeconds() * 0.1; // Smooth minute movement
+  const hourAngle = (time.getHours() % 12) * 30 + time.getMinutes() * 0.5; // Smooth hour movement
+
   return (
     <div
       onMouseMove={handleMouseMove}
@@ -26,58 +44,57 @@ const InteractiveClockNoWebcam = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        position: "relative",
-        backgroundColor: "#1a1a1a",
-        color: "white",
-        fontFamily: "Arial, sans-serif",
+        backgroundColor: `rgb(
+          ${150 + Math.abs(mousePosition.x % 105)},
+          ${100 + Math.abs(mousePosition.y % 155)},
+          ${200}
+        )`,
         overflow: "hidden",
+        transition: "background-color 0.3s ease",
       }}
     >
-      {/* Clock Display */}
       <div
         style={{
-          position: "absolute",
-          top: `${mousePosition.y - 50}px`,
-          left: `${mousePosition.x - 50}px`,
-          width: "100px",
-          height: "100px",
+          position: "relative",
+          width: "200px",
+          height: "200px",
           borderRadius: "50%",
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          border: "5px solid white",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          border: "2px solid white",
-          transition: "background-color 0.3s ease",
         }}
       >
-        <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-          {time.toLocaleTimeString()}
-        </span>
-      </div>
+        {/* Hour hand */}
+        <div
+          style={calculateHandStyle(hourAngle, 50, 6)} // Length 50px, thickness 6px
+        ></div>
+        {/* Minute hand */}
+        <div
+          style={calculateHandStyle(minuteAngle, 70, 4)} // Length 70px, thickness 4px
+        ></div>
+        {/* Second hand */}
+        <div
+          style={{
+            ...calculateHandStyle(secondAngle, 90, 2), // Length 90px, thickness 2px
+            backgroundColor: "red", // Red for the second hand
+          }}
+        ></div>
 
-      {/* Animated Lines */}
-      {[...Array(12)].map((_, i) => {
-        const angle = (i * 30 * Math.PI) / 180;
-        const x = Math.cos(angle) * 200 + window.innerWidth / 2;
-        const y = Math.sin(angle) * 200 + window.innerHeight / 2;
-        return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              top: `${y}px`,
-              left: `${x}px`,
-              width: "2px",
-              height: "50px",
-              backgroundColor: "white",
-              transform: `rotate(${i * 30}deg)`,
-              transformOrigin: "center top",
-            }}
-          ></div>
-        );
-      })}
+        {/* Clock center */}
+        <div
+          style={{
+            position: "absolute",
+            width: "10px",
+            height: "10px",
+            backgroundColor: "white",
+            borderRadius: "50%",
+          }}
+        ></div>
+      </div>
     </div>
   );
 };
 
-export default InteractiveClockNoWebcam;
+export default InteractiveAnalogClock;
