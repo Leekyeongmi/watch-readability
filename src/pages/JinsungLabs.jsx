@@ -1,91 +1,85 @@
-import { CenterColumn, Column } from '../components/layouts/Layout';
-import ThemeSwitcher from '../components/ThemeSwitcher';
-import MovingClock from '../components/MovingClock';
-import styled from 'styled-components';
-import { Text } from '../components/atoms/Text';
-import { LAYOUT } from '../constant';
-import BasicButton from '../components/atoms/BasicButton';
-import { useUserTheme } from '../stores/useTheme';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import HeaderSection from '../components/atoms/HeaderSection';
+import React, { useEffect, useRef, useState } from "react";
 
-function Intro() {
-  const userTheme = useUserTheme();
-  const navigate = useNavigate();
-  const [randomWatchType, setRandomWatchType] = useState(null);
-
-  const pickRandomFrom0to6 = () => {
-    return String(Math.floor(Math.random() * 7));
-  };
+const InteractiveClock = () => {
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [time, setTime] = useState(new Date());
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const randomNum = pickRandomFrom0to6();
-    setRandomWatchType(randomNum);
+    // Update the time every second
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    // Access webcam
+    const startWebcam = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      } catch (err) {
+        console.error("Webcam access denied or not available:", err);
+      }
+    };
+
+    startWebcam();
+
+    return () => {
+      clearInterval(timer);
+      if (videoRef.current.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, []);
 
-  if (!randomWatchType) return null;
+  useEffect(() => {
+    // Draw webcam feed to canvas
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const video = videoRef.current;
+
+    const drawToCanvas = () => {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Draw time
+        context.font = "30px Arial";
+        context.fillStyle = hovered ? "red" : "white";
+        const currentTime = time.toLocaleTimeString();
+        const textWidth = context.measureText(currentTime).width;
+        context.fillText(currentTime, (canvas.width - textWidth) / 2, canvas.height - 30);
+      }
+      requestAnimationFrame(drawToCanvas);
+    };
+
+    drawToCanvas();
+  }, [time, hovered]);
 
   return (
-    <IntroPage>
-      <HeaderSection>
-        <Text typo='head04' color='font'>
-          {`시간 가독성/판독성 연구
-          a comparicon of 
-          the readability & legibility on time
-          `}
-        </Text>
-      </HeaderSection>
-      <ContentSection>
-        <ThemeSwitcher />
-        {<MovingClock type={randomWatchType} />}
-
-        <Text typo='body03M' color='font'>
-          {`저희는 손목시계 디자인의 7가지 기준을 만들고`} <br />
-        <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,
-          {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
-          연구에 큰 도움이 될 것입니다!`}
-        </Text>
-        <ButtonContainer gap='1rem'>
-          <BasicButton
-            onClick={() => navigate('/quiz')}
-            width={'9.375rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '참여하기' }}
-            bg={'button'}
-          ></BasicButton>
-          <BasicButton
-            onClick={() => navigate('/result')}
-            width={'9.375rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '연구현황' }}
-            bg={'button'}
-          ></BasicButton>
-        </ButtonContainer>
-      </ContentSection>
-    </IntroPage>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#333",
+        color: "white",
+        fontFamily: "Arial, sans-serif",
+        overflow: "hidden",
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        width={640}
+        height={480}
+        style={{ border: "5px solid white", borderRadius: "8px" }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      />
+      <video ref={videoRef} style={{ display: "none" }} />
+    </div>
   );
-}
+};
 
-export default Intro;
-
-const IntroPage = styled(Column)`
-  height: 100%;
-`;
-
-const ContentSection = styled(Column)`
-  padding: ${LAYOUT.PADDING_X}rem;
-  text-align: center;
-  height: 100%;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-`;
-
-const ButtonContainer = styled(CenterColumn)`
-  padding: ${LAYOUT.PADDING_X}rem;
-  text-align: center;
-`;
+export default InteractiveClock;
