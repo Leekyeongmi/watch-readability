@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 
-const SwissTypographyClock = () => {
+const InteractiveClockTypography = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [currentMessage, setCurrentMessage] = useState("TIME IS NOW.");
+  const [currentMessage, setCurrentMessage] = useState("TIME IS RELENTLESS.");
   const [messageLetters, setMessageLetters] = useState([]);
 
   const messages = [
-    "TIME IS NOW.",
-    "ORDER AND CHAOS.",
+    "TIME IS RELENTLESS.",
+    "SEIZE THE MOMENT.",
     "EVERY SECOND COUNTS.",
-    "THE FUTURE IS HERE.",
-    "TIME MOVES RELENTLESSLY.",
-    "DESIGNING THE PRESENT.",
-    "THE PULSE OF NOW.",
+    "DESIGN IS ABOUT TIMING.",
+    "LIFE MOVES FORWARD.",
+    "THE CLOCK NEVER STOPS.",
   ];
 
   useEffect(() => {
@@ -44,25 +43,25 @@ const SwissTypographyClock = () => {
 
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
-      // Calculate small movement based on mouse position
-      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 20;
-      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 20;
+      // Movement range and randomness
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 50 + Math.random() * 10 - 5;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 50 + Math.random() * 10 - 5;
+      const rotation = Math.random() * 10 - 5;
 
       return (
         <span
           key={index}
           style={{
-            position: "relative",
             display: "inline-block",
-            fontSize: "3rem",
+            fontSize: "4rem",
             fontWeight: "bold",
             margin: "0 5px",
             color: "#222",
-            transform: `translate(${offsetX}px, ${offsetY}px)`,
-            transition: "transform 0.3s ease",
+            transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg)`,
+            transition: "transform 0.4s ease, opacity 0.4s ease",
           }}
         >
-          {char}
+          {char === " " ? "\u00A0" : char}
         </span>
       );
     });
@@ -74,13 +73,14 @@ const SwissTypographyClock = () => {
       style={{
         width: "100vw",
         height: "100vh",
-        background: "linear-gradient(0deg, #fff, #ddd)",
+        backgroundColor: "#f8f8f8",
+        color: "#000",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        overflow: "hidden",
       }}
     >
       {/* Background Grid */}
@@ -91,23 +91,10 @@ const SwissTypographyClock = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(10, 1fr)",
-          gridTemplateRows: "repeat(10, 1fr)",
-          gap: "1px",
-          backgroundColor: "#fff",
+          background: "radial-gradient(circle, #e0e0e0 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
         }}
-      >
-        {Array.from({ length: 100 }).map((_, i) => (
-          <div
-            key={i}
-            style={{
-              backgroundColor: i % 2 === 0 ? "#ddd" : "#fff",
-              transition: "background-color 0.3s ease",
-            }}
-          ></div>
-        ))}
-      </div>
+      />
 
       {/* Time Display */}
       <div
@@ -115,8 +102,8 @@ const SwissTypographyClock = () => {
           zIndex: 10,
           fontSize: "6rem",
           fontWeight: "bold",
-          marginBottom: "20px",
-          color: "#000",
+          marginBottom: "40px",
+          letterSpacing: "5px",
         }}
       >
         {time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
@@ -135,4 +122,4 @@ const SwissTypographyClock = () => {
   );
 };
 
-export default SwissTypographyClock;
+export default InteractiveClockTypography;
