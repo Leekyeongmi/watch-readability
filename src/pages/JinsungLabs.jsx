@@ -86,12 +86,24 @@ const App = () => {
     return { x: randomX, y: randomY };
   };
 
-  // 빨간색 텍스트 강조
+  // 시간과 관련된 단어를 더 폭넓게 고려
+  const timeRelatedWords = [
+    'time', 'clock', 'second', 'minute', 'hour', 'past', 'future', 'now', 'today', 'tomorrow', 
+    'yesterday', 'duration', 'moment', 'tick', 'tock', 'alarm', 'sunrise', 'sunset', 'calendar', 
+    'epoch', 'timeless', 'timepiece', 'lifetime', 'timing', 'chronology', 'age', 'decade', 'century'
+  ];
+
+  // "시간"과 연관된 단어만 빨간색으로 강조
   const applyRedHighlight = (message) => {
     const words = message.split(" ");
-    const randomIndex = Math.floor(Math.random() * words.length);
-    words[randomIndex] = `<span style="color: red">${words[randomIndex]}</span>`; // 랜덤 단어에 빨간색 강조
-    return words.join(" ");
+    const highlightedWords = words.map(word => {
+      // 시간 관련 단어일 경우 빨간색 적용
+      if (timeRelatedWords.some(keyword => word.toLowerCase().includes(keyword))) {
+        return `<span style="color: red">${word}</span>`;
+      }
+      return word;
+    });
+    return highlightedWords.join(" ");
   };
 
   return (
@@ -101,7 +113,7 @@ const App = () => {
         padding: 0,
         height: '100vh',
         overflow: 'hidden',
-        fontFamily: "'Helvetica Neue', sans-serif",
+        fontFamily: 'monospace', // 고정폭 폰트 적용
         backgroundColor: 'black',
         color: 'white',
         display: 'flex',
@@ -144,12 +156,13 @@ const App = () => {
                 position: 'absolute',
                 transform: `translate(${x}px, ${y}px)`,
                 whiteSpace: 'nowrap',
-                color: 'white',
+                fontFamily: 'monospace', // 고정폭 폰트 적용
                 fontSize: '1.5rem',
                 lineHeight: 1.5,
                 textAlign: 'center',
+                color: 'white',
               }}
-              dangerouslySetInnerHTML={{ __html: highlightedMessage }} // HTML로 적용된 빨간색
+              dangerouslySetInnerHTML={{ __html: highlightedMessage }} // 빨간색 강조된 HTML을 렌더링
             />
           );
         })}
@@ -167,9 +180,8 @@ const App = () => {
             zIndex: 20,
             textAlign: 'center',
           }}
-        >
-          {applyRedHighlight(randomMessage)}
-        </div>
+          dangerouslySetInnerHTML={{ __html: applyRedHighlight(randomMessage) }} // 빨간색 강조된 HTML을 렌더링
+        />
       </div>
     </div>
   );
