@@ -18,6 +18,17 @@ const InteractiveTypography = () => {
     'WE CANNOT ESCAPE TIME.',
     'TIME IS A CONSTRUCT.',
     'NOW IS ALL WE HAVE.',
+    'THE PRESENT IS A GIFT.',
+    'TIME WAITS FOR NO ONE.',
+    'THE END IS ONLY A BEGINNING.',
+    'MAKE EVERY SECOND COUNT.',
+    'TIME IS THE MOST PRECIOUS RESOURCE.',
+    'IT’S NEVER TOO LATE TO START.',
+    'THE MOMENT IS NOW.',
+    'TIME IS A WAVE; RIDE IT.',
+    'TIME CAN BE A FRIEND OR A Foe.',
+    'IN EVERY MOMENT, TIME PASSES.',
+    'TIME IS THE KEY TO EVERYTHING.',
   ]);
 
   useEffect(() => {
@@ -25,13 +36,13 @@ const InteractiveTypography = () => {
       setTime(new Date());
     }, 1000);
 
-    // Change the message randomly every 2 seconds
+    // Change the message randomly every 5 seconds
     const messageTimer = setInterval(() => {
       const randomMessage =
         randomMessages[Math.floor(Math.random() * randomMessages.length)];
       setCurrentMessage(randomMessage);
       setMessageLetters(randomMessage.split(''));
-    }, 2000);
+    }, 5000);
 
     // Set initial letters
     setMessageLetters(currentMessage.split(''));
@@ -48,12 +59,12 @@ const InteractiveTypography = () => {
 
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
-      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 200 + Math.random() * 30 - 15;
-      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 200 + Math.random() * 30 - 15;
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 150 + Math.random() * 20 - 10;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 150 + Math.random() * 20 - 10;
       const scale = 1 + (Math.sin(mousePosition.x / window.innerWidth * Math.PI) * 0.2);
       const rotation = [0, 45, 90, 180][Math.floor(Math.random() * 4)];
 
-      const isRed = Math.random() < 0.1; // 10% chance of being red
+      const isRed = Math.random() < 0.15; // 15% chance of being red
 
       return (
         <span
@@ -62,7 +73,7 @@ const InteractiveTypography = () => {
             display: 'inline-block',
             fontSize: `${Math.random() * 4 + 2}rem`,
             fontWeight: 'bold',
-            color: isRed ? '#ff4f58' : '#fff', // Red color as an accent
+            color: isRed ? '#ff4f58' : '#fff', // Strong red accent color
             transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale}) rotate(${rotation}deg)`,
             transition: 'transform 0.4s ease, opacity 0.4s ease',
             position: 'absolute',
