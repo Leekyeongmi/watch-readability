@@ -5,13 +5,19 @@ const InteractiveTypography = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentMessage, setCurrentMessage] = useState('TIME IS RELENTLESS.');
   const [messageLetters, setMessageLetters] = useState([]);
-  const [randomMessages] = useState([
+  const [randomMessages, setRandomMessages] = useState([
     'TIME IS RELENTLESS.',
     'SEIZE THE MOMENT.',
     'EVERY SECOND COUNTS.',
     'DESIGN IS ABOUT TIMING.',
     'LIFE MOVES FORWARD.',
     'THE CLOCK NEVER STOPS.',
+    'TIME FLIES.',
+    'THE FUTURE AWAITS.',
+    'MOMENTS MAKE LIFE.',
+    'WE CANNOT ESCAPE TIME.',
+    'TIME IS A CONSTRUCT.',
+    'NOW IS ALL WE HAVE.',
   ]);
 
   useEffect(() => {
@@ -19,13 +25,13 @@ const InteractiveTypography = () => {
       setTime(new Date());
     }, 1000);
 
-    // Change the message randomly every 5 seconds
+    // Change the message randomly every 2 seconds
     const messageTimer = setInterval(() => {
       const randomMessage =
         randomMessages[Math.floor(Math.random() * randomMessages.length)];
       setCurrentMessage(randomMessage);
       setMessageLetters(randomMessage.split(''));
-    }, 5000);
+    }, 2000);
 
     // Set initial letters
     setMessageLetters(currentMessage.split(''));
@@ -42,20 +48,25 @@ const InteractiveTypography = () => {
 
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
-      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 100 + Math.random() * 20 - 10;
-      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 100 + Math.random() * 20 - 10;
-      const rotation = Math.random() * 10 - 5;
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 200 + Math.random() * 30 - 15;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 200 + Math.random() * 30 - 15;
+      const scale = 1 + (Math.sin(mousePosition.x / window.innerWidth * Math.PI) * 0.2);
+      const rotation = Math.random() * 15 - 7.5;
 
       return (
         <span
           key={index}
           style={{
             display: 'inline-block',
-            fontSize: '4rem',
+            fontSize: `${Math.random() * 4 + 2}rem`,
             fontWeight: 'bold',
-            color: '#222',
-            transform: `translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg)`,
+            color: '#fff',
+            transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale}) rotate(${rotation}deg)`,
             transition: 'transform 0.4s ease, opacity 0.4s ease',
+            position: 'absolute',
+            top: `${Math.random() * 100}vh`,
+            left: `${Math.random() * 100}vw`,
+            pointerEvents: 'none',
           }}
         >
           {char === ' ' ? '\u00A0' : char}
@@ -70,14 +81,21 @@ const InteractiveTypography = () => {
       style={{
         width: '100vw',
         height: '100vh',
-        backgroundColor: '#f8f8f8',
-        color: '#000',
+        backgroundColor: '#000',
+        color: '#fff',
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         overflow: 'hidden',
         position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        padding: 0,
+        margin: 0,
+        zIndex: 0,
       }}
     >
-      {/* Background Image with Text Interaction */}
+      {/* Background with flowing typography */}
       <div
         style={{
           position: 'absolute',
@@ -85,12 +103,13 @@ const InteractiveTypography = () => {
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundImage: `url('https://source.unsplash.com/random/1920x1080')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'brightness(50%)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          overflow: 'hidden',
+          zIndex: 0,
         }}
-      />
+      >
+        {renderLetters()}
+      </div>
 
       {/* Display Time */}
       <div
@@ -98,9 +117,10 @@ const InteractiveTypography = () => {
           zIndex: 10,
           fontSize: '6rem',
           fontWeight: 'bold',
-          marginBottom: '40px',
           letterSpacing: '5px',
           color: '#fff',
+          position: 'relative',
+          transition: 'transform 0.4s ease',
         }}
       >
         {time.toLocaleTimeString('en-US', {
@@ -110,7 +130,7 @@ const InteractiveTypography = () => {
         })}
       </div>
 
-      {/* Interactive Typography */}
+      {/* Central message */}
       <div
         style={{
           zIndex: 10,
@@ -118,10 +138,12 @@ const InteractiveTypography = () => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          textAlign: 'center',
+          fontSize: '4rem',
+          fontWeight: 'bold',
+          color: '#fff',
         }}
       >
-        {renderLetters()}
+        {currentMessage}
       </div>
     </div>
   );
