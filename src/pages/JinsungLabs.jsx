@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-const SwissTypographyClock = () => {
+const InteractiveSwissClock = () => {
   const [time, setTime] = useState(new Date());
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Update the time every second
@@ -12,56 +13,66 @@ const SwissTypographyClock = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Format time for display
+  const handleMouseMove = (e) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
   const formatTime = (unit) => (unit < 10 ? `0${unit}` : unit);
 
   const hours = formatTime(time.getHours());
   const minutes = formatTime(time.getMinutes());
   const seconds = formatTime(time.getSeconds());
 
+  const calculateDynamicStyle = (baseValue, maxOffset) => {
+    const offsetX = (mousePosition.x / window.innerWidth) * maxOffset - maxOffset / 2;
+    const offsetY = (mousePosition.y / window.innerHeight) * maxOffset - maxOffset / 2;
+    return {
+      transform: `translate(${baseValue + offsetX}px, ${baseValue + offsetY}px)`,
+    };
+  };
+
   return (
     <div
+      onMouseMove={handleMouseMove}
       style={{
         width: "100vw",
         height: "100vh",
+        backgroundColor: "#f4f4f4",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f4f4f4",
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        overflow: "hidden",
       }}
     >
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridTemplateRows: "1fr auto",
+          position: "relative",
           width: "80%",
           height: "80%",
           maxWidth: "1200px",
           maxHeight: "800px",
-          border: "2px solid #000",
-          padding: "20px",
-          boxSizing: "border-box",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "1fr auto",
         }}
       >
-        {/* Left Section: Typographic Time */}
+        {/* Time Display Section */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            borderRight: "2px solid #000",
-            paddingRight: "20px",
           }}
         >
           <div
             style={{
-              fontSize: "10vw",
+              fontSize: "12vw",
               fontWeight: "bold",
-              lineHeight: "1",
               color: "#000",
+              ...calculateDynamicStyle(0, 20),
+              transition: "transform 0.1s ease",
             }}
           >
             {hours}:{minutes}
@@ -69,36 +80,37 @@ const SwissTypographyClock = () => {
           <div
             style={{
               fontSize: "3vw",
-              fontWeight: "lighter",
-              marginTop: "10px",
               color: "#555",
+              ...calculateDynamicStyle(0, 10),
+              transition: "transform 0.1s ease",
             }}
           >
             {seconds} seconds
           </div>
         </div>
 
-        {/* Right Section: Philosophical Message */}
+        {/* Philosophical Message Section */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            paddingLeft: "20px",
+            padding: "20px",
+            textAlign: "right",
           }}
         >
           <p
             style={{
-              fontSize: "2vw",
+              fontSize: "2.5vw",
               fontWeight: "bold",
               lineHeight: "1.5",
-              marginBottom: "20px",
-              textTransform: "uppercase",
               letterSpacing: "1px",
               color: "#000",
+              ...calculateDynamicStyle(0, 30),
+              transition: "transform 0.1s ease",
             }}
           >
-            TIME DOES NOT WAIT.
+            TIME IS AN ILLUSION.
           </p>
           <p
             style={{
@@ -108,31 +120,13 @@ const SwissTypographyClock = () => {
               color: "#333",
             }}
           >
-            Every second that passes is lost forever, yet it shapes the eternity
-            we strive to understand. Embrace the present, for it is the only
-            time we truly possess.
+            As we chase moments, the present slips through our grasp. Yet, in
+            every passing second lies the eternity we seek.
           </p>
-        </div>
-
-        {/* Footer Section: Minimal Detail */}
-        <div
-          style={{
-            gridColumn: "span 2",
-            borderTop: "2px solid #000",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: "10px",
-            fontSize: "1vw",
-            color: "#555",
-          }}
-        >
-          <span>Designed in the spirit of Swiss Typography</span>
-          <span>© 2025 Your Name</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default SwissTypographyClock;
+export default InteractiveSwissClock;
