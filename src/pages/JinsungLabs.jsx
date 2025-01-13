@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from "react";
 
-const InteractiveTimeArt = () => {
+const ExperimentalTimeTypography = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [messageIndex, setMessageIndex] = useState(0);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [messageLetters, setMessageLetters] = useState([]);
 
+  // 시간 관련 메시지 리스트 (외부 JSON 대신 로컬 데이터 시뮬레이션)
   const messages = [
-    "TIME IS AN ILLUSION.",
-    "EVERY SECOND CHANGES EVERYTHING.",
-    "THE PRESENT IS ALL WE HAVE.",
-    "TIME FLOWS LIKE A RIVER.",
-    "WHAT IS LOST CANNOT BE FOUND.",
+    "TIME IS A FRAGMENT OF OUR MIND.",
+    "EVERY SECOND IS UNIQUE.",
+    "THE CLOCK NEVER STOPS.",
+    "WHAT TIME IS IT REALLY?",
+    "WE ARE ALL PRISONERS OF TIME.",
+    "CAN YOU ESCAPE THE PRESENT?",
+    "TICK, TOCK, LIFE MOVES ON.",
+    "TIME WAITS FOR NO ONE.",
+    "THE FUTURE IS NOW.",
+    "MEMORIES ARE SHAPED BY TIME.",
   ];
 
   useEffect(() => {
-    // Update the time every second
+    // 시간 업데이트
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
 
-    // Cycle through messages every 5 seconds
+    // 메시지 업데이트
     const messageTimer = setInterval(() => {
-      setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
-    }, 5000);
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      setCurrentMessage(randomMessage);
+      setMessageLetters(randomMessage.split(""));
+    }, 4000);
 
     return () => {
       clearInterval(timer);
       clearInterval(messageTimer);
     };
-  }, [messages.length]);
+  }, [messages]);
 
   const handleMouseMove = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -40,26 +49,25 @@ const InteractiveTimeArt = () => {
   const minutes = formatTime(time.getMinutes());
   const seconds = formatTime(time.getSeconds());
 
-  const createLetterEffect = (text) => {
-    return text.split("").map((char, index) => {
-      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 100;
-      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 100;
-
-      const transformStyle = `translate(${offsetX + index * 2}px, ${
-        offsetY + index * 1.5
-      }px) rotate(${(offsetX - offsetY) * 0.1}deg)`;
+  const renderLetters = () => {
+    return messageLetters.map((char, index) => {
+      const offsetX = (Math.random() - 0.5) * 100 + (mousePosition.x / window.innerWidth) * 100;
+      const offsetY = (Math.random() - 0.5) * 100 + (mousePosition.y / window.innerHeight) * 100;
+      const scale = Math.random() * 1.5 + 0.5;
+      const rotate = Math.random() * 360;
 
       return (
         <span
           key={index}
           style={{
-            display: "inline-block",
-            transition: "transform 0.3s ease, opacity 0.3s ease",
-            transform: transformStyle,
-            opacity: Math.random() > 0.2 ? 1 : 0.5,
-            fontSize: "2rem",
+            position: "absolute",
+            top: `${50 + offsetY}px`,
+            left: `${50 + offsetX}px`,
+            fontSize: `${Math.random() * 2 + 1.5}rem`,
             fontWeight: "bold",
-            color: "#000",
+            color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.random()})`,
+            transform: `rotate(${rotate}deg) scale(${scale})`,
+            transition: "all 1s ease",
           }}
         >
           {char === " " ? "\u00A0" : char}
@@ -74,44 +82,44 @@ const InteractiveTimeArt = () => {
       style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#f4f4f4",
+        backgroundColor: "#000",
+        color: "#fff",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         overflow: "hidden",
         position: "relative",
       }}
     >
-      {/* Time Display */}
+      {/* 시간 디스플레이 */}
       <div
         style={{
           position: "absolute",
           top: "10%",
+          left: "50%",
+          transform: "translateX(-50%)",
           fontSize: "6rem",
           fontWeight: "bold",
           textAlign: "center",
           letterSpacing: "5px",
-          zIndex: 1,
         }}
       >
         {hours}:{minutes}:{seconds}
       </div>
 
-      {/* Dynamic Message Display */}
+      {/* 강력한 인터랙티브 메시지 */}
       <div
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 2,
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        {createLetterEffect(messages[messageIndex])}
+        {renderLetters()}
       </div>
 
-      {/* Subtle Background Animation */}
+      {/* 배경 시각 효과 */}
       <div
         style={{
           position: "absolute",
@@ -120,13 +128,13 @@ const InteractiveTimeArt = () => {
           width: "100%",
           height: "100%",
           backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0) 20%, rgba(0,0,0,0.1) 80%)",
-          opacity: 0.5,
-          animation: "pulse 5s infinite",
+            "radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.8) 100%)",
+          opacity: 0.7,
+          animation: "pulse 8s infinite",
         }}
       />
     </div>
   );
 };
 
-export default InteractiveTimeArt;
+export default ExperimentalTimeTypography;
