@@ -78,6 +78,15 @@ const App = () => {
     return () => clearInterval(messageIntervalId);
   }, []);
 
+  // 화면 내에서만 위치가 랜덤하게 생성되도록 제한
+  const getRandomPosition = () => {
+    const maxX = window.innerWidth - 200; // 텍스트 크기를 고려한 최대 X값
+    const maxY = window.innerHeight - 60; // 텍스트 크기를 고려한 최대 Y값
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+    return { x: randomX, y: randomY };
+  };
+
   return (
     <div
       style={{
@@ -94,7 +103,6 @@ const App = () => {
         position: 'relative',
         cursor: 'pointer',
       }}
-      onMouseMove={() => {}}
     >
       <div
         style={{
@@ -115,18 +123,21 @@ const App = () => {
           color: 'red',
         }}
       >
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              transform: `translate(${Math.random() * window.innerWidth}px, ${Math.random() * window.innerHeight}px)`,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {message}
-          </div>
-        ))}
+        {messages.map((message, index) => {
+          const { x, y } = getRandomPosition();
+          return (
+            <div
+              key={index}
+              style={{
+                position: 'absolute',
+                transform: `translate(${x}px, ${y}px)`,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {message}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
