@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 const App = () => {
   const [time, setTime] = useState('');
   const [messages, setMessages] = useState([]);
-  const [angle, setAngle] = useState(0);  // 텍스트 회전 각도
 
   const randomMessages = [
     "Time flies when you're having fun.",
@@ -83,14 +82,13 @@ const App = () => {
     return { x: randomX, y: randomY };
   };
 
-  // 텍스트가 회전하도록 처리 (시계와 연관된 효과)
-  useEffect(() => {
-    const rotateInterval = setInterval(() => {
-      setAngle(prevAngle => (prevAngle + 5) % 360); // 5도씩 회전
-    }, 100);
-
-    return () => clearInterval(rotateInterval);
-  }, []);
+  // 빨간색 텍스트 강조
+  const applyRedHighlight = (message) => {
+    const words = message.split(" ");
+    const randomIndex = Math.floor(Math.random() * words.length);
+    words[randomIndex] = `<span style="color: red">${words[randomIndex]}</span>`; // 랜덤 단어에 빨간색 강조
+    return words.join(" ");
+  };
 
   return (
     <div
@@ -127,23 +125,27 @@ const App = () => {
           position: 'absolute',
           zIndex: 1,
           fontSize: '2rem',
-          color: 'red',
+          color: 'white',
         }}
       >
         {messages.map((message, index) => {
           const { x, y } = getRandomPosition();
+          const highlightedMessage = applyRedHighlight(message);
+
           return (
             <div
               key={index}
               style={{
                 position: 'absolute',
-                transform: `translate(${x}px, ${y}px) rotate(${angle}deg)`,
+                transform: `translate(${x}px, ${y}px)`,
                 whiteSpace: 'nowrap',
                 color: 'white',
+                fontSize: '1.5rem',
+                lineHeight: 1.5,
+                textAlign: 'center',
               }}
-            >
-              {message}
-            </div>
+              dangerouslySetInnerHTML={{ __html: highlightedMessage }} // HTML로 적용된 빨간색
+            />
           );
         })}
       </div>
