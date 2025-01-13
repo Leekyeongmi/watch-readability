@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-const InteractiveAnalogClock = () => {
+const SwissTypographyClock = () => {
   const [time, setTime] = useState(new Date());
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // Update the time every second
@@ -13,88 +12,127 @@ const InteractiveAnalogClock = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
+  // Format time for display
+  const formatTime = (unit) => (unit < 10 ? `0${unit}` : unit);
 
-  const calculateHandStyle = (angle, length, thickness) => ({
-    position: "absolute",
-    width: `${thickness}px`,
-    height: `${length}px`,
-    backgroundColor: "white",
-    transformOrigin: "center bottom",
-    transform: `rotate(${angle}deg)`,
-    top: "50%",
-    left: "50%",
-    marginLeft: `-${thickness / 2}px`,
-    marginTop: `-${length}px`,
-  });
-
-  // Calculate angles for clock hands
-  const secondAngle = time.getSeconds() * 6; // 360° / 60s
-  const minuteAngle = time.getMinutes() * 6 + time.getSeconds() * 0.1; // Smooth minute movement
-  const hourAngle = (time.getHours() % 12) * 30 + time.getMinutes() * 0.5; // Smooth hour movement
+  const hours = formatTime(time.getHours());
+  const minutes = formatTime(time.getMinutes());
+  const seconds = formatTime(time.getSeconds());
 
   return (
     <div
-      onMouseMove={handleMouseMove}
       style={{
         width: "100vw",
         height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: `rgb(
-          ${150 + Math.abs(mousePosition.x % 105)},
-          ${100 + Math.abs(mousePosition.y % 155)},
-          ${200}
-        )`,
-        overflow: "hidden",
-        transition: "background-color 0.3s ease",
+        backgroundColor: "#f4f4f4",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
       }}
     >
       <div
         style={{
-          position: "relative",
-          width: "200px",
-          height: "200px",
-          borderRadius: "50%",
-          border: "5px solid white",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "1fr auto",
+          width: "80%",
+          height: "80%",
+          maxWidth: "1200px",
+          maxHeight: "800px",
+          border: "2px solid #000",
+          padding: "20px",
+          boxSizing: "border-box",
         }}
       >
-        {/* Hour hand */}
-        <div
-          style={calculateHandStyle(hourAngle, 50, 6)} // Length 50px, thickness 6px
-        ></div>
-        {/* Minute hand */}
-        <div
-          style={calculateHandStyle(minuteAngle, 70, 4)} // Length 70px, thickness 4px
-        ></div>
-        {/* Second hand */}
+        {/* Left Section: Typographic Time */}
         <div
           style={{
-            ...calculateHandStyle(secondAngle, 90, 2), // Length 90px, thickness 2px
-            backgroundColor: "red", // Red for the second hand
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRight: "2px solid #000",
+            paddingRight: "20px",
           }}
-        ></div>
+        >
+          <div
+            style={{
+              fontSize: "10vw",
+              fontWeight: "bold",
+              lineHeight: "1",
+              color: "#000",
+            }}
+          >
+            {hours}:{minutes}
+          </div>
+          <div
+            style={{
+              fontSize: "3vw",
+              fontWeight: "lighter",
+              marginTop: "10px",
+              color: "#555",
+            }}
+          >
+            {seconds} seconds
+          </div>
+        </div>
 
-        {/* Clock center */}
+        {/* Right Section: Philosophical Message */}
         <div
           style={{
-            position: "absolute",
-            width: "10px",
-            height: "10px",
-            backgroundColor: "white",
-            borderRadius: "50%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingLeft: "20px",
           }}
-        ></div>
+        >
+          <p
+            style={{
+              fontSize: "2vw",
+              fontWeight: "bold",
+              lineHeight: "1.5",
+              marginBottom: "20px",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              color: "#000",
+            }}
+          >
+            TIME DOES NOT WAIT.
+          </p>
+          <p
+            style={{
+              fontSize: "1.5vw",
+              fontWeight: "lighter",
+              lineHeight: "1.8",
+              color: "#333",
+            }}
+          >
+            Every second that passes is lost forever, yet it shapes the eternity
+            we strive to understand. Embrace the present, for it is the only
+            time we truly possess.
+          </p>
+        </div>
+
+        {/* Footer Section: Minimal Detail */}
+        <div
+          style={{
+            gridColumn: "span 2",
+            borderTop: "2px solid #000",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingTop: "10px",
+            fontSize: "1vw",
+            color: "#555",
+          }}
+        >
+          <span>Designed in the spirit of Swiss Typography</span>
+          <span>© 2025 Your Name</span>
+        </div>
       </div>
     </div>
   );
 };
 
-export default InteractiveAnalogClock;
+export default SwissTypographyClock;
