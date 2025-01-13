@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const App = () => {
   const [time, setTime] = useState('');
   const [messages, setMessages] = useState([]);
+  const [randomMessage, setRandomMessage] = useState('');
 
   const randomMessages = [
     "Time flies when you're having fun.",
@@ -51,6 +52,7 @@ const App = () => {
     "Time is the one thing you can't get back, use it wisely."
   ];
 
+  // 시간 업데이트
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date();
@@ -64,9 +66,11 @@ const App = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  // 랜덤 메시지 표시
   useEffect(() => {
     const messageIntervalId = setInterval(() => {
       const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+      setRandomMessage(randomMessage);
       setMessages(prevMessages => [...prevMessages, randomMessage]);
     }, 4000);
 
@@ -107,11 +111,12 @@ const App = () => {
         cursor: 'pointer',
       }}
     >
-      {/* 현재 시간 표시 */}
+      {/* 현재 시간 표시 (고정폭 폰트 적용) */}
       <div
         style={{
           fontSize: '6rem',
           fontWeight: 'bold',
+          fontFamily: 'monospace', // 고정폭 폰트 적용
           position: 'absolute',
           zIndex: 10,
         }}
@@ -148,6 +153,23 @@ const App = () => {
             />
           );
         })}
+
+        {/* 랜덤 메시지 중 하나를 중앙에 겹쳐서 표시 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '3rem',
+            color: 'white',
+            fontFamily: 'monospace', // 고정폭 폰트 적용
+            zIndex: 20,
+            textAlign: 'center',
+          }}
+        >
+          {applyRedHighlight(randomMessage)}
+        </div>
       </div>
     </div>
   );
