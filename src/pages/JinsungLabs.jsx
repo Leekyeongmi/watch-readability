@@ -5,13 +5,15 @@ function App() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [randomMessages, setRandomMessages] = useState([]);
   const [messageColor, setMessageColor] = useState('');
+  const [clickEffect, setClickEffect] = useState(false);
 
-  // 시간과 관련된 단어 리스트
+  // '시간'과 관련된 단어 목록 확대
   const timeRelatedWords = [
     'hour', 'minute', 'second', 'time', 'clock', 'tick', 'count', 'countdown',
     'duration', 'day', 'night', 'second', 'moment', 'now', 'past', 'future',
     'alarm', 'watch', 'clockwise', 'timeline', 'stopwatch', 'interval', 'timing',
-    'elapsed', 'scheduled', 'timeless', 'sundial', 'temporal', 'momentum', 'chronicle', 'measure', 'timeline', 'period', 'calendar', 'date'
+    'elapsed', 'scheduled', 'timeless', 'sundial', 'temporal', 'momentum', 'chronicle', 'measure', 'timeline', 'period', 'calendar', 'date',
+    'clockwork', 'calendar', 'deadline', 'schedule', 'timepiece', 'secondhand', 'sunrise', 'sunset', 'timer', 'timestamp', 'chronometer'
   ];
 
   // 메시지 생성 함수
@@ -77,12 +79,13 @@ function App() {
     setCurrentTime(new Date());
   };
 
-  // 랜덤 메시지 생성 및 색상 설정
+  // 랜덤 메시지에 색상 적용 함수 (시간 관련 단어에만)
   const generateMessageColor = (message) => {
     const regex = new RegExp(`\\b(${timeRelatedWords.join('|')})\\b`, 'gi');
     return message.replace(regex, (match) => `<span style="color: red">${match}</span>`);
   };
 
+  // 랜덤 메시지 업데이트
   useEffect(() => {
     const interval = setInterval(() => {
       setRandomMessages((prev) => {
@@ -93,6 +96,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // 1초마다 현재 시간 업데이트
   useEffect(() => {
     const interval = setInterval(() => {
       updateTime();
@@ -100,37 +104,49 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // 클릭 시 인터랙션을 위한 효과
   useEffect(() => {
-    // 클릭 인터랙션 구현
     const handleClick = () => {
-      setMessageColor(generateMessageColor(generateRandomMessage())); // 클릭 시 메시지에 색상 적용
+      setClickEffect(!clickEffect); // 클릭 시 클릭 효과 토글
     };
     window.addEventListener('click', handleClick);
     return () => {
       window.removeEventListener('click', handleClick);
     };
-  }, []);
+  }, [clickEffect]);
 
   return (
     <div className="App">
+      {/* 현재 시간 */}
       <div
         className="current-time"
-        style={{ fontFamily: 'monospace' }} // 고정폭 폰트 적용
+        style={{
+          fontFamily: 'monospace', // 고정폭 폰트 적용
+          fontSize: '48px', // 크기 조정
+        }}
       >
         {currentTime.toLocaleTimeString()}
       </div>
 
+      {/* 랜덤 메시지 */}
       <div className="random-messages">
         {randomMessages.map((message, index) => (
           <div
             key={index}
             className="random-message"
             dangerouslySetInnerHTML={{
-              __html: messageColor || generateMessageColor(message), // 색상 적용된 메시지 표시
+              __html: generateMessageColor(message), // 색상 적용된 메시지 표시
             }}
           />
         ))}
       </div>
+
+      {/* 클릭 효과로 나타날 수 있는 메시지 */}
+      {clickEffect && (
+        <div className="click-effect-message">
+          You just clicked! Time will continue...
+        </div>
+      )}
     </div>
   );
 }
