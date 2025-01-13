@@ -57,8 +57,15 @@ const InteractiveTypography = () => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
+  // Only allow change when cursor moves beyond a certain threshold
+  const isCursorInChangeRange = (pos, threshold = 100) => {
+    return Math.abs(pos.x - window.innerWidth / 2) > threshold || Math.abs(pos.y - window.innerHeight / 2) > threshold;
+  };
+
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
+      if (!isCursorInChangeRange(mousePosition)) return null; // Only render if the mouse position exceeds threshold
+
       const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 150 + Math.random() * 20 - 10;
       const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 150 + Math.random() * 20 - 10;
       const scale = 1 + (Math.sin(mousePosition.x / window.innerWidth * Math.PI) * 0.2);
@@ -73,7 +80,7 @@ const InteractiveTypography = () => {
             display: 'inline-block',
             fontSize: `${Math.random() * 4 + 2}rem`,
             fontWeight: 'bold',
-            color: isRed ? '#ff4f58' : '#fff', // Strong red accent color
+            color: isRed ? '#FF0000' : '#fff', // Bright red accent color
             transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale}) rotate(${rotation}deg)`,
             transition: 'transform 0.4s ease, opacity 0.4s ease',
             position: 'absolute',
@@ -102,7 +109,7 @@ const InteractiveTypography = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        textAlign: 'center',
+        textAlign: 'left',
         padding: 0,
         margin: 0,
         zIndex: 0,
@@ -152,11 +159,13 @@ const InteractiveTypography = () => {
           transition: 'transform 0.4s ease',
         }}
       >
-        {time.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })}
+        {time
+          .toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          })
+          .replace(/^0+/, '')} {/* Remove leading zeros */}
       </div>
 
       {/* Central message */}
