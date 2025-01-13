@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const App = () => {
   const [time, setTime] = useState('');
   const [messages, setMessages] = useState([]);
+  const [angle, setAngle] = useState(0);  // 텍스트 회전 각도
 
   const randomMessages = [
     "Time flies when you're having fun.",
@@ -15,11 +16,6 @@ const App = () => {
     "Time is money.",
     "We are prisoners of time.",
     "Time changes everything.",
-    "Time is a great healer.",
-    "The future depends on what we do in the present.",
-    "Time is the most valuable thing a man can spend.",
-    "Time is a created thing. To say 'I don't have time,' is like saying, 'I don't want to.'",
-    "Lost time is never found again.",
     "Time is a great teacher, but unfortunately it kills all its pupils.",
     "Time is what we want most, but what we use worst.",
     "They always say time changes things, but you actually have to change them yourself.",
@@ -80,12 +76,21 @@ const App = () => {
 
   // 화면 내에서만 위치가 랜덤하게 생성되도록 제한
   const getRandomPosition = () => {
-    const maxX = window.innerWidth - 200; // 텍스트 크기를 고려한 최대 X값
-    const maxY = window.innerHeight - 60; // 텍스트 크기를 고려한 최대 Y값
+    const maxX = window.innerWidth - 300; // 텍스트 크기를 고려한 최대 X값
+    const maxY = window.innerHeight - 100; // 텍스트 크기를 고려한 최대 Y값
     const randomX = Math.random() * maxX;
     const randomY = Math.random() * maxY;
     return { x: randomX, y: randomY };
   };
+
+  // 텍스트가 회전하도록 처리 (시계와 연관된 효과)
+  useEffect(() => {
+    const rotateInterval = setInterval(() => {
+      setAngle(prevAngle => (prevAngle + 5) % 360); // 5도씩 회전
+    }, 100);
+
+    return () => clearInterval(rotateInterval);
+  }, []);
 
   return (
     <div
@@ -104,6 +109,7 @@ const App = () => {
         cursor: 'pointer',
       }}
     >
+      {/* 현재 시간 표시 */}
       <div
         style={{
           fontSize: '6rem',
@@ -115,6 +121,7 @@ const App = () => {
         {time}
       </div>
 
+      {/* 랜덤 텍스트 표시 */}
       <div
         style={{
           position: 'absolute',
@@ -130,8 +137,9 @@ const App = () => {
               key={index}
               style={{
                 position: 'absolute',
-                transform: `translate(${x}px, ${y}px)`,
+                transform: `translate(${x}px, ${y}px) rotate(${angle}deg)`,
                 whiteSpace: 'nowrap',
+                color: 'white',
               }}
             >
               {message}
