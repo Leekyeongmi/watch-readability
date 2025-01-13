@@ -4,6 +4,8 @@ const App = () => {
   const [time, setTime] = useState('');
   const [messages, setMessages] = useState([]);
   const [randomMessage, setRandomMessage] = useState('');
+  const [bgColor, setBgColor] = useState('black');
+  const [isClicked, setIsClicked] = useState(false);
 
   const randomMessages = [
     "Time flies when you're having fun.",
@@ -109,9 +111,14 @@ const App = () => {
     return highlightedWords.join(" ").replace(/([.,!?;:()'"-])/g, '$1');
   };
 
-  // 클릭시 작은 애니메이션 추가
+  // 클릭시 시간 흐름에 맞춰 배경 색상 변화
   const handleClick = () => {
-    alert('시간에 대해 생각해보세요!');
+    setIsClicked(true);
+    setBgColor(`#${Math.floor(Math.random()*16777215).toString(16)}`); // 랜덤한 배경색 변화
+    setTimeout(() => {
+      setIsClicked(false);
+      setBgColor('black'); // 클릭 후 배경을 원래 상태로 복귀
+    }, 2000);
   };
 
   return (
@@ -122,13 +129,14 @@ const App = () => {
         height: '100vh',
         overflow: 'hidden',
         fontFamily: 'monospace', // 고정폭 폰트 적용
-        backgroundColor: 'black',
+        backgroundColor: bgColor, // 동적으로 변경되는 배경 색상
         color: 'white',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
         cursor: 'pointer',
+        transition: 'background-color 0.5s ease', // 배경색 변화 애니메이션
       }}
       onClick={handleClick} // 클릭 이벤트 추가
     >
