@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 const ExperimentalTimeTypography = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [currentMessage, setCurrentMessage] = useState("");
+  const [currentMessage, setCurrentMessage] = useState("TIME WAITS FOR NO ONE.");
   const [messageLetters, setMessageLetters] = useState([]);
 
-  // 시간 관련 메시지 리스트 (외부 JSON 대신 로컬 데이터 시뮬레이션)
   const messages = [
     "TIME IS A FRAGMENT OF OUR MIND.",
     "EVERY SECOND IS UNIQUE.",
@@ -21,38 +20,36 @@ const ExperimentalTimeTypography = () => {
   ];
 
   useEffect(() => {
-    // 시간 업데이트
+    // Set the current time every second
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
 
-    // 메시지 업데이트
+    // Cycle messages every 4 seconds
     const messageTimer = setInterval(() => {
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       setCurrentMessage(randomMessage);
       setMessageLetters(randomMessage.split(""));
     }, 4000);
 
+    // Initialize message letters
+    setMessageLetters(currentMessage.split(""));
+
     return () => {
       clearInterval(timer);
       clearInterval(messageTimer);
     };
-  }, [messages]);
+  }, [messages, currentMessage]);
 
   const handleMouseMove = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
 
-  const formatTime = (unit) => (unit < 10 ? `0${unit}` : unit);
-
-  const hours = formatTime(time.getHours());
-  const minutes = formatTime(time.getMinutes());
-  const seconds = formatTime(time.getSeconds());
-
   const renderLetters = () => {
     return messageLetters.map((char, index) => {
-      const offsetX = (Math.random() - 0.5) * 100 + (mousePosition.x / window.innerWidth) * 100;
-      const offsetY = (Math.random() - 0.5) * 100 + (mousePosition.y / window.innerHeight) * 100;
+      // Calculate random offset based on mouse position
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 200 + Math.random() * 50 - 25;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 200 + Math.random() * 50 - 25;
       const scale = Math.random() * 1.5 + 0.5;
       const rotate = Math.random() * 360;
 
@@ -61,13 +58,13 @@ const ExperimentalTimeTypography = () => {
           key={index}
           style={{
             position: "absolute",
-            top: `${50 + offsetY}px`,
-            left: `${50 + offsetX}px`,
+            top: `${50 + offsetY}%`,
+            left: `${50 + offsetX}%`,
             fontSize: `${Math.random() * 2 + 1.5}rem`,
             fontWeight: "bold",
             color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.random()})`,
             transform: `rotate(${rotate}deg) scale(${scale})`,
-            transition: "all 1s ease",
+            transition: "transform 1s ease, opacity 1s ease",
           }}
         >
           {char === " " ? "\u00A0" : char}
@@ -89,7 +86,7 @@ const ExperimentalTimeTypography = () => {
         position: "relative",
       }}
     >
-      {/* 시간 디스플레이 */}
+      {/* Time Display */}
       <div
         style={{
           position: "absolute",
@@ -102,10 +99,10 @@ const ExperimentalTimeTypography = () => {
           letterSpacing: "5px",
         }}
       >
-        {hours}:{minutes}:{seconds}
+        {time.toLocaleTimeString()}
       </div>
 
-      {/* 강력한 인터랙티브 메시지 */}
+      {/* Interactive Letters */}
       <div
         style={{
           position: "relative",
@@ -114,25 +111,11 @@ const ExperimentalTimeTypography = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden",
         }}
       >
         {renderLetters()}
       </div>
-
-      {/* 배경 시각 효과 */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.8) 100%)",
-          opacity: 0.7,
-          animation: "pulse 8s infinite",
-        }}
-      />
     </div>
   );
 };
