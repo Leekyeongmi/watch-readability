@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-const InteractiveSwissClock = () => {
+const InteractiveTimeArt = () => {
   const [time, setTime] = useState(new Date());
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  const messages = [
+    "TIME IS AN ILLUSION.",
+    "EVERY SECOND CHANGES EVERYTHING.",
+    "THE PRESENT IS ALL WE HAVE.",
+    "TIME FLOWS LIKE A RIVER.",
+    "WHAT IS LOST CANNOT BE FOUND.",
+  ];
 
   useEffect(() => {
     // Update the time every second
@@ -10,8 +19,16 @@ const InteractiveSwissClock = () => {
       setTime(new Date());
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+    // Cycle through messages every 5 seconds
+    const messageTimer = setInterval(() => {
+      setMessageIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(messageTimer);
+    };
+  }, [messages.length]);
 
   const handleMouseMove = (e) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -23,12 +40,32 @@ const InteractiveSwissClock = () => {
   const minutes = formatTime(time.getMinutes());
   const seconds = formatTime(time.getSeconds());
 
-  const calculateDynamicStyle = (baseValue, maxOffset) => {
-    const offsetX = (mousePosition.x / window.innerWidth) * maxOffset - maxOffset / 2;
-    const offsetY = (mousePosition.y / window.innerHeight) * maxOffset - maxOffset / 2;
-    return {
-      transform: `translate(${baseValue + offsetX}px, ${baseValue + offsetY}px)`,
-    };
+  const createLetterEffect = (text) => {
+    return text.split("").map((char, index) => {
+      const offsetX = (mousePosition.x / window.innerWidth - 0.5) * 100;
+      const offsetY = (mousePosition.y / window.innerHeight - 0.5) * 100;
+
+      const transformStyle = `translate(${offsetX + index * 2}px, ${
+        offsetY + index * 1.5
+      }px) rotate(${(offsetX - offsetY) * 0.1}deg)`;
+
+      return (
+        <span
+          key={index}
+          style={{
+            display: "inline-block",
+            transition: "transform 0.3s ease, opacity 0.3s ease",
+            transform: transformStyle,
+            opacity: Math.random() > 0.2 ? 1 : 0.5,
+            fontSize: "2rem",
+            fontWeight: "bold",
+            color: "#000",
+          }}
+        >
+          {char === " " ? "\u00A0" : char}
+        </span>
+      );
+    });
   };
 
   return (
@@ -43,90 +80,53 @@ const InteractiveSwissClock = () => {
         justifyContent: "center",
         alignItems: "center",
         overflow: "hidden",
+        position: "relative",
       }}
     >
+      {/* Time Display */}
       <div
         style={{
-          position: "relative",
-          width: "80%",
-          height: "80%",
-          maxWidth: "1200px",
-          maxHeight: "800px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridTemplateRows: "1fr auto",
+          position: "absolute",
+          top: "10%",
+          fontSize: "6rem",
+          fontWeight: "bold",
+          textAlign: "center",
+          letterSpacing: "5px",
+          zIndex: 1,
         }}
       >
-        {/* Time Display Section */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "12vw",
-              fontWeight: "bold",
-              color: "#000",
-              ...calculateDynamicStyle(0, 20),
-              transition: "transform 0.1s ease",
-            }}
-          >
-            {hours}:{minutes}
-          </div>
-          <div
-            style={{
-              fontSize: "3vw",
-              color: "#555",
-              ...calculateDynamicStyle(0, 10),
-              transition: "transform 0.1s ease",
-            }}
-          >
-            {seconds} seconds
-          </div>
-        </div>
-
-        {/* Philosophical Message Section */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "20px",
-            textAlign: "right",
-          }}
-        >
-          <p
-            style={{
-              fontSize: "2.5vw",
-              fontWeight: "bold",
-              lineHeight: "1.5",
-              letterSpacing: "1px",
-              color: "#000",
-              ...calculateDynamicStyle(0, 30),
-              transition: "transform 0.1s ease",
-            }}
-          >
-            TIME IS AN ILLUSION.
-          </p>
-          <p
-            style={{
-              fontSize: "1.5vw",
-              fontWeight: "lighter",
-              lineHeight: "1.8",
-              color: "#333",
-            }}
-          >
-            As we chase moments, the present slips through our grasp. Yet, in
-            every passing second lies the eternity we seek.
-          </p>
-        </div>
+        {hours}:{minutes}:{seconds}
       </div>
+
+      {/* Dynamic Message Display */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 2,
+        }}
+      >
+        {createLetterEffect(messages[messageIndex])}
+      </div>
+
+      {/* Subtle Background Animation */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0) 20%, rgba(0,0,0,0.1) 80%)",
+          opacity: 0.5,
+          animation: "pulse 5s infinite",
+        }}
+      />
     </div>
   );
 };
 
-export default InteractiveSwissClock;
+export default InteractiveTimeArt;
