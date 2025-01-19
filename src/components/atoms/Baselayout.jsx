@@ -14,8 +14,17 @@ export default function BaseLayout() {
   }
 
   useEffect(() => {
-    console.log('hi');
     updateViewportHeight();
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener(
+      'touchmove',
+      (event) => {
+        event.preventDefault();
+      },
+      { passive: false }
+    );
   }, []);
 
   window.addEventListener('resize', updateViewportHeight);

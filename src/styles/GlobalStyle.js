@@ -25,6 +25,7 @@ html,
 body {
     overscroll-behavior: none;
     overflow-y:hidden;
+     -webkit-overflow-scrolling: auto;
 
 }
 
