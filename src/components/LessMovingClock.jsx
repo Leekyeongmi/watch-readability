@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
 export default function MovingClock({ type = '1', randomTime }) {
-  const [isAnimating, setIsAnimating] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(1);
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
@@ -10,7 +9,7 @@ export default function MovingClock({ type = '1', randomTime }) {
     seconds: 30
   });
 
-  console.log(randomTime);
+  // console.log(randomTime);
 
   const animationDurationPhase1 = 1000;
   const animationDurationPhase2 = 2000;
@@ -81,7 +80,7 @@ export default function MovingClock({ type = '1', randomTime }) {
         }
       }, 5);
     }
-  }, [isAnimating, animationPhase, targetHours, targetMinutes, targetSeconds]);
+  }, [animationPhase, targetHours, targetMinutes, targetSeconds]);
 
   const seconds = animationTime.seconds;
   const minutes = animationTime.minutes;
