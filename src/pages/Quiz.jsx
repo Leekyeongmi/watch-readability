@@ -178,8 +178,24 @@ function Quiz() {
     setQuizArr(shuffleArray());
   }, []);
 
+  useEffect(() => {
+    const quizPage = document.querySelector('#quiz-page');
+
+    const handleTouchMove = (event) => {
+      if (!quizPage.contains(event.target)) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
   return (
-    <QuizPage>
+    <QuizPage id='quiz-page'>
       <HeaderSection>
         <ProgressBar>
           {Array.from({ length: totalQuizzes }).map((_, index) => (
