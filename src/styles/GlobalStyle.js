@@ -25,6 +25,7 @@ html,
 body {
     overscroll-behavior: none;
     overflow-y:hidden;
+
 }
 
 @media screen and (max-width: ${theme.deviceSizes.mobile}) {
@@ -61,6 +62,16 @@ img {
 input { 
   -webkit-user-select : auto;
 }
+
+
+.full-screen {
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 `;
 
