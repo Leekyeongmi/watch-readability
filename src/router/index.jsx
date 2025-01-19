@@ -14,7 +14,7 @@ const webRouter = createBrowserRouter([
         index: true,
         element: <Intro />
       },
-      { path: '/practice', element: <JinsungLabs /> },
+      // { path: '/practice', element: <JinsungLabs /> },
       { path: '/quiz', element: <Quiz /> },
       { path: '/result', element: <Result /> },
 
