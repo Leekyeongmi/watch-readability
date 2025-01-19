@@ -23,6 +23,7 @@ import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
 import Lottie from 'react-lottie-player';
 import PassJson from '../components/test.json';
+import LessMovingClock from '../components/LessMovingClock';
 
 function Quiz() {
   const totalQuizzes = 7;
@@ -220,7 +221,7 @@ function Quiz() {
       </NavSection>
       <ContentSection>
         <ProblemSection>
-          <StaticClock type={quizArr[currentQuiz]} rotation={rotation} />
+          <LessMovingClock type={quizArr[currentQuiz]} rotation={rotation} />
         </ProblemSection>
         <BottomSection>
           <DisplayContainer>
