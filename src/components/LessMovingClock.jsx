@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
+import { getRotationFromTime } from '../utils/generateRandomTime';
 
 export default function LessMovingClock({ type = '1', randomTime }) {
   const [animationPhase, setAnimationPhase] = useState(1);
@@ -72,15 +73,11 @@ export default function LessMovingClock({ type = '1', randomTime }) {
     }
   }, [animationPhase, randomTime]);
 
-  // 초, 분, 시 계산
-  const seconds = animationTime.seconds;
-  const minutes = animationTime.minutes;
-  const hours = animationTime.hours;
-
-  // 각도 계산
-  const hourRotation = hours * 30;
-  const minuteRotation = minutes * 6;
-  const secondRotation = seconds * 6;
+  const { hourRotation, minuteRotation, secondRotation } = getRotationFromTime(
+    animationTime.hours,
+    animationTime.minutes,
+    animationTime.seconds
+  );
 
   return (
     <Clock
