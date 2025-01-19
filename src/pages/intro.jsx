@@ -85,7 +85,7 @@ const IntroPage = styled(Column)`
 `;
 
 const ContentSection = styled(Column)`
-  padding: ${LAYOUT.PADDING_X}rem;
+  padding: 0 ${LAYOUT.PADDING_X}rem;
   text-align: center;
   justify-content: space-evenly;
   height: 100%;

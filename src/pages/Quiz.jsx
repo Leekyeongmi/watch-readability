@@ -322,7 +322,6 @@ const Dot = styled.div`
 
 const ContentSection = styled(Column)`
   height: 100%;
-  padding: ${LAYOUT.PADDING_X}rem 0;
   justify-content: space-evenly;
 `;
 
