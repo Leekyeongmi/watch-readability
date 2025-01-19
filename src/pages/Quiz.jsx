@@ -21,6 +21,8 @@ import Picker from 'react-mobile-picker';
 import { Text } from '../components/atoms/Text';
 import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
+import Lottie from 'react-lottie-player';
+import PassJson from '../components/test.json';
 
 function Quiz() {
   const totalQuizzes = 7;
@@ -33,6 +35,7 @@ function Quiz() {
     minuteRotation: 0,
     secondRotation: 0
   });
+  const [showLottie, setShowLottie] = useState(false);
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
     hour: '6',
@@ -58,7 +61,7 @@ function Quiz() {
       alert('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
       return;
     }
-
+    setShowLottie(true);
     try {
       await addDoc(collection(firestore, 'problems'), {
         clockId: clockId,
@@ -74,13 +77,15 @@ function Quiz() {
     }
   }
 
-  const goToNextQuiz = () => {
+  const goToNextQuiz = async () => {
     if (currentQuiz == totalQuizzes - 1) {
       navigate('/result');
     }
 
     if (currentQuiz < totalQuizzes - 1) {
       calculateError();
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      await sleep(2000);
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
@@ -141,6 +146,7 @@ function Quiz() {
       minuteErrorAngle: parseFloat(minuteErrorAngle),
       secondErrorAngle: parseFloat(secondErrorAngle)
     };
+
     submitProblemData(dataToPost);
 
     // alert(
@@ -155,6 +161,15 @@ function Quiz() {
     //   `
     // );
   };
+
+  useEffect(() => {
+    if (showLottie) {
+      const timer = setTimeout(() => {
+        setShowLottie(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showLottie]);
 
   useEffect(() => {
     let timerId;
@@ -239,7 +254,7 @@ function Quiz() {
             <Picker
               value={userTime}
               onChange={setUserTime}
-              wheelMode='normal'
+              wheelMode='natural'
               itemHeight={35}
               onAnimationIteration={true}
               height={213}
@@ -264,6 +279,15 @@ function Quiz() {
           </TimePickerWrapper>
         </BottomSection>
       </ContentSection>
+      {showLottie && (
+        <LottieWrapper>
+          <Lottie
+            animationData={PassJson}
+            play
+            style={{ width: 150, height: 150 }}
+          />
+        </LottieWrapper>
+      )}
     </QuizPage>
   );
 }
@@ -299,6 +323,19 @@ const ContentSection = styled(Column)`
 
 const ProblemSection = styled(CenterColumn)`
   flex: 1;
+`;
+
+const LottieWrapper = styled(Column)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  background-color: rgba(0, 0, 0, 0.3);
 `;
 
 const DisplayWrapper = styled(CenterRow)`
