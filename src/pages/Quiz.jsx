@@ -36,6 +36,7 @@ function Quiz() {
     minuteRotation: 0,
     secondRotation: 0
   });
+  const [randomTime, setRandomTime] = useState({});
   const [showLottie, setShowLottie] = useState(false);
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
@@ -150,17 +151,17 @@ function Quiz() {
 
     submitProblemData(dataToPost);
 
-    // alert(
-    //   `테스트용 알러트 :
-    //   정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
-    //   당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
-    //   시침 오차 각도: ${hourErrorAngle}°
-    //   분침 오차 각도: ${minuteErrorAngle}°
-    //   초침 오차 각도: ${secondErrorAngle}°
-    //   푸는 데 걸린 시간은 ${timer}초
-    //   풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
-    //   `
-    // );
+    alert(
+      `테스트용 알러트 :
+      정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
+      당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
+      시침 오차 각도: ${hourErrorAngle}°
+      분침 오차 각도: ${minuteErrorAngle}°
+      초침 오차 각도: ${secondErrorAngle}°
+      푸는 데 걸린 시간은 ${timer}초
+      풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
+      `
+    );
   };
 
   useEffect(() => {
@@ -178,8 +179,16 @@ function Quiz() {
   }, [currentQuiz]);
 
   useEffect(() => {
-    const randomTime = generateRandomTime();
-    setRotation(randomTime);
+    const randomHour = Math.floor(Math.random() * 12);
+    const randomMinute = Math.floor(Math.random() * 60);
+    const randomSecond = Math.floor(Math.random() * 60);
+    const randomRotation = getRotationFromTime(
+      randomHour,
+      randomMinute,
+      randomSecond
+    );
+    setRotation(randomRotation);
+    setRandomTime({ randomHour, randomMinute, randomSecond });
   }, [currentQuiz]);
 
   useEffect(() => {
@@ -221,7 +230,10 @@ function Quiz() {
       </NavSection>
       <ContentSection>
         <ProblemSection>
-          <LessMovingClock type={quizArr[currentQuiz]} rotation={rotation} />
+          <LessMovingClock
+            type={quizArr[currentQuiz]}
+            randomTime={randomTime}
+          />
         </ProblemSection>
         <BottomSection>
           <DisplayContainer>

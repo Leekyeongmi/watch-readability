@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
-export default function MovingClock({ type = '1' }) {
-  const [currentTime, setCurrentTime] = useState(new Date());
+export default function LessMovingClock({ type = '1', randomTime }) {
   const [isAnimating, setIsAnimating] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(1);
   const [animationTime, setAnimationTime] = useState({
@@ -44,10 +43,9 @@ export default function MovingClock({ type = '1' }) {
           const progress = Math.min(elapsed / animationDurationPhase2, 1);
 
           // 현재 시간 계산
-          const targetHours = currentTime.getHours() % 12;
-          const targetMinutes = currentTime.getMinutes();
-          const targetSeconds =
-            currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+          const targetHours = randomTime.randomHour % 12;
+          const targetMinutes = randomTime.randomMinute;
+          const targetSeconds = randomTime.randomSecond;
 
           // 시작 시간 (10시 10분 30초)
           const startHours = 10;
@@ -75,30 +73,13 @@ export default function MovingClock({ type = '1' }) {
           }
         }, 1);
       }
-    } else {
-      // 현재 시간 업데이트
-      const timer = setInterval(() => {
-        setCurrentTime(new Date());
-      }, 30);
-
-      return () => {
-        clearInterval(timer);
-      };
     }
-  }, [isAnimating, animationPhase, currentTime]);
+  }, [isAnimating, animationPhase]);
 
   // 초, 분, 시 계산
-  const seconds = isAnimating
-    ? animationTime.seconds
-    : currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
-
-  const minutes = isAnimating
-    ? animationTime.minutes
-    : currentTime.getMinutes() + seconds / 60;
-
-  const hours = isAnimating
-    ? animationTime.hours
-    : (currentTime.getHours() % 12) + minutes / 60;
+  const seconds = animationTime.seconds;
+  const minutes = animationTime.minutes;
+  const hours = animationTime.hours;
 
   // 각도 계산
   const hourRotation = hours * 30;
