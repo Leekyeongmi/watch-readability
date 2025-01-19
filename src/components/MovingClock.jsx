@@ -107,6 +107,8 @@ export default function MovingClock({ type = '1', rank }) {
     }
   }, [isAnimating, animationPhase, currentTime]);
 
+  console.log(currentTime);
+
   // 초, 분, 시 계산
   const seconds = isAnimating
     ? animationTime.seconds

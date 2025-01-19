@@ -171,7 +171,13 @@ function Quiz() {
   }, [isRunning]);
 
   useEffect(() => {
-    startTimer();
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const startTimerWithDelay = async () => {
+      await sleep(2000);
+      startTimer();
+    };
+    startTimerWithDelay();
   }, [currentQuiz]);
 
   useEffect(() => {
