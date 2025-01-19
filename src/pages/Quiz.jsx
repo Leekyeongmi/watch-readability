@@ -281,6 +281,7 @@ function Quiz() {
               ))}
             </Picker>
           </TimePickerWrapper>
+          <div></div>
         </BottomSection>
       </ContentSection>
       {showLottie && (
@@ -326,7 +327,7 @@ const ContentSection = styled(Column)`
 `;
 
 const ProblemSection = styled(CenterColumn)`
-  flex: 1;
+  flex: 0.45;
 `;
 
 const LottieWrapper = styled(Column)`
@@ -347,7 +348,7 @@ const DisplayWrapper = styled(CenterRow)`
 `;
 
 const BottomSection = styled(CenterColumn)`
-  flex: 1;
+  flex: 0.55;
   justify-content: space-between;
 `;
 

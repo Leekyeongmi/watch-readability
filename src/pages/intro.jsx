@@ -98,9 +98,9 @@ const ButtonContainer = styled(CenterColumn)`
 
 const ClockWrapper = styled(CenterColumn)`
   position: relative;
-  flex: 1;
+  flex: 0.45;
 `;
 
 const BottomWrapper = styled(Column)`
-  flex: 1;
+  flex: 0.55;
 `;
