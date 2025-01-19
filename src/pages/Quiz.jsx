@@ -53,9 +53,9 @@ function Quiz() {
     minuteErrorAngle,
     secondErrorAngle
   }) {
-    console.log(elapsedTime, hourErrorAngle, minuteErrorAngle);
+    // console.log(elapsedTime, hourErrorAngle, minuteErrorAngle);
     if (elapsedTime >= 60 || hourErrorAngle >= 90 || minuteErrorAngle >= 90) {
-      alert('시간이 너무 많이 초과하였거나 오차범위가 넓어서 전송하지 않겠음');
+      alert('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
       return;
     }
 
@@ -118,8 +118,8 @@ function Quiz() {
       secondRotation: randomSecondAngle
     } = rotation;
 
-    console.log(userAngle, '===유저인풋의 각도 in error');
-    console.log(rotation, '===퀴즈의 각도 in error');
+    // console.log(userAngle, '===유저인풋의 각도 in error');
+    // console.log(rotation, '===퀴즈의 각도 in error');
 
     const hourErrorAngle = calculateAngleDifference(
       randomHourAngle,
@@ -143,17 +143,17 @@ function Quiz() {
     };
     submitProblemData(dataToPost);
 
-    alert(
-      `테스트용 알러트 : 
-      정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
-      당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
-      시침 오차 각도: ${hourErrorAngle}°
-      분침 오차 각도: ${minuteErrorAngle}°
-      초침 오차 각도: ${secondErrorAngle}°
-      푸는 데 걸린 시간은 ${timer}초
-      풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
-      `
-    );
+    // alert(
+    //   `테스트용 알러트 :
+    //   정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
+    //   당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
+    //   시침 오차 각도: ${hourErrorAngle}°
+    //   분침 오차 각도: ${minuteErrorAngle}°
+    //   초침 오차 각도: ${secondErrorAngle}°
+    //   푸는 데 걸린 시간은 ${timer}초
+    //   풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
+    //   `
+    // );
   };
 
   useEffect(() => {
