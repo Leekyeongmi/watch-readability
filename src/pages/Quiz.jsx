@@ -3,13 +3,9 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import HeaderSection from '../components/atoms/HeaderSection';
 import { CenterColumn, CenterRow, Column } from '../components/layouts/Layout';
-import StaticClock from '../components/StaticClock';
 import Timer from '../components/Timer';
-import { LAYOUT } from '../constant';
-import {
-  generateRandomTime,
-  getRotationFromTime
-} from '../utils/generateRandomTime';
+
+import { getRotationFromTime } from '../utils/generateRandomTime';
 import { shuffleArray } from '../utils/shuffleArray';
 import BasicButton from '../components/atoms/BasicButton';
 
@@ -261,7 +257,7 @@ function Quiz() {
               wheelMode='natural'
               itemHeight={35}
               onAnimationIteration={true}
-              height={213}
+              height={200}
             >
               {Object.keys(selections).map((name) => (
                 <Picker.Column key={name} name={name}>
