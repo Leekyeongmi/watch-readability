@@ -182,7 +182,7 @@ function Quiz() {
     const quizPage = document.querySelector('#quiz-page');
 
     const handleTouchMove = (event) => {
-      if (!quizPage.contains(event.target)) {
+      if (quizPage.contains(event.target)) {
         event.preventDefault();
       }
     };
