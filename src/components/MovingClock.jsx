@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
-export default function MovingClock({ type = '1' }) {
+export default function MovingClock({ type = '1', rank }) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isAnimating, setIsAnimating] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(1);
@@ -16,7 +16,7 @@ export default function MovingClock({ type = '1' }) {
 
   // Ease-in-out 함수
   const easeInOut = (progress) => {
-    const easeInPower = 3;  // ease-in 강도
+    const easeInPower = 3; // ease-in 강도
     const easeOutPower = 2; // ease-out 강도
     if (progress < 0.5) {
       // Ease-in 구간
@@ -85,7 +85,8 @@ export default function MovingClock({ type = '1' }) {
           setAnimationTime({
             hours: startHours + adjustedProgress * hourDistance,
             minutes: startMinutes + currentMinuteDistance,
-            seconds: startSeconds + adjustedProgress * secondDistance + additionalTime
+            seconds:
+              startSeconds + adjustedProgress * secondDistance + additionalTime
           });
 
           if (progress === 1) {
@@ -127,6 +128,7 @@ export default function MovingClock({ type = '1' }) {
   return (
     <Clock
       type={type}
+      rank={rank}
       rotation={{ hourRotation, minuteRotation, secondRotation }}
     />
   );

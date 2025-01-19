@@ -17,6 +17,7 @@ import HeaderSection from '../components/atoms/HeaderSection';
 import BasicButton from '../components/atoms/BasicButton';
 import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/components/HomeButton';
+import MovingClock from '../components/MovingClock';
 
 function Result() {
   const [stats, setStats] = useState();
@@ -174,11 +175,7 @@ function Result() {
                   <Text typo='head01'>{`${index + 1}`}</Text>
                 </Rank>
                 <ClockWrapper>
-                  <StaticClock
-                    type={item?.clockId}
-                    rotation={rotation}
-                    rank={index + 1}
-                  />
+                  <MovingClock type={item?.clockId} rank={index + 1} />
                 </ClockWrapper>
                 <DataContainer gap='0.75rem'>
                   <Column>{filter === 1 && <></>}</Column>
