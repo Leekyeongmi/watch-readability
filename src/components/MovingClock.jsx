@@ -62,10 +62,11 @@ export default function MovingClock({ type = '1', rank }) {
           const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
           // 현재 시간 계산
-          const targetHours = currentTime.getHours() % 12;
-          const targetMinutes = currentTime.getMinutes();
           const targetSeconds =
             currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+          const targetMinutes = currentTime.getMinutes() + targetSeconds / 60;
+          const targetHours =
+            (currentTime.getHours() % 12) + targetMinutes / 60;
 
           // 시작 시간 (10시 10분 30초)
           const startHours = 10;
@@ -107,8 +108,6 @@ export default function MovingClock({ type = '1', rank }) {
       };
     }
   }, [isAnimating, animationPhase, currentTime]);
-
-  console.log(currentTime);
 
   // 초, 분, 시 계산
   const seconds = isAnimating
