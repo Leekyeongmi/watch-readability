@@ -9,8 +9,7 @@ import { collection, query, getDocs } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { generateRandomTime } from '../utils/generateRandomTime';
-import StaticClock from '../components/StaticClock';
+// import { generateRandomTime } from '../utils/generateRandomTime';
 import styled from 'styled-components';
 import { LAYOUT } from '../constant';
 import HeaderSection from '../components/atoms/HeaderSection';
@@ -25,11 +24,11 @@ function Result() {
   const [filter, setFilter] = useState(0);
   const navigate = useNavigate();
   const [totalUserCount, setTotalUserCount] = useState(0);
-  const [rotation, setRotation] = useState({
-    hourRotation: 0,
-    minuteRotation: 0,
-    secondRotation: 0
-  });
+  // const [rotation, setRotation] = useState({
+  //   hourRotation: 0,
+  //   minuteRotation: 0,
+  //   secondRotation: 0
+  // });
 
   async function calculateStats(filter) {
     const q = query(collection(firestore, 'problems'));
@@ -109,10 +108,10 @@ function Result() {
     calculateStats(filter);
   }, [filter]);
 
-  useEffect(() => {
-    const randomTime = generateRandomTime();
-    setRotation(randomTime);
-  }, []);
+  // useEffect(() => {
+  //   const randomTime = generateRandomTime();
+  //   setRotation(randomTime);
+  // }, []);
 
   return (
     <ResultPage>
@@ -193,7 +192,7 @@ function Result() {
           })}
           <DateContainer>
             <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-            <Text typo='body03M'>{`현재까지 총 ${totalUserCount}명이 문제를 풀었습니다.`}</Text>
+            <Text typo='body03M'>{`현재까지 총 ${totalUserCount}개의 문제가 풀렸습니다.`}</Text>
           </DateContainer>
           <CopyRight>
             <Text typo='body03M'>{`designer. Chung jinsung

@@ -61,7 +61,6 @@ function Quiz() {
       alert('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
       return;
     }
-    setShowLottie(true);
     try {
       await addDoc(collection(firestore, 'problems'), {
         clockId: clockId,
@@ -84,8 +83,9 @@ function Quiz() {
 
     if (currentQuiz < totalQuizzes - 1) {
       calculateError();
-      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      await sleep(2000);
+      setShowLottie(true);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setShowLottie(false);
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
@@ -161,15 +161,6 @@ function Quiz() {
     //   `
     // );
   };
-
-  useEffect(() => {
-    if (showLottie) {
-      const timer = setTimeout(() => {
-        setShowLottie(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showLottie]);
 
   useEffect(() => {
     let timerId;
