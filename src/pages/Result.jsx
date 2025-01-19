@@ -192,7 +192,7 @@ function Result() {
           })}
           <DateContainer>
             <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-            <Text typo='body03M'>{`현재까지 총 ${totalUserCount}개의 문제가 풀렸습니다.`}</Text>
+            <Text typo='body03M'>{`현재까지 총 ${totalUserCount}개의 문제를 풀었습니다.`}</Text>
           </DateContainer>
           <CopyRight>
             <Text typo='body03M'>{`designer. Chung jinsung
