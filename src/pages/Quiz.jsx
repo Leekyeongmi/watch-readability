@@ -348,7 +348,7 @@ const BottomSection = styled(CenterColumn)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  width: 198.5px;
+  width: 180px;
   background-color: ${({ theme }) => theme.colors.background01};
   border-radius: 18px;
   z-index: 10000;
