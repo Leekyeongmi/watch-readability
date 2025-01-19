@@ -91,6 +91,7 @@ export default function MovingClock({ type = '1', rank }) {
 
           if (progress === 1) {
             clearInterval(interval);
+            setCurrentTime(new Date());
             setIsAnimating(false); // 애니메이션 종료
           }
         }, 1);
@@ -99,7 +100,7 @@ export default function MovingClock({ type = '1', rank }) {
       // 현재 시간 업데이트
       const timer = setInterval(() => {
         setCurrentTime(new Date());
-      }, 30);
+      }, 16);
 
       return () => {
         clearInterval(timer);
