@@ -14,7 +14,7 @@ export default function BaseLayout() {
   }
 
   useEffect(() => {
-    // updateViewportHeight();
+    updateViewportHeight();
   }, []);
 
   return (
@@ -28,8 +28,7 @@ const BasicLayout = styled(Column)`
   position: relative;
   background-color: ${({ theme }) => theme.colors.background02};
   overflow: hidden;
-  height: 100svh;
-  // height: calc(var(--vh, 1vh) * 100);
-  // padding: env(safe-area-inset-top) env(safe-area-inset-right)
-  // env(safe-area-inset-bottom) env(safe-area-inset-left);
+  height: calc(var(--vh, 1vh) * 100);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
 `;
