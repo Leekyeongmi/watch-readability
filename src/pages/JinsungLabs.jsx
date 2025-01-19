@@ -1,91 +1,135 @@
-import { CenterColumn, Column } from '../components/layouts/Layout';
-import ThemeSwitcher from '../components/ThemeSwitcher';
-import MovingClock from '../components/MovingClock';
-import styled from 'styled-components';
-import { Text } from '../components/atoms/Text';
-import { LAYOUT } from '../constant';
-import BasicButton from '../components/atoms/BasicButton';
-import { useUserTheme } from '../stores/useTheme';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import HeaderSection from '../components/atoms/HeaderSection';
+import React, { useEffect, useState } from 'react';
 
-function Intro() {
-  const userTheme = useUserTheme();
-  const navigate = useNavigate();
-  const [randomWatchType, setRandomWatchType] = useState(null);
+const messages = [
+  'Time', 'Clock', 'Now', 'Second', 'Minute', 'Hour', 'Countdown', 'Tick', 'Tock', 'Past', 'Future', 'Wait', 
+  'Duration', 'Interval', 'Moment', 'Cycle', 'Time flies', 'Countdown', 'Minutes', 'Seconds', 'Clockwork', 
+  'Timing', 'Timekeeper', 'Endless', 'Eternal', 'Forever', 'Never', 'Decade', 'Epoch', 'Era', 'Past, Present, Future'
+];
 
-  const pickRandomFrom0to6 = () => {
-    return String(Math.floor(Math.random() * 7));
-  };
+const getRandomMessage = () => {
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return messages[randomIndex];
+};
 
+const TimeDisplay = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [randomMessages, setRandomMessages] = useState([]);
+  const [highlightedMessage, setHighlightedMessage] = useState('');
+  
   useEffect(() => {
-    const randomNum = pickRandomFrom0to6();
-    setRandomWatchType(randomNum);
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
-  if (!randomWatchType) return null;
+  useEffect(() => {
+    const generateRandomMessages = () => {
+      const newMessages = [];
+      for (let i = 0; i < 10; i++) {
+        newMessages.push(getRandomMessage());
+      }
+      setRandomMessages(newMessages);
+    };
+
+    generateRandomMessages();
+    const messageInterval = setInterval(generateRandomMessages, 3000);
+    return () => clearInterval(messageInterval);
+  }, []);
+
+  const handleClick = () => {
+    const randomIndex = Math.floor(Math.random() * randomMessages.length);
+    setHighlightedMessage(randomMessages[randomIndex]);
+  };
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  };
 
   return (
-    <IntroPage>
-      <HeaderSection>
-        <Text typo='head04' color='font'>
-          {`시간 가독성/판독성 연구
-          a comparicon of 
-          the readability & legibility on time
-          `}
-        </Text>
-      </HeaderSection>
-      <ContentSection>
-        <ThemeSwitcher />
-        {<MovingClock type={randomWatchType} />}
+    <div style={styles.container}>
+      <div style={styles.timeDisplay}>
+        <p style={styles.timeText}>{formatTime(currentTime)}</p>
+      </div>
 
-        <Text typo='body03M' color='font'>
-          {`저희는 손목시계 디자인의 7가지 기준을 만들고`} <br />
-        <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,
-          {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
-          연구에 큰 도움이 될 것입니다!`}
-        </Text>
-        <ButtonContainer gap='1rem'>
-          <BasicButton
-            onClick={() => navigate('/quiz')}
-            width={'9.375rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '참여하기' }}
-            bg={'button'}
-          ></BasicButton>
-          <BasicButton
-            onClick={() => navigate('/result')}
-            width={'9.375rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '연구현황' }}
-            bg={'button'}
-          ></BasicButton>
-        </ButtonContainer>
-      </ContentSection>
-    </IntroPage>
+      <div style={styles.messagesContainer}>
+        {randomMessages.map((message, index) => (
+          <div
+            key={index}
+            style={{
+              ...styles.message,
+              ...(message === highlightedMessage ? styles.highlighted : {}),
+            }}
+            onClick={handleClick}
+          >
+            {message}
+          </div>
+        ))}
+      </div>
+      
+      <div style={styles.overlay}></div>
+    </div>
   );
-}
+};
 
-export default Intro;
+const styles = {
+  container: {
+    position: 'relative',
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0',
+    fontFamily: 'Courier New, monospace',
+  },
+  timeDisplay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    textAlign: 'center',
+    zIndex: 10,
+  },
+  timeText: {
+    fontSize: '48px',
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  messagesContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '10px',
+    pointerEvents: 'none',
+    fontSize: '20px',
+    lineHeight: '30px',
+  },
+  message: {
+    fontSize: '20px',
+    color: '#333',
+    transition: 'all 0.5s ease',
+    pointerEvents: 'auto',
+  },
+  highlighted: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0, 0, 0, 0.2)',
+    pointerEvents: 'none',
+    zIndex: -1,
+  },
+};
 
-const IntroPage = styled(Column)`
-  height: 100%;
-`;
-
-const ContentSection = styled(Column)`
-  padding: ${LAYOUT.PADDING_X}rem;
-  text-align: center;
-  height: 100%;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-`;
-
-const ButtonContainer = styled(CenterColumn)`
-  padding: ${LAYOUT.PADDING_X}rem;
-  text-align: center;
-`;
+export default TimeDisplay;
