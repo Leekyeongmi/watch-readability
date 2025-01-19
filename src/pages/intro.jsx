@@ -31,7 +31,7 @@ function Intro() {
       <HeaderSection>
         <Text typo='head2' color='black'>
           {`시간 가독성/판독성 연구 
-          a comparicon of the readability 
+          a comparison of the readability 
           & legibility on time
           `}
         </Text>
