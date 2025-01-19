@@ -11,7 +11,19 @@ export default function LessMovingClock({ type = '1', randomTime }) {
   });
 
   const animationDurationPhase1 = 1000; // 1단계 지속 시간
-  const animationDurationPhase2 = 1000; // 2단계 지속 시간
+  const animationDurationPhase2 = 2000; // 2단계 지속 시간
+
+  const easeInOut = (progress) => {
+    const easeInPower = 3; // ease-in 강도
+    const easeOutPower = 2; // ease-out 강도
+    if (progress < 0.5) {
+      // Ease-in 구간
+      return Math.pow(progress * 2, easeInPower) / 2;
+    } else {
+      // Ease-out 구간
+      return 1 - Math.pow(2 * (1 - progress), easeOutPower) / 2;
+    }
+  };
 
   useEffect(() => {
     if (animationPhase === 1) {
@@ -40,6 +52,7 @@ export default function LessMovingClock({ type = '1', randomTime }) {
         const now = new Date();
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / animationDurationPhase2, 1);
+        const adjustedProgress = easeInOut(progress); // ease-in-out 적용
 
         // 현재 시간 계산
         const targetHours = randomTime.randomHour % 12;
@@ -58,12 +71,12 @@ export default function LessMovingClock({ type = '1', randomTime }) {
 
         // 분침 두 바퀴 회전 + 현재 시간 이동
         const totalMinuteDistance = 60 + minuteDistance; // 두 바퀴(240분) + 현재 시간까지 거리
-        const currentMinuteDistance = progress * totalMinuteDistance;
+        const currentMinuteDistance = adjustedProgress * totalMinuteDistance;
 
         setAnimationTime({
-          hours: startHours + progress * hourDistance,
+          hours: startHours + adjustedProgress * hourDistance,
           minutes: startMinutes + currentMinuteDistance,
-          seconds: startSeconds + progress * secondDistance
+          seconds: startSeconds + adjustedProgress * secondDistance
         });
 
         if (progress === 1) {
