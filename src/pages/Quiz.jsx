@@ -189,6 +189,7 @@ function Quiz() {
       randomMinute,
       randomSecond
     );
+
     setRotation(randomRotation);
     setRandomTime({ randomHour, randomMinute, randomSecond });
   }, [currentQuiz]);

@@ -52,7 +52,6 @@ export default function MovingClock({ type = '1', rank }) {
           }
         }, 5);
       } else if (animationPhase === 2) {
-        // 2단계: 현재 시간으로 이동 (5초의 오차를 선반영)
         const startTime = new Date();
         const interval = setInterval(() => {
           const now = new Date();
