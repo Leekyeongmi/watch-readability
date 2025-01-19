@@ -326,7 +326,7 @@ const ContentSection = styled(Column)`
 `;
 
 const ProblemSection = styled(CenterColumn)`
-  flex: 0.45;
+  flex: 0.4;
 `;
 
 const LottieWrapper = styled(Column)`
@@ -347,7 +347,7 @@ const DisplayWrapper = styled(CenterRow)`
 `;
 
 const BottomSection = styled(CenterColumn)`
-  flex: 0.55;
+  flex: 0.6;
   justify-content: space-between;
 `;
 
