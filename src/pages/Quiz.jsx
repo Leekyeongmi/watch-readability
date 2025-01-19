@@ -260,8 +260,8 @@ function Quiz() {
             <Picker
               value={userTime}
               onChange={setUserTime}
-              wheelMode='natural'
-              itemHeight={30}
+              wheelMode='normal'
+              itemHeight={35}
               onAnimationIteration={true}
               height={190}
             >
