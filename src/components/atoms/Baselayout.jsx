@@ -17,5 +17,5 @@ const BasicLayout = styled(Column)`
   background-color: ${({ theme }) => theme.colors.background02};
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 100svh;
+  height: 100vh;
 `;
