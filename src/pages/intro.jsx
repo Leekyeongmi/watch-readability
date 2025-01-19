@@ -8,6 +8,7 @@ import { useUserTheme } from '../stores/useTheme';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import HeaderSection from '../components/atoms/HeaderSection';
+import NavSection from '../components/atoms/NavSection';
 
 function Intro() {
   const userTheme = useUserTheme();
@@ -35,40 +36,43 @@ function Intro() {
           `}
         </Text>
       </HeaderSection>
+      <NavSection />
       <ContentSection>
         <ClockWrapper>
           <MovingClock type={randomWatchType} />
         </ClockWrapper>
-        <Text typo='head4' color='font'>
-          {`저희는 손목시계 디자인의 7가지 기준을 만들고`} <br />
-          <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,{' '}
-          <br />
-          {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
+        <BottomWrapper>
+          <Text typo='head4' color='font'>
+            {`저희는 손목시계 디자인의 7가지 기준을 만들고`} <br />
+            <strong>시간을 얼마나 쉽고 빠르게 알아볼 수 있는가</strong>를 비교,{' '}
+            <br />
+            {`연구하고 있습니다. 여러분이 짧은 테스트에 임해주신다면
           연구에 큰 도움이 될 것입니다!`}
-        </Text>
-        <ButtonContainer gap='1.375rem'>
-          <BasicButton
-            onClick={() => navigate('/quiz')}
-            width={'8.438rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '시작하기' }}
-            bg={'primary500'}
-            style={{ fontWeight: 'bold' }}
-            shape={'round'}
-          ></BasicButton>
-          <BasicButton
-            onClick={() => navigate('/result')}
-            width={'8.438rem'}
-            height={'3.75rem'}
-            size={'s'}
-            mode={userTheme}
-            textProps={{ text: '연구현황' }}
-            bg={'button'}
-            shape={'round'}
-          ></BasicButton>
-        </ButtonContainer>
+          </Text>
+          <ButtonContainer gap='1.375rem'>
+            <BasicButton
+              onClick={() => navigate('/quiz')}
+              width={'8.438rem'}
+              height={'3.75rem'}
+              size={'s'}
+              mode={userTheme}
+              textProps={{ text: '시작하기' }}
+              bg={'primary500'}
+              style={{ fontWeight: 'bold' }}
+              shape={'round'}
+            ></BasicButton>
+            <BasicButton
+              onClick={() => navigate('/result')}
+              width={'8.438rem'}
+              height={'3.75rem'}
+              size={'s'}
+              mode={userTheme}
+              textProps={{ text: '연구현황' }}
+              bg={'button'}
+              shape={'round'}
+            ></BasicButton>
+          </ButtonContainer>
+        </BottomWrapper>
       </ContentSection>
     </IntroPage>
   );
@@ -83,8 +87,8 @@ const IntroPage = styled(Column)`
 const ContentSection = styled(Column)`
   padding: ${LAYOUT.PADDING_X}rem;
   text-align: center;
-  height: 100%;
   justify-content: space-evenly;
+  height: 100%;
 `;
 
 const ButtonContainer = styled(CenterColumn)`
@@ -94,4 +98,9 @@ const ButtonContainer = styled(CenterColumn)`
 
 const ClockWrapper = styled(CenterColumn)`
   position: relative;
+  flex: 1;
+`;
+
+const BottomWrapper = styled(Column)`
+  flex: 1;
 `;

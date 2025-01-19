@@ -5,7 +5,6 @@ import {
   Column,
   Row
 } from '../components/layouts/Layout';
-import css from 'styled-components';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useState } from 'react';
@@ -24,6 +23,7 @@ function Result() {
   const [updateTime, setUpdateTime] = useState(null);
   const [filter, setFilter] = useState(0);
   const navigate = useNavigate();
+  const [totalUserCount, setTotalUserCount] = useState(0);
   const [rotation, setRotation] = useState({
     hourRotation: 0,
     minuteRotation: 0,
@@ -35,6 +35,8 @@ function Result() {
     const querySnapshot = await getDocs(q);
 
     const clockStats = {};
+    let totalUserCount = 0;
+
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       const clockId = data.clockId;
@@ -54,6 +56,8 @@ function Result() {
       clockStats[clockId].totalMinuteErrorAngle += data.minuteErrorAngle || 0;
       clockStats[clockId].totalSecondErrorAngle += data.secondErrorAngle || 0;
       clockStats[clockId].userCount += 1;
+
+      totalUserCount += 1;
     });
 
     const result = Object.entries(clockStats)
@@ -97,6 +101,7 @@ function Result() {
 
     setStats(result);
     setUpdateTime(new Date());
+    setTotalUserCount(totalUserCount);
   }
 
   useEffect(() => {
@@ -148,8 +153,8 @@ function Result() {
           </FilterContainer>
         </FilterSection>
       </HeaderSection>
-      <ContentSection>
-        <ButtonContainer>
+      <ScrollColumn>
+        <NavSection>
           <BasicButton
             onClick={() => navigate('/quiz')}
             width={'4.68rem'}
@@ -160,42 +165,41 @@ function Result() {
             bg='white'
           />
           <HomeButton />
-        </ButtonContainer>
-        <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-        {stats?.map((item, index) => {
-          return (
-            <Item key={index}>
-              <Text typo='head01'>{`${index + 1}`}</Text>
-
-              <StaticClock
-                type={item?.clockId}
-                rotation={rotation}
-                rank={index + 1}
-              />
-              <DataContainer gap='0.75rem'>
-                <Column>
-                  <Text typo='head4'>{`평균소요시간`}</Text>
-                  <Text typo='head4'>{`시인성점수`}</Text>
-                  {filter === 1 && (
-                    <>
-                      {/* <Text typo='head4'>{`평균 시침 오차 각도 ${item?.averageHourError}°`}</Text> */}
-                      {/* <Text typo='head4'>{`평균 분침 오차 각도 ${item?.averageMinuteError}°`}</Text> */}
-                      {/* <Text typo='head4'>{`평균 초침 오차 각도 ${item?.averageSecondError}°`}</Text> */}
-                    </>
-                  )}
-                  <Text typo='head4'>{`참여자수`}</Text>
-                </Column>
-                <Column>
-                  <Text typo='head4'>{`${item?.averageElapsedTime}sec`}</Text>
-                  <Text typo='head4'>{`${item?.errorScore}점`}</Text>
-                  <Text typo='head4'>{`${item?.userCount}명`}</Text>
-                </Column>
-              </DataContainer>
-            </Item>
-          );
-        })}
-        <CopyRight>
-          <Text typo='body03M'>{`designer. Chung jinsung
+        </NavSection>
+        <ContentSection>
+          {stats?.map((item, index) => {
+            return (
+              <Item key={index}>
+                <Rank>
+                  <Text typo='head01'>{`${index + 1}`}</Text>
+                </Rank>
+                <ClockWrapper>
+                  <StaticClock
+                    type={item?.clockId}
+                    rotation={rotation}
+                    rank={index + 1}
+                  />
+                </ClockWrapper>
+                <DataContainer gap='0.75rem'>
+                  <Column>{filter === 1 && <></>}</Column>
+                  <Column>
+                    {filter === 0 && (
+                      <Text typo='head4'>{`${item?.averageElapsedTime} sec`}</Text>
+                    )}
+                    {filter === 1 && (
+                      <Text typo='head4'>{`${item?.errorScore} 점`}</Text>
+                    )}
+                  </Column>
+                </DataContainer>
+              </Item>
+            );
+          })}
+          <DateContainer>
+            <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+            <Text typo='body03M'>{`현재까지 총 ${totalUserCount}명이 문제를 풀었습니다.`}</Text>
+          </DateContainer>
+          <CopyRight>
+            <Text typo='body03M'>{`designer. Chung jinsung
           developer. Lee kyeongmi
           professor. Lee byounghak
           
@@ -205,8 +209,9 @@ function Result() {
           M.F.A in visual design
           
           `}</Text>
-        </CopyRight>
-      </ContentSection>
+          </CopyRight>
+        </ContentSection>
+      </ScrollColumn>
     </ResultPage>
   );
 }
@@ -223,27 +228,32 @@ const ResultPage = styled(Column)`
 
 const FilterSection = styled(CenterColumn)`
   gap: 1rem;
-  padding: ${LAYOUT.PADDING_X}rem;
-  box-sizing: border-box;
+  width: 100%;
 `;
 
 const FilterContainer = styled(CenterRow)`
-  gap: 3rem;
+  width: 100%;
+  justify-content: space-evenly;
 `;
 
-const ButtonContainer = styled(CenterRow)`
-  gap: 1.25rem;
-  box-sizing: border-box;
-  align-self: flex-start;
+const NavSection = styled(Row)`
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
 `;
 
 const ContentSection = styled(Column)`
-  height: 100%;
-  gap: 1.5rem;
-  width: 100%;
+  gap: 1.375rem;
   padding: ${LAYOUT.PADDING_X}rem;
-  box-sizing: border-box;
-  overflow-y: scroll;
+  padding-top: 2.5rem;
+  justify-content: space-evenly;
+`;
+
+const ScrollColumn = styled(Column)`
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
 `;
 
 const CopyRight = styled(CenterColumn)`
@@ -253,8 +263,7 @@ const CopyRight = styled(CenterColumn)`
 `;
 
 const Item = styled(CenterRow)`
-  justify-content: space-around;
-  gap: 1.5rem;
+  width: 100%;
 `;
 
 const FilterItem = styled(Column)`
@@ -262,7 +271,16 @@ const FilterItem = styled(Column)`
   cursor: pointer;
 `;
 
-const DataContainer = styled(Row)`
-  width: 10rem;
-  justify-content: flex-start;
+const Rank = styled(CenterRow)`
+  width: 6.5rem;
 `;
+
+const ClockWrapper = styled(CenterRow)`
+  width: 16rem;
+`;
+
+const DataContainer = styled(CenterRow)`
+  width: 6.5rem;
+`;
+
+const DateContainer = styled(CenterColumn)``;

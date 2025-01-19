@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import Picker from 'react-mobile-picker';
 import { Text } from '../components/atoms/Text';
 import HomeButton from '../components/components/HomeButton';
+import NavSection from '../components/atoms/NavSection';
 
 function Quiz() {
   const totalQuizzes = 7;
@@ -207,13 +208,15 @@ function Quiz() {
           ))}
         </ProgressBar>
       </HeaderSection>
+      <NavSection>
+        <Timer time={timer} />
+        <HomeButton />
+      </NavSection>
       <ContentSection>
-        <TimerWrapper>
-          <Timer time={timer} />
-          <HomeButton />
-        </TimerWrapper>
         <ProblemSection>
           <StaticClock type={quizArr[currentQuiz]} rotation={rotation} />
+        </ProblemSection>
+        <BottomSection>
           <DisplayContainer>
             <DisplayWrapper>
               <Text typo='head01' color='black'>
@@ -259,7 +262,7 @@ function Quiz() {
               ))}
             </Picker>
           </TimePickerWrapper>
-        </ProblemSection>
+        </BottomSection>
       </ContentSection>
     </QuizPage>
   );
@@ -290,15 +293,21 @@ const Dot = styled.div`
 
 const ContentSection = styled(Column)`
   height: 100%;
+  padding: ${LAYOUT.PADDING_X}rem 0;
+  justify-content: space-evenly;
 `;
 
 const ProblemSection = styled(CenterColumn)`
-  justify-content: space-evenly;
-  height: 100%;
+  flex: 1;
 `;
 
 const DisplayWrapper = styled(CenterRow)`
   position: relative;
+`;
+
+const BottomSection = styled(CenterColumn)`
+  flex: 1;
+  justify-content: space-between;
 `;
 
 const TimePickerWrapper = styled(Column)`
@@ -317,8 +326,4 @@ const DisplayContainer = styled(CenterRow)`
   background-color: ${({ theme }) => theme.colors.grey400};
   width: 100%;
   height: 44px;
-`;
-
-const TimerWrapper = styled(Row)`
-  padding: ${LAYOUT.PADDING_X}rem;
 `;

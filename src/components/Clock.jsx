@@ -44,24 +44,24 @@ const ClockWrapper = styled.div`
   position: relative;
   width: ${({ rank }) =>
     rank === 1
-      ? '9.375rem'
+      ? '150px'
       : rank === 2
-        ? '8.125rem'
+        ? '130px'
         : rank === 3
-          ? '6.875rem'
+          ? '110px'
           : rank >= 4
-            ? '5.625rem'
-            : '9.375rem'};
+            ? '90px'
+            : '150px'};
   height: ${({ rank }) =>
     rank === 1
-      ? '9.375rem'
+      ? '150px'
       : rank === 2
-        ? '8.125rem'
+        ? '130px'
         : rank === 3
-          ? '6.875rem'
+          ? '110px'
           : rank >= 4
-            ? '5.625rem'
-            : '9.375rem'};
+            ? '90px'
+            : '150px'};
 `;
 
 const ClockFace = styled(Image)`
