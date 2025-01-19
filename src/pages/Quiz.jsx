@@ -255,9 +255,9 @@ function Quiz() {
               value={userTime}
               onChange={setUserTime}
               wheelMode='natural'
-              itemHeight={35}
+              itemHeight={30}
               onAnimationIteration={true}
-              height={200}
+              height={190}
             >
               {Object.keys(selections).map((name) => (
                 <Picker.Column key={name} name={name}>
