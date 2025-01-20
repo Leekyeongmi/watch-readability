@@ -59,7 +59,7 @@ export default function UserDataModal({ onClose }) {
                 <DataContainer gap='0.75rem'>
                   <Column>
                     {filter === 0 && (
-                      <Text typo='head4'>{`${item?.averageElapsedTime} sec`}</Text>
+                      <Text typo='head3'>{`${item?.averageElapsedTime} sec`}</Text>
                     )}
                     {filter === 1 && (
                       <>
@@ -111,7 +111,7 @@ const ModalWrapper = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,10 +123,12 @@ const ModalContent = styled.div`
   position: relative;
   background: white;
   padding: 2rem;
-  border-radius: 8px;
+
   width: 100%;
   height: 100%;
   text-align: center;
+  background: #f1f3f5;
+  background-repeat: no-repeat;
 `;
 
 const CloseButton = styled.button`
