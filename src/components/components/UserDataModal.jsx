@@ -48,7 +48,6 @@ export default function UserDataModal({ onClose }) {
         </FilterContainer>
         <ContentSection>
           {stats?.slice(0, 3).map((item, index) => {
-            console.log(item);
             return (
               <Item key={index}>
                 <Rank>
@@ -65,8 +64,6 @@ export default function UserDataModal({ onClose }) {
                     {filter === 1 && (
                       <>
                         <Text typo='head3'>{`${item?.errorScore} 점`}</Text>
-                        <Text typo='head4'>{`시침오류 : \n ${item?.averageHourError}°`}</Text>
-                        <Text typo='head4'>{`분침오류 : \n ${item?.averageMinuteError}°`}</Text>
                       </>
                     )}
                     <Text typo='head4'>{`${item?.userCount}회 도전`}</Text>

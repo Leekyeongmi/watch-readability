@@ -69,12 +69,37 @@ function Result() {
           Math.floor((stats.totalSecondErrorAngle / stats.userCount) * 100) /
           100;
 
-        const reciprocal = (value) => (value !== 0 ? 1 / value : 1);
+        const adjustedReciprocal = (value, max = 1000, epsilon = 0.01) => {
+          return max / (value + epsilon);
+        };
 
-        const errorScore =
-          reciprocal(averageHourError) * 0.5 +
-          reciprocal(averageMinuteError) * 0.35 +
-          reciprocal(averageSecondError) * 0.15;
+        const calculateErrorScore = (
+          averageHourError,
+          averageMinuteError,
+          averageSecondError
+        ) => {
+          const hourWeight = 0.5;
+          const minuteWeight = 0.35;
+          const secondWeight = 0.15;
+
+          const hourScore = adjustedReciprocal(averageHourError) * hourWeight;
+          const minuteScore =
+            adjustedReciprocal(averageMinuteError) * minuteWeight;
+          const secondScore =
+            adjustedReciprocal(averageSecondError) * secondWeight;
+
+          return hourScore + minuteScore + secondScore;
+        };
+
+        const errorScore = calculateErrorScore(
+          averageHourError,
+          averageMinuteError,
+          averageSecondError
+        );
+
+        const normalizeErrorScore = (errorScore, min = 10.27, max = 100000) => {
+          return ((errorScore - min) / (max - min)) * 100;
+        };
 
         return {
           clockId: parseInt(clockId),
@@ -82,7 +107,7 @@ function Result() {
           averageHourError,
           averageMinuteError,
           averageSecondError,
-          errorScore: Math.floor(errorScore * 1000) / 10,
+          errorScore: normalizeErrorScore(errorScore).toFixed(2),
           userCount: stats.userCount
         };
       })
