@@ -147,15 +147,6 @@ function Result() {
       <ScrollColumn>
         <NavSection>
           <BasicButton
-            onClick={() => setIsModalOpen(true)}
-            width={'4.68rem'}
-            height={'1.5rem'}
-            size={'s'}
-            shape={'round'}
-            textProps={{ text: '나의 결과', typo: 'head4' }}
-            bg='white'
-          />
-          <BasicButton
             onClick={() => navigate('/quiz')}
             width={'4.68rem'}
             height={'1.5rem'}
@@ -165,6 +156,15 @@ function Result() {
             bg='white'
           />
           <HomeButton />
+          <BasicButton
+            onClick={() => setIsModalOpen(true)}
+            width={'4.68rem'}
+            height={'1.5rem'}
+            size={'s'}
+            shape={'round'}
+            textProps={{ text: '나의 결과', typo: 'head4' }}
+            bg='white'
+          />
         </NavSection>
         <ContentSection>
           {stats?.map((item, index) => {

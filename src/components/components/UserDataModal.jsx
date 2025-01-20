@@ -12,7 +12,6 @@ export default function UserDataModal({ onClose }) {
 
   useEffect(() => {
     const fetchedData = processUserData();
-
     const sortedData =
       filter === 0
         ? fetchedData.sort(
@@ -76,7 +75,7 @@ export default function UserDataModal({ onClose }) {
               </Item>
             );
           })}
-          <Text typo='body03M'>{`유저 데이터는 1년간 쿠키에 저장됩니다.`}</Text>
+          <Text typo='body03M'>{`결과 데이터는 최소 1년간 쿠키에 보관됩니다.`}</Text>
         </ContentSection>
       </ModalContent>
     </ModalWrapper>
