@@ -119,6 +119,7 @@ const ModalWrapper = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 20;
+  overflow-y: hidden;
 `;
 
 const ModalContent = styled.div`
