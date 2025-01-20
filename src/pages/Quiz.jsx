@@ -20,6 +20,7 @@ import NavSection from '../components/atoms/NavSection';
 import Lottie from 'react-lottie-player';
 import PassJson from '../components/test.json';
 import LessMovingClock from '../components/LessMovingClock';
+import { updateUserData } from '../utils/updateCookie';
 
 function Quiz() {
   const totalQuizzes = 7;
@@ -59,6 +60,15 @@ function Quiz() {
       alert('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
       return;
     }
+
+    updateUserData({
+      clockId,
+      elapsedTime,
+      hourErrorAngle,
+      minuteErrorAngle,
+      secondErrorAngle
+    });
+
     try {
       await addDoc(collection(firestore, 'problems'), {
         clockId: clockId,

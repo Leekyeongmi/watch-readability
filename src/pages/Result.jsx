@@ -16,6 +16,7 @@ import BasicButton from '../components/atoms/BasicButton';
 import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/components/HomeButton';
 import MovingClock from '../components/MovingClock';
+import UserDataModal from '../components/components/UserDataModal';
 
 function Result() {
   const [stats, setStats] = useState();
@@ -23,6 +24,7 @@ function Result() {
   const [filter, setFilter] = useState(0);
   const navigate = useNavigate();
   const [totalUserCount, setTotalUserCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   async function calculateStats(filter) {
     const q = query(collection(firestore, 'problems'));
@@ -145,6 +147,15 @@ function Result() {
       <ScrollColumn>
         <NavSection>
           <BasicButton
+            onClick={() => setIsModalOpen(true)}
+            width={'4.68rem'}
+            height={'1.5rem'}
+            size={'s'}
+            shape={'round'}
+            textProps={{ text: '나의 결과', typo: 'head4' }}
+            bg='white'
+          />
+          <BasicButton
             onClick={() => navigate('/quiz')}
             width={'4.68rem'}
             height={'1.5rem'}
@@ -197,6 +208,9 @@ function Result() {
           </CopyRight>
         </ContentSection>
       </ScrollColumn>
+      {isModalOpen && (
+        <UserDataModal onClose={() => setIsModalOpen(false)}></UserDataModal>
+      )}
     </ResultPage>
   );
 }
