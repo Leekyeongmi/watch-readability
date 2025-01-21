@@ -38,7 +38,7 @@ export default function UserDataModal({ onClose }) {
               }}
               typo='head5'
               color={filter === 0 ? 'primary500' : 'font'}
-            >{`빠른 가독성`}</Text>
+            >{`가독성 (빠른순)`}</Text>
           </FilterItem>
           <FilterItem isSelected={filter === 1} onClick={() => setFilter(1)}>
             <Text
@@ -47,7 +47,7 @@ export default function UserDataModal({ onClose }) {
               }}
               typo='head5'
               color={filter === 1 ? 'primary500' : 'font'}
-            >{`정확한 판독성`}</Text>
+            >{`판독성 (정확도순)`}</Text>
           </FilterItem>
         </FilterContainer>
         <ContentSection>
@@ -76,10 +76,10 @@ export default function UserDataModal({ onClose }) {
               </Item>
             );
           })}
-          {filter === 1 && (
-            <Text typo='body03M'>{`* 시인성 점수가 동일한 경우, \n문제를 더 빠르게 푼 모델이 상위에 랭크됩니다.`}</Text>
-          )}
-          <Text typo='body03M'>{`* 결과 데이터는 최소 1년간 쿠키에 보관됩니다.`}</Text>
+          <Text typo='head4'>{`*
+          연구 실험 참여에 감사드립니다
+          **
+          결과 데이터는 최소 1년간 쿠키에 보관됩니다`}</Text>
         </ContentSection>
       </ModalContent>
     </ModalWrapper>
