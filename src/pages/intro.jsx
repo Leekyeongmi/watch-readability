@@ -1,4 +1,4 @@
-import { CenterColumn, Column } from '../components/layouts/Layout';
+import { CenterColumn, Column, Row } from '../components/layouts/Layout';
 import MovingClock from '../components/MovingClock';
 import styled from 'styled-components';
 import { Text } from '../components/atoms/Text';
@@ -36,7 +36,7 @@ function Intro() {
           `}
         </Text>
       </HeaderSection>
-      <NavSection>
+      <NavContainer>
         <BasicButton
           onClick={() => navigate('/result')}
           width={'4.68rem'}
@@ -46,7 +46,7 @@ function Intro() {
           textProps={{ text: '연구현황', typo: 'head4' }}
           bg='white'
         />
-      </NavSection>
+      </NavContainer>
       <ContentSection>
         <ClockWrapper>
           <MovingClock type={randomWatchType} />
@@ -115,4 +115,11 @@ const ClockWrapper = styled(CenterColumn)`
 const BottomWrapper = styled(Column)`
   flex: 0.6;
   justify-content: space-between;
+`;
+
+const NavContainer = styled(Row)`
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 ${LAYOUT.PADDING_X}rem;
 `;

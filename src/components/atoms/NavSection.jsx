@@ -9,6 +9,6 @@ export default function NavSection({ children }) {
 const NavContainer = styled(Row)`
   min-height: 2.75rem;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 ${LAYOUT.PADDING_X}rem;
 `;
