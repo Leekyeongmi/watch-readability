@@ -218,12 +218,12 @@ function Result() {
             );
           })}
           <DateContainer>
-            <Text typo='body03M'>{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-            <Text typo='body03M'>{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
+          <Text typo='head4' color='font'>{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+          <Text typo='head4' color='font'>{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
           </DateContainer>
 
           <CopyRight>
-            <Text typo='body03M'>{`*
+          <Text typo='head4' color='font'>{`*
           판독성 점수는 사용자가 입력한 시간과 
           실제 정답 시간의 평균 오차 각도를 기준으로 계산합니다
           **
