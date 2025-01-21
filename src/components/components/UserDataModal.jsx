@@ -77,7 +77,7 @@ export default function UserDataModal({ onClose }) {
             );
           })}
           {filter === 1 && (
-            <Text typo='body03M'>{`* 시인성 점수가 동점인 경우, \n문제 푸는 데 걸린 시간이 적은 모델이 상위에 됩니다.`}</Text>
+            <Text typo='body03M'>{`* 시인성 점수가 동일한 경우, \n문제를 더 빠르게 푼 모델이 상위에 랭크됩니다.`}</Text>
           )}
           <Text typo='body03M'>{`* 결과 데이터는 최소 1년간 쿠키에 보관됩니다.`}</Text>
         </ContentSection>
