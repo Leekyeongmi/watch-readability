@@ -436,7 +436,7 @@ const BottomSection = styled(CenterColumn)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  width: 35px;
+  width: 28px;
   background-color: ${({ theme }) => theme.colors.background01};
   z-index: 10000;
 `;
