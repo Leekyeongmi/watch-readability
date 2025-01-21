@@ -209,6 +209,27 @@ function Quiz() {
     setQuizArr(shuffleArray());
   }, []);
 
+  useEffect(() => {
+    const quizPage = document.querySelector('#quiz-page');
+    const picker = document.querySelector('#picker');
+
+    const handleTouchMove = (event) => {
+      if (picker.contains(event.target)) {
+        return;
+      }
+
+      if (quizPage.contains(event.target)) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
   return (
     <QuizPage id='quiz-page'>
       <HeaderSection>
@@ -252,7 +273,7 @@ function Quiz() {
               </ButtonWrapper>
             </DisplayWrapper>
           </DisplayContainer>
-          <PickerContainer>
+          <PickerContainer id='picker'>
             <TimePickerWrapper>
               <WheelPicker
                 touchEnabled={true}
@@ -461,6 +482,7 @@ const PickerContainer = styled(Row)`
   border-radius: 18px;
   padding: 0 1rem;
   background-color: ${({ theme }) => theme.colors.background01};
+  z-index: 10000;
 
   .scroll-item {
     padding: 0;
