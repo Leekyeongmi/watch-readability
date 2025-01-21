@@ -280,7 +280,7 @@ function Quiz() {
                 data={selections.hour}
                 height={35}
                 parentHeight={200}
-                fontSize={13}
+                fontSize={16}
                 defaultSelection={userTime.hour}
                 updateSelection={(selectedIndex) => {
                   // 마지막 인덱스 초과 여부 확인
@@ -300,7 +300,7 @@ function Quiz() {
                   data={selections.minuteTens}
                   height={35}
                   parentHeight={200}
-                  fontSize={13}
+                  fontSize={16}
                   defaultSelection={0}
                   updateSelection={(selectedIndex) => {
                     // 마지막 인덱스 초과 여부 확인
@@ -322,7 +322,7 @@ function Quiz() {
                   data={selections.minuteOnes}
                   height={35}
                   parentHeight={200}
-                  fontSize={13}
+                  fontSize={16}
                   defaultSelection={0}
                   updateSelection={(selectedIndex) => {
                     // 마지막 인덱스 초과 여부 확인
@@ -346,7 +346,7 @@ function Quiz() {
                   data={selections.secondTens}
                   height={35}
                   parentHeight={200}
-                  fontSize={13}
+                  fontSize={16}
                   defaultSelection={0}
                   updateSelection={(selectedIndex) => {
                     // 마지막 인덱스 초과 여부 확인
@@ -368,7 +368,7 @@ function Quiz() {
                   data={selections.secondOnes}
                   height={35}
                   parentHeight={200}
-                  fontSize={13}
+                  fontSize={16}
                   defaultSelection={0}
                   updateSelection={(selectedIndex) => {
                     const validIndex = Math.min(
@@ -456,7 +456,7 @@ const BottomSection = styled(CenterColumn)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  width: 28px;
+  width: 30px;
   background-color: ${({ theme }) => theme.colors.background01};
   z-index: 10000;
 `;
