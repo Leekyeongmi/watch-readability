@@ -69,8 +69,20 @@ function Result() {
           Math.floor((stats.totalSecondErrorAngle / stats.userCount) * 100) /
           100;
 
-        const adjustedReciprocal = (value, max = 1000, epsilon = 0.01) => {
-          return max / (value + epsilon);
+        const epsilon = 0.01;
+        const adjustedLog = (value, maxValue) => {
+          if (value === 0) {
+            return 100;
+          }
+
+          const logValue = Math.log(value + epsilon);
+          const logMaxValue = Math.log(maxValue + epsilon);
+          const normalizedScore = Math.max(
+            0,
+            100 - (logValue / logMaxValue) * 100
+          );
+
+          return normalizedScore;
         };
 
         const calculateErrorScore = (
@@ -78,15 +90,9 @@ function Result() {
           averageMinuteError,
           averageSecondError
         ) => {
-          const hourWeight = 0.5;
-          const minuteWeight = 0.35;
-          const secondWeight = 0.15;
-
-          const hourScore = adjustedReciprocal(averageHourError) * hourWeight;
-          const minuteScore =
-            adjustedReciprocal(averageMinuteError) * minuteWeight;
-          const secondScore =
-            adjustedReciprocal(averageSecondError) * secondWeight;
+          const hourScore = adjustedLog(averageHourError, 90) * 0.6;
+          const minuteScore = adjustedLog(averageMinuteError, 90) * 0.35;
+          const secondScore = adjustedLog(averageSecondError, 120) * 0.05;
 
           return hourScore + minuteScore + secondScore;
         };
@@ -97,17 +103,13 @@ function Result() {
           averageSecondError
         );
 
-        const normalizeErrorScore = (errorScore, min = 10.27, max = 100000) => {
-          return ((errorScore - min) / (max - min)) * 100;
-        };
-
         return {
           clockId: parseInt(clockId),
           averageElapsedTime,
           averageHourError,
           averageMinuteError,
           averageSecondError,
-          errorScore: normalizeErrorScore(errorScore).toFixed(2),
+          errorScore: errorScore.toFixed(2),
           userCount: stats.userCount
         };
       })
@@ -264,7 +266,7 @@ const NavSection = styled(Row)`
   min-height: 2.75rem;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
+  gap: 3.5rem;
 `;
 
 const ContentSection = styled(Column)`
