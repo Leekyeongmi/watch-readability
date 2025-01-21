@@ -451,7 +451,7 @@ const BottomSection = styled(CenterColumn)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  width: 40px;
+  width: 30px;
   background-color: ${({ theme }) => theme.colors.background01};
   z-index: 10000;
 `;
@@ -468,13 +468,13 @@ const DisplayContainer = styled(CenterRow)`
 `;
 
 const Container = styled(Row)`
-  background-color: ${({ theme }) => theme.colors.red};
+  background-color: ${({ theme }) => theme.colors.background01};
 `;
 
 const PickerContainer = styled(Row)`
   gap: 0.75rem;
   border-radius: 18px;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   background-color: ${({ theme }) => theme.colors.background01};
 
   .scroll-item {
