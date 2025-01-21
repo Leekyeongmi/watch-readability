@@ -143,14 +143,14 @@ function Result() {
                 }}
                 typo='head5'
                 color={filter === 0 ? 'primary500' : 'font'}
-              >{`빠른 가독성`}</Text>
+              >{`가독성`}</Text>
               <Text
                 style={{
                   textDecoration: filter === 0 ? 'underline' : 'none'
                 }}
                 typo='head4'
                 color={filter === 0 ? 'primary500' : 'font'}
-              >{`(소요 시간 빠른 순)`}</Text>
+              >{`(빠른순)`}</Text>
             </FilterItem>
             <FilterItem isSelected={filter === 1} onClick={() => setFilter(1)}>
               <Text
@@ -159,7 +159,7 @@ function Result() {
                 }}
                 typo='head5'
                 color={filter === 1 ? 'primary500' : 'font'}
-              >{`정확한 판독성`}</Text>
+              >{`판독성`}</Text>
               <Text
                 style={{
                   textDecoration: filter === 1 ? 'underline' : 'none'
@@ -189,7 +189,7 @@ function Result() {
             height={'1.5rem'}
             size={'s'}
             shape={'round'}
-            textProps={{ text: '나의 결과', typo: 'head4' }}
+            textProps={{ text: '내결과', typo: 'head4' }}
             bg='white'
           />
         </NavSection>
