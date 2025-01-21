@@ -13,6 +13,7 @@ import { Row } from '../components/layouts/Layout';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useNavigate } from 'react-router-dom';
+import Picker from 'react-mobile-picker';
 import { Text } from '../components/atoms/Text';
 import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
@@ -20,7 +21,6 @@ import Lottie from 'react-lottie-player';
 import PassJson from '../components/test.json';
 import LessMovingClock from '../components/LessMovingClock';
 import { updateUserData } from '../utils/updateCookie';
-import WheelPicker from 'react-wheelpicker';
 
 function Quiz() {
   const totalQuizzes = 7;
@@ -37,9 +37,9 @@ function Quiz() {
   const [showLottie, setShowLottie] = useState(false);
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
-    hour: '00',
-    minute: '00',
-    second: '00'
+    hour: '6',
+    minute: '30',
+    second: '30'
   });
 
   const startTimer = () => setIsRunning(true);
@@ -102,26 +102,17 @@ function Quiz() {
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
-        hour: '00',
-        minute: '00',
-        second: '00'
+        hour: '6',
+        minute: '30',
+        second: '30'
       });
     }
   };
 
   const selections = {
-    hour: Array.from({ length: 13 }, (_, i) => String(i)),
-    minuteTens: Array.from({ length: 6 }, (_, i) => String(i)), // 0 to 5
-    minuteOnes: Array.from({ length: 10 }, (_, i) => String(i)), // 0 to 9
-    secondTens: Array.from({ length: 6 }, (_, i) => String(i)), // 0 to 5
-    secondOnes: Array.from({ length: 10 }, (_, i) => String(i)) // 0 to 9
-  };
-
-  const updateUserTime = (type, value) => {
-    setUserTime((prev) => ({
-      ...prev,
-      [type]: value
-    }));
+    hour: Array.from({ length: 12 }, (_, i) => String(i + 1)), // 1 to 12
+    minute: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')), // 00 to 59
+    second: Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0')) // 00 to 59
   };
 
   const calculateError = () => {
@@ -170,6 +161,18 @@ function Quiz() {
     };
 
     submitProblemData(dataToPost);
+
+    // alert(
+    //   `테스트용 알러트 :
+    //   정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
+    //   당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
+    //   시침 오차 각도: ${hourErrorAngle}°
+    //   분침 오차 각도: ${minuteErrorAngle}°
+    //   초침 오차 각도: ${secondErrorAngle}°
+    //   푸는 데 걸린 시간은 ${timer}초
+    //   풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
+    //   `
+    // );
   };
 
   useEffect(() => {
@@ -269,122 +272,33 @@ function Quiz() {
               </ButtonWrapper>
             </DisplayWrapper>
           </DisplayContainer>
-          <PickerContainer>
-            <TimePickerWrapper>
-              <WheelPicker
-                animation='wheel'
-                key={`key-${currentQuiz}`}
-                data={selections.hour}
-                height={40}
-                parentHeight={200}
-                fontSize={13}
-                defaultSelection={userTime.hour}
-                updateSelection={(selectedIndex) => {
-                  // 마지막 인덱스 초과 여부 확인
-                  const validIndex = Math.min(
-                    selectedIndex,
-                    selections.hour.length - 1
-                  );
-                  updateUserTime('hour', selections.hour[validIndex]);
-                }}
-                scrollerId='scroll-select-hour'
-              />
-            </TimePickerWrapper>
-            <Container>
-              <TimePickerWrapper>
-                <WheelPicker
-                  animation='wheel'
-                  key={`key-${currentQuiz}`}
-                  data={selections.minuteTens}
-                  height={40}
-                  parentHeight={200}
-                  fontSize={13}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.minuteTens.length - 1
-                    );
-                    const minuteOnes = userTime.minute[1]; // Keep ones place
-                    const newMinute = `${selections.minuteTens[validIndex]}${minuteOnes}`;
-                    updateUserTime('minute', newMinute);
-                  }}
-                  scrollerId='scroll-select-minute-tens'
-                />
-              </TimePickerWrapper>
-
-              <TimePickerWrapper>
-                <WheelPicker
-                  animation='wheel'
-                  key={`key-${currentQuiz}`}
-                  data={selections.minuteOnes}
-                  height={40}
-                  parentHeight={200}
-                  fontSize={13}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.minuteOnes.length - 1
-                    );
-                    const minuteTens = userTime.minute[0]; // Keep tens place
-                    const newMinute = `${minuteTens}${selections.minuteOnes[validIndex]}`;
-                    updateUserTime('minute', newMinute);
-                  }}
-                  scrollerId='scroll-select-minute-ones'
-                />
-              </TimePickerWrapper>
-            </Container>
-            <Container>
-              <TimePickerWrapper>
-                <WheelPicker
-                  key={`key-${currentQuiz}`}
-                  animation='wheel'
-                  data={selections.secondTens}
-                  height={40}
-                  parentHeight={200}
-                  fontSize={13}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.secondTens.length - 1
-                    );
-                    const secondOnes = userTime.second[1]; // Keep ones place
-                    const newSecond = `${selections.secondTens[validIndex]}${secondOnes}`;
-                    updateUserTime('second', newSecond);
-                  }}
-                  scrollerId='scroll-select-second-tens'
-                />
-              </TimePickerWrapper>
-
-              <TimePickerWrapper>
-                <WheelPicker
-                  animation='wheel'
-                  key={`key-${currentQuiz}`}
-                  data={selections.secondOnes}
-                  height={40}
-                  parentHeight={200}
-                  fontSize={13}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.secondOnes.length - 1
-                    );
-                    const secondTens = userTime.second[0]; // Keep tens place
-                    const newSecond = `${secondTens}${selections.secondOnes[validIndex]}`;
-                    updateUserTime('second', newSecond);
-                  }}
-                  scrollerId='scroll-select-second-ones'
-                />
-              </TimePickerWrapper>
-            </Container>
-          </PickerContainer>
-
+          <TimePickerWrapper>
+            <Picker
+              value={userTime}
+              onChange={setUserTime}
+              wheelMode='normal'
+              itemHeight={35}
+              onAnimationIteration={true}
+              height={190}
+            >
+              {Object.keys(selections).map((name) => (
+                <Picker.Column key={name} name={name}>
+                  {selections[name].map((option) => (
+                    <Picker.Item key={option} value={option}>
+                      {({ selected }) => (
+                        <Text
+                          typo='head2'
+                          color={selected ? 'black' : 'grey200'}
+                        >
+                          {option}
+                        </Text>
+                      )}
+                    </Picker.Item>
+                  ))}
+                </Picker.Column>
+              ))}
+            </Picker>
+          </TimePickerWrapper>
           <div></div>
         </BottomSection>
       </ContentSection>
@@ -456,8 +370,9 @@ const BottomSection = styled(CenterColumn)`
 `;
 
 const TimePickerWrapper = styled(Column)`
-  width: 30px;
+  width: 180px;
   background-color: ${({ theme }) => theme.colors.background01};
+  border-radius: 18px;
   z-index: 10000;
 `;
 
@@ -470,19 +385,4 @@ const DisplayContainer = styled(CenterRow)`
   background-color: ${({ theme }) => theme.colors.grey400};
   width: 100%;
   height: 44px;
-`;
-
-const Container = styled(Row)`
-  background-color: ${({ theme }) => theme.colors.background01};
-`;
-
-const PickerContainer = styled(Row)`
-  gap: 0.75rem;
-  border-radius: 18px;
-  padding: 0 0.75rem;
-  background-color: ${({ theme }) => theme.colors.background01};
-
-  .scroll-item {
-    padding: 0;
-  }
 `;
