@@ -272,6 +272,7 @@ function Quiz() {
           <PickerContainer>
             <TimePickerWrapper>
               <WheelPicker
+                animation='wheel'
                 key={`key-${currentQuiz}`}
                 data={selections.hour}
                 height={40}
@@ -292,6 +293,7 @@ function Quiz() {
             <Container>
               <TimePickerWrapper>
                 <WheelPicker
+                  animation='wheel'
                   key={`key-${currentQuiz}`}
                   data={selections.minuteTens}
                   height={40}
@@ -314,6 +316,7 @@ function Quiz() {
 
               <TimePickerWrapper>
                 <WheelPicker
+                  animation='wheel'
                   key={`key-${currentQuiz}`}
                   data={selections.minuteOnes}
                   height={40}
@@ -338,6 +341,7 @@ function Quiz() {
               <TimePickerWrapper>
                 <WheelPicker
                   key={`key-${currentQuiz}`}
+                  animation='wheel'
                   data={selections.secondTens}
                   height={40}
                   parentHeight={200}
@@ -359,6 +363,7 @@ function Quiz() {
 
               <TimePickerWrapper>
                 <WheelPicker
+                  animation='wheel'
                   key={`key-${currentQuiz}`}
                   data={selections.secondOnes}
                   height={40}
