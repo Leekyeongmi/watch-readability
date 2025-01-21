@@ -218,9 +218,19 @@ function Result() {
             );
           })}
           <DateContainer>
-            <Text typo='body03M'>{`데이터 업데이트 시간: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+            <Text typo='body03M'>{`updated at: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
             <Text typo='body03M'>{`현재까지 참여자들이 총 ${totalUserCount}개의 문제를 풀었습니다.`}</Text>
           </DateContainer>
+          <Text
+            style={{
+              marginTop: '0rem',
+              textAlign: 'center'
+            }}
+            typo='detail01M'
+          >{`* 시인성 점수는 유저가 입력한 시간과 정답 시간 사이의 오차 각도를 도출하고 평균값을 내어 계산했습니다.
+         오차 각도를 로그 값으로 변환하고 0~100점 사이로 정규화했으며, 오차 각도가 낮을 수록 더 높은 점수를 갖게 됩니다.
+         ** 시침, 분침, 초침에 각각 60%, 35%, 5%의 가중치가 적용되었습니다.`}</Text>
+
           <CopyRight>
             <Text typo='body03M'>{`designer. Chung jinsung
           developer. Lee kyeongmi
@@ -309,4 +319,6 @@ const DataContainer = styled(CenterRow)`
   width: 6.5rem;
 `;
 
-const DateContainer = styled(CenterColumn)``;
+const DateContainer = styled(CenterColumn)`
+  margin-top: 2rem;
+`;
