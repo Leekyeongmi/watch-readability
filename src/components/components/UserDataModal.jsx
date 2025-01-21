@@ -17,11 +17,15 @@ export default function UserDataModal({ onClose }) {
         ? fetchedData.sort(
             (a, b) => a.averageElapsedTime - b.averageElapsedTime
           )
-        : fetchedData.sort((a, b) => b.errorScore - a.errorScore);
+        : fetchedData.sort((a, b) => {
+            if (b.errorScore === a.errorScore) {
+              return a.averageElapsedTime - b.averageElapsedTime;
+            }
+            return b.errorScore - a.errorScore;
+          });
 
     setStats(sortedData);
   }, [filter]);
-
   return (
     <ModalWrapper onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -72,7 +76,10 @@ export default function UserDataModal({ onClose }) {
               </Item>
             );
           })}
-          <Text typo='body03M'>{`결과 데이터는 최소 1년간 쿠키에 보관됩니다.`}</Text>
+          {filter === 1 && (
+            <Text typo='body03M'>{`* 시인성 점수가 동점인 경우, \n문제 푸는 데 걸린 시간이 적은 모델이 상위에 됩니다.`}</Text>
+          )}
+          <Text typo='body03M'>{`* 결과 데이터는 최소 1년간 쿠키에 보관됩니다.`}</Text>
         </ContentSection>
       </ModalContent>
     </ModalWrapper>
