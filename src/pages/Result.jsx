@@ -218,23 +218,19 @@ function Result() {
             );
           })}
           <DateContainer>
-            <Text typo='body03M'>{`updated at: ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-            <Text typo='body03M'>{`현재까지 참여자들이 총 ${totalUserCount}개의 문제를 풀었습니다.`}</Text>
+            <Text typo='body03M'>{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+            <Text typo='body03M'>{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
           </DateContainer>
-          <Text
-            style={{
-              marginTop: '0rem',
-              textAlign: 'center'
-            }}
-            typo='detail01M'
-          >
-            {`* 시인성 점수는 사용자가 입력한 시간과 실제 정답 시간 간의 \n 평균 오차 각도를 기반으로 계산되었습니다.
-     평균 오차 각도를 로그 값으로 변환하여 0~100점 사이의 범위로 정규화했습니다. \n 따라서, 오차 각도가 작을수록 더 높은 점수를 받게 됩니다.
-     ** 시침, 분침, 초침에는 각각 60%, 35%, 5%의 가중치가 적용되었습니다.`}
-          </Text>
 
           <CopyRight>
-            <Text typo='body03M'>{`designer. Chung jinsung
+            <Text typo='body03M'>{`*
+          판독성 점수는 사용자가 입력한 시간과 
+          실제 정답 시간의 평균 오차 각도를 기준으로 계산합니다
+          **
+          시침, 분침 초침에는 각각 60% 35% 5%의 
+          가중치가 적용됩니다
+
+          designer. Chung jinsung
           developer. Lee kyeongmi
           professor. Lee byounghak
           
