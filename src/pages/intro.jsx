@@ -36,7 +36,17 @@ function Intro() {
           `}
         </Text>
       </HeaderSection>
-      <NavSection />
+      <NavSection>
+        <BasicButton
+          onClick={() => navigate('/result')}
+          width={'4.68rem'}
+          height={'1.5rem'}
+          size={'s'}
+          shape={'round'}
+          textProps={{ text: '연구현황', typo: 'head4' }}
+          bg='white'
+        />
+      </NavSection>
       <ContentSection>
         <ClockWrapper>
           <MovingClock type={randomWatchType} />
@@ -61,7 +71,7 @@ function Intro() {
               style={{ fontWeight: 'bold' }}
               shape={'round'}
             ></BasicButton>
-            <BasicButton
+            {/* <BasicButton
               onClick={() => navigate('/result')}
               width={'8.438rem'}
               height={'3.75rem'}
@@ -70,7 +80,7 @@ function Intro() {
               textProps={{ text: '연구현황' }}
               bg={'button'}
               shape={'round'}
-            ></BasicButton>
+            ></BasicButton> */}
           </ButtonContainer>
         </BottomWrapper>
       </ContentSection>
@@ -94,6 +104,7 @@ const ContentSection = styled(Column)`
 const ButtonContainer = styled(CenterColumn)`
   padding: ${LAYOUT.PADDING_X}rem;
   text-align: center;
+  margin-bottom: 5rem;
 `;
 
 const ClockWrapper = styled(CenterColumn)`
@@ -103,4 +114,5 @@ const ClockWrapper = styled(CenterColumn)`
 
 const BottomWrapper = styled(Column)`
   flex: 0.6;
+  justify-content: space-between;
 `;

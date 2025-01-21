@@ -17,7 +17,7 @@ import { Text } from '../components/atoms/Text';
 import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
 import Lottie from 'react-lottie-player';
-import PassJson from '../components/test.json';
+import PassJson from '../components/pass.json';
 import LessMovingClock from '../components/LessMovingClock';
 import { updateUserData } from '../utils/updateCookie';
 import WheelPicker from 'react-wheelpicker';
