@@ -16,8 +16,6 @@ import { useNavigate } from 'react-router-dom';
 import { Text } from '../components/atoms/Text';
 import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
-import Lottie from 'react-lottie-player';
-import PassJson from '../components/pass.json';
 import LessMovingClock from '../components/LessMovingClock';
 import { updateUserData } from '../utils/updateCookie';
 import WheelPicker from 'react-wheelpicker';
@@ -96,7 +94,7 @@ function Quiz() {
     if (currentQuiz < totalQuizzes - 1) {
       calculateError();
       setShowLottie(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setShowLottie(false);
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
@@ -252,6 +250,7 @@ function Quiz() {
           <LessMovingClock
             type={quizArr[currentQuiz]}
             randomTime={randomTime}
+            showLottie={showLottie}
           />
         </ProblemSection>
         <BottomSection>
@@ -389,7 +388,7 @@ function Quiz() {
           <div></div>
         </BottomSection>
       </ContentSection>
-      {showLottie && (
+      {/* {showLottie && (
         <LottieWrapper>
           <Lottie
             animationData={PassJson}
@@ -397,7 +396,7 @@ function Quiz() {
             style={{ width: 150, height: 150 }}
           />
         </LottieWrapper>
-      )}
+      )} */}
     </QuizPage>
   );
 }

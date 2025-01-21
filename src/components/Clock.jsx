@@ -1,13 +1,14 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import Image from './atoms/Image';
 import { CenterColumn } from './layouts/Layout';
 
-export default function Clock({ type, rotation, rank }) {
+export default function Clock({ type, rotation, rank, showLottie }) {
   const { hourRotation, minuteRotation, secondRotation } = rotation;
 
   return (
     <Container>
       <ClockWrapper rank={rank}>
+        <HighlightCircle showHighlight={showLottie} />
         <ClockFace src={`/${type}/index.svg`} />
         <HourHand
           src={`/${type}/hour-hand.svg`}
@@ -39,7 +40,21 @@ const ClockHand = ({ src, rotation, zIndex = 1 }) => {
 
 const Container = styled(CenterColumn)``;
 
-// 사이즈를 순위에 따라 조정
+const highlightPulse = keyframes`
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+`;
+
 const ClockWrapper = styled.div`
   position: relative;
   width: ${({ rank }) =>
@@ -62,6 +77,22 @@ const ClockWrapper = styled.div`
           : rank >= 4
             ? '90px'
             : '150px'};
+`;
+
+const HighlightCircle = styled.div`
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  width: 92%;
+  height: 92%;
+  border-radius: 50%;
+  pointer-events: none;
+  ${({ showHighlight }) =>
+    showHighlight &&
+    css`
+      animation: ${highlightPulse} 3s infinite;
+      border: 8px solid rgba(0, 255, 0, 0.8);
+    `}
 `;
 
 const ClockFace = styled(Image)`

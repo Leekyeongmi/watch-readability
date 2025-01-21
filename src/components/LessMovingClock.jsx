@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Clock from './Clock';
 
-export default function MovingClock({ type = '1', randomTime }) {
+export default function MovingClock({ type = '1', randomTime, showLottie }) {
   const [animationPhase, setAnimationPhase] = useState(1);
   const [animationTime, setAnimationTime] = useState({
     hours: 10,
@@ -93,6 +93,7 @@ export default function MovingClock({ type = '1', randomTime }) {
 
   return (
     <Clock
+      showLottie={showLottie}
       type={type}
       rotation={{ hourRotation, minuteRotation, secondRotation }}
     />
