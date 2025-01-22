@@ -94,7 +94,7 @@ const ContentSection = styled(Column)`
 const ButtonContainer = styled(CenterColumn)`
   padding: ${LAYOUT.PADDING_X}rem;
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 3.5rem;
 `;
 
 const ClockWrapper = styled(CenterColumn)`

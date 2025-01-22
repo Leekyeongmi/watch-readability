@@ -520,7 +520,7 @@ const ButtonContainer = styled(CenterColumn)`
   bottom: 0;
   width: 100%;
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 3.5rem;
   z-index: 10000;
 `;
 
