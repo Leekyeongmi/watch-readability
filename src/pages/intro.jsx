@@ -71,16 +71,6 @@ function Intro() {
               style={{ fontWeight: 'bold' }}
               shape={'round'}
             ></BasicButton>
-            {/* <BasicButton
-              onClick={() => navigate('/result')}
-              width={'8.438rem'}
-              height={'3.75rem'}
-              size={'s'}
-              mode={userTheme}
-              textProps={{ text: '연구현황' }}
-              bg={'button'}
-              shape={'round'}
-            ></BasicButton> */}
           </ButtonContainer>
         </BottomWrapper>
       </ContentSection>

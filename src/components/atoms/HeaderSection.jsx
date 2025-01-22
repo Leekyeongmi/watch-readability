@@ -8,6 +8,7 @@ export default function HeaderSection({ children }) {
 
 const HeaderContainer = styled(CenterColumn)`
   text-align: center;
+  position: relative;
   min-height: 9.25rem;
   gap: 0.5rem;
   background-color: white;

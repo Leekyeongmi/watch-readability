@@ -11,4 +11,5 @@ const NavContainer = styled(Row)`
   align-items: center;
   justify-content: space-between;
   padding: 0 ${LAYOUT.PADDING_X}rem;
+  z-index: 10000;
 `;

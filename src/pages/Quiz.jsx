@@ -18,12 +18,13 @@ import HomeButton from '../components/components/HomeButton';
 import NavSection from '../components/atoms/NavSection';
 import LessMovingClock from '../components/LessMovingClock';
 import { updateUserData } from '../utils/updateCookie';
-import WheelPicker from 'react-wheelpicker';
+import { ToastContainer, toast } from 'react-toastify';
+import { LAYOUT } from '../constant';
 
 function Quiz() {
   const totalQuizzes = 7;
   const navigate = useNavigate();
-  const [currentQuiz, setCurrentQuiz] = useState(0);
+  const [currentQuiz, setCurrentQuiz] = useState(null);
   const [timer, setTimer] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [rotation, setRotation] = useState({
@@ -35,11 +36,12 @@ function Quiz() {
   const [showLottie, setShowLottie] = useState(false);
   const [quizArr, setQuizArr] = useState([]);
   const [userTime, setUserTime] = useState({
-    hour: '00',
-    minute: '00',
-    second: '00'
+    hour: '--',
+    minute: '--',
+    second: '--'
   });
 
+  const [currentField, setCurrentField] = useState('hour');
   const startTimer = () => setIsRunning(true);
   const stopAndResetTimer = () => {
     setIsRunning(false);
@@ -59,7 +61,7 @@ function Quiz() {
       minuteErrorAngle > 90 ||
       secondErrorAngle > 120
     ) {
-      alert('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
+      toast('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
       return;
     }
 
@@ -99,26 +101,12 @@ function Quiz() {
       setCurrentQuiz(currentQuiz + 1);
       stopAndResetTimer();
       setUserTime({
-        hour: '00',
-        minute: '00',
-        second: '00'
+        hour: '--',
+        minute: '--',
+        second: '--'
       });
+      setCurrentField('hour');
     }
-  };
-
-  const selections = {
-    hour: Array.from({ length: 13 }, (_, i) => String(i)),
-    minuteTens: Array.from({ length: 6 }, (_, i) => String(i)), // 0 to 5
-    minuteOnes: Array.from({ length: 10 }, (_, i) => String(i)), // 0 to 9
-    secondTens: Array.from({ length: 6 }, (_, i) => String(i)), // 0 to 5
-    secondOnes: Array.from({ length: 10 }, (_, i) => String(i)) // 0 to 9
-  };
-
-  const updateUserTime = (type, value) => {
-    setUserTime((prev) => ({
-      ...prev,
-      [type]: value
-    }));
   };
 
   const calculateError = () => {
@@ -167,6 +155,88 @@ function Quiz() {
     };
 
     submitProblemData(dataToPost);
+
+    // alert(
+    //   `테스트용 알러트 :
+    //   정답은 (시침: ${randomHourAngle}°, 분침: ${randomMinuteAngle}°, 초침: ${randomSecondAngle}°)
+    //   당신의 입력은 (시침: ${userHourAngle}°, 분침: ${userMinuteAngle}°, 초침: ${userSecondAngle}°)
+    //   시침 오차 각도: ${hourErrorAngle}°
+    //   분침 오차 각도: ${minuteErrorAngle}°
+    //   초침 오차 각도: ${secondErrorAngle}°
+    //   푸는 데 걸린 시간은 ${timer}초
+    //   풀고 있는 시계 id값은 ${quizArr[currentQuiz]}
+    //   `
+    // );
+  };
+
+  const handleKeypadInput = (value) => {
+    setUserTime((prev) => {
+      const fields = ['hour', 'minute', 'second'];
+      let newState = { ...prev };
+
+      const currentFieldIndex = fields.findIndex(
+        (field) => prev[field] === '--' || prev[field].length < 2
+      );
+
+      const currentField =
+        currentFieldIndex === -1 ? 'last' : fields[currentFieldIndex];
+      let currentValue = currentFieldIndex === -1 ? 'last' : prev[currentField];
+
+      if (value === 'delete') {
+        if (currentValue === 'last') {
+          newState['second'] = newState['second'].slice(0, 1);
+          // setCurrentField('second')
+        }
+
+        if (currentValue === '--') {
+          if (currentFieldIndex > 0) {
+            const prevField = fields[currentFieldIndex - 1];
+            newState[prevField] = newState[prevField].slice(0, 1);
+            setCurrentField(fields[currentFieldIndex - 1]);
+          }
+        } else {
+          if (currentValue.length === 1) {
+            newState[currentField] = '--';
+          } else {
+            newState[currentField] = currentValue.slice(0, -1);
+          }
+        }
+        return newState;
+      }
+
+      if (currentFieldIndex === -1) return prev;
+
+      if (currentValue === '--') {
+        currentValue = '';
+      }
+
+      newState[currentField] = (currentValue + value).slice(-2);
+
+      const { hour, minute, second } = newState;
+
+      if (parseInt(hour, 10) < 0 || parseInt(hour, 10) > 12) {
+        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        newState.hour = '--';
+        return prev;
+      }
+
+      if (parseInt(minute, 10) < 0 || parseInt(minute, 10) > 59) {
+        newState.minute = '--';
+        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        return prev;
+      }
+      if (parseInt(second, 10) < 0 || parseInt(second, 10) > 59) {
+        newState.second = '--';
+        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        return prev;
+      }
+
+      if (newState[currentField].length === 2 && currentFieldIndex < 2) {
+        setCurrentField(fields[currentFieldIndex + 1]);
+      }
+
+      return newState;
+    });
   };
 
   useEffect(() => {
@@ -186,6 +256,7 @@ function Quiz() {
       await sleep(2000);
       startTimer();
     };
+    if (currentQuiz === null) return;
     startTimerWithDelay();
   }, [currentQuiz]);
 
@@ -231,15 +302,23 @@ function Quiz() {
   return (
     <QuizPage id='quiz-page'>
       <HeaderSection>
-        <ProgressBar>
-          {Array.from({ length: totalQuizzes }).map((_, index) => (
-            <Dot
-              key={index}
-              solved={index < currentQuiz}
-              active={index === currentQuiz}
-            />
-          ))}
-        </ProgressBar>
+        {currentQuiz === null ? (
+          <Text typo='head4'>{`제시되는 시간을 보고 정답을 제출하세요
+            시 분 초 순으로 입력됩니다
+            한 자리 숫자는 두 자리로 맞춰 입력해주세요
+            예) 03:03:10
+            `}</Text>
+        ) : (
+          <ProgressBar>
+            {Array.from({ length: totalQuizzes }).map((_, index) => (
+              <Dot
+                key={index}
+                solved={index < currentQuiz}
+                active={index === currentQuiz}
+              />
+            ))}
+          </ProgressBar>
+        )}
       </HeaderSection>
       <NavSection>
         <Timer time={timer} />
@@ -257,7 +336,21 @@ function Quiz() {
           <DisplayContainer>
             <DisplayWrapper>
               <Text typo='head01' color='black'>
-                {`${userTime.hour} : ${userTime.minute} : ${userTime.second}`}
+                {/* {`${userTime.hour} : ${userTime.minute} : ${userTime.second}`} */}
+
+                <CursorWrapper>
+                  <Field active={currentField === 'hour'}>
+                    {userTime.hour}
+                  </Field>
+                  <Colon>:</Colon>
+                  <Field active={currentField === 'minute'}>
+                    {userTime.minute}
+                  </Field>
+                  <Colon>:</Colon>
+                  <Field active={currentField === 'second'}>
+                    {userTime.second}
+                  </Field>
+                </CursorWrapper>
               </Text>
               <ButtonWrapper>
                 <BasicButton
@@ -266,128 +359,63 @@ function Quiz() {
                   width={'4.68rem'}
                   height={'1.5rem'}
                   shape={'round'}
-                  bg={'white'}
+                  disabled={Object.values(userTime).some(
+                    (value) => value === '--'
+                  )}
                   textProps={{ text: '제출', typo: 'head4' }}
                 />
               </ButtonWrapper>
             </DisplayWrapper>
           </DisplayContainer>
           <PickerContainer id='picker'>
-            <TimePickerWrapper>
-              <WheelPicker
-                touchEnabled={true}
-                key={`key-${currentQuiz}`}
-                data={selections.hour}
-                height={35}
-                parentHeight={200}
-                fontSize={16}
-                defaultSelection={userTime.hour}
-                updateSelection={(selectedIndex) => {
-                  // 마지막 인덱스 초과 여부 확인
-                  const validIndex = Math.min(
-                    selectedIndex,
-                    selections.hour.length - 1
-                  );
-                  updateUserTime('hour', selections.hour[validIndex]);
-                }}
-                scrollerId='scroll-select-hour'
-              />
-            </TimePickerWrapper>
-            <Container>
-              <TimePickerWrapper>
-                <WheelPicker
-                  key={`key-${currentQuiz}`}
-                  data={selections.minuteTens}
-                  height={35}
-                  parentHeight={200}
-                  fontSize={16}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.minuteTens.length - 1
-                    );
-                    const minuteOnes = userTime.minute[1]; // Keep ones place
-                    const newMinute = `${selections.minuteTens[validIndex]}${minuteOnes}`;
-                    updateUserTime('minute', newMinute);
-                  }}
-                  scrollerId='scroll-select-minute-tens'
-                />
-              </TimePickerWrapper>
-
-              <TimePickerWrapper>
-                <WheelPicker
-                  key={`key-${currentQuiz}`}
-                  data={selections.minuteOnes}
-                  height={35}
-                  parentHeight={200}
-                  fontSize={16}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.minuteOnes.length - 1
-                    );
-                    const minuteTens = userTime.minute[0]; // Keep tens place
-                    const newMinute = `${minuteTens}${selections.minuteOnes[validIndex]}`;
-                    updateUserTime('minute', newMinute);
-                  }}
-                  scrollerId='scroll-select-minute-ones'
-                />
-              </TimePickerWrapper>
-            </Container>
-            <Container>
-              <TimePickerWrapper>
-                <WheelPicker
-                  touchEnabled={true}
-                  key={`key-${currentQuiz}`}
-                  data={selections.secondTens}
-                  height={35}
-                  parentHeight={200}
-                  fontSize={16}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    // 마지막 인덱스 초과 여부 확인
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.secondTens.length - 1
-                    );
-                    const secondOnes = userTime.second[1]; // Keep ones place
-                    const newSecond = `${selections.secondTens[validIndex]}${secondOnes}`;
-                    updateUserTime('second', newSecond);
-                  }}
-                  scrollerId='scroll-select-second-tens'
-                />
-              </TimePickerWrapper>
-
-              <TimePickerWrapper>
-                <WheelPicker
-                  key={`key-${currentQuiz}`}
-                  data={selections.secondOnes}
-                  height={35}
-                  parentHeight={200}
-                  fontSize={16}
-                  defaultSelection={0}
-                  updateSelection={(selectedIndex) => {
-                    const validIndex = Math.min(
-                      selectedIndex,
-                      selections.secondOnes.length - 1
-                    );
-                    const secondTens = userTime.second[0]; // Keep tens place
-                    const newSecond = `${secondTens}${selections.secondOnes[validIndex]}`;
-                    updateUserTime('second', newSecond);
-                  }}
-                  scrollerId='scroll-select-second-ones'
-                />
-              </TimePickerWrapper>
-            </Container>
+            <Keypad>
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'delete'].map(
+                (value, index) => (
+                  <Key
+                    key={index}
+                    onClick={() => handleKeypadInput(value)}
+                    isDelete={value === 'delete'}
+                  >
+                    <Text typo='head02B'>
+                      {value === 'delete' ? '←' : value}
+                    </Text>
+                  </Key>
+                )
+              )}
+            </Keypad>
           </PickerContainer>
 
           <div></div>
         </BottomSection>
       </ContentSection>
+      {currentQuiz === null && (
+        <>
+          <Overlay />
+          <ButtonContainer gap='1.375rem'>
+            <BasicButton
+              onClick={() => {
+                setCurrentQuiz(0);
+                stopAndResetTimer();
+              }}
+              width={'8.438rem'}
+              height={'3.75rem'}
+              size={'s'}
+              textProps={{ text: '시작하기' }}
+              bg={'primary500'}
+              style={{ fontWeight: 'bold' }}
+              shape={'round'}
+            ></BasicButton>
+          </ButtonContainer>
+        </>
+      )}
+
+      <CustomedToast
+        autoClose={2500}
+        limit={1}
+        position='top-right'
+        hideProgressBar={true}
+        closeButton={false}
+      />
     </QuizPage>
   );
 }
@@ -433,12 +461,6 @@ const BottomSection = styled(CenterColumn)`
   justify-content: space-between;
 `;
 
-const TimePickerWrapper = styled(Column)`
-  width: 30px;
-  background-color: ${({ theme }) => theme.colors.background01};
-  z-index: 10000;
-`;
-
 const ButtonWrapper = styled(Row)`
   position: absolute;
   left: calc(100% + 2rem);
@@ -450,18 +472,97 @@ const DisplayContainer = styled(CenterRow)`
   height: 44px;
 `;
 
-const Container = styled(Row)`
-  background-color: ${({ theme }) => theme.colors.red};
-`;
-
-const PickerContainer = styled(Row)`
+const PickerContainer = styled(CenterColumn)`
   gap: 0.75rem;
   border-radius: 18px;
   padding: 0 1rem;
-  background-color: ${({ theme }) => theme.colors.background01};
-  z-index: 10000;
+`;
 
-  .scroll-item {
-    padding: 0;
+const Keypad = styled.div`
+  display: grid;
+  z-index: 10;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+
+  & > :nth-last-child(2) {
+    grid-column: 2 / span 1;
   }
+  & > :last-child {
+    grid-column: 3 / span 1;
+  }
+`;
+
+const Key = styled(CenterColumn)`
+  background-color: ${({ theme }) => theme.colors.grey300};
+  text-align: center;
+  width: 4.688rem;
+  height: 3rem;
+  line-height: 2rem;
+  border-radius: 1.125rem;
+  cursor: pointer;
+`;
+
+export const CustomedToast = styled(ToastContainer)`
+  .Toastify__toast {
+    width: fit-content;
+    min-height: 35px;
+    margin-top: 3rem;
+    font-size: 12px;
+    color: #fff;
+    background: #3e3e3e;
+    z-index: 100000;
+  }
+`;
+
+const ButtonContainer = styled(CenterColumn)`
+  padding: ${LAYOUT.PADDING_X}rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 5rem;
+  z-index: 10000;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const CursorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Field = styled(CenterColumn)`
+  position: relative;
+  color: ${({ theme }) => theme.colors.black};
+  // border-bottom: 1px solid black;
+  border-color: ${({ theme, active }) =>
+    active ? theme.colors.primary500 : 'transparent'};
+  animation: ${({ active }) =>
+    active ? 'blink 1s step-end infinite' : 'none'};
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+`;
+
+const Colon = styled.span`
+  padding: 0 0.2rem;
 `;
