@@ -550,7 +550,7 @@ const CursorWrapper = styled.div`
 const Field = styled(CenterColumn)`
   position: relative;
   color: ${({ theme }) => theme.colors.black};
-  // border-bottom: 1px solid black;
+  min-width: 2.5rem;
   border-color: ${({ theme, active }) =>
     active ? theme.colors.primary500 : 'transparent'};
   animation: ${({ active }) =>
