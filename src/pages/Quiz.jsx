@@ -41,7 +41,7 @@ function Quiz() {
     second: '--'
   });
 
-  const [currentField, setCurrentField] = useState('hour');
+  const [currentField, setCurrentField] = useState(null);
   const startTimer = () => setIsRunning(true);
   const stopAndResetTimer = () => {
     setIsRunning(false);
@@ -395,6 +395,7 @@ function Quiz() {
             <BasicButton
               onClick={() => {
                 setCurrentQuiz(0);
+                setCurrentField('hour');
                 stopAndResetTimer();
               }}
               width={'8.438rem'}
