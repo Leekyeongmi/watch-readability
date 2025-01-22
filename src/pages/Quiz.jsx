@@ -495,8 +495,8 @@ const Keypad = styled.div`
 const Key = styled(CenterColumn)`
   background-color: ${({ theme }) => theme.colors.grey300};
   text-align: center;
-  width: 4.688rem;
-  height: 3rem;
+  width: 4.375rem;
+  height: 2.8rem;
   line-height: 2rem;
   border-radius: 1.125rem;
   cursor: pointer;
