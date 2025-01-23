@@ -359,6 +359,7 @@ function Quiz() {
                   width={'4.68rem'}
                   height={'1.5rem'}
                   shape={'round'}
+                  type='solid'
                   disabled={Object.values(userTime).some(
                     (value) => value === '--'
                   )}

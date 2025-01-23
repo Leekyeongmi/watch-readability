@@ -18,7 +18,7 @@ const BasicButton = ({
 }) => {
   const theme = useTheme();
   const borderRadius = shape === 'round' ? '0.438rem' : '0.3rem';
-  bg = bg ? bg : disabled ? 'black' : type === 'solid' ? 'black' : 'white';
+  bg = bg ? bg : disabled ? 'black' : type === 'solid' ? 'primary500' : 'white';
   const color = disabled || mode === 'dark' ? 'white' : 'black';
 
   const border = () => {
