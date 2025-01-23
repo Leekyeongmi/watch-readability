@@ -61,7 +61,7 @@ function Quiz() {
       minuteErrorAngle > 90 ||
       secondErrorAngle > 120
     ) {
-      toast('유효시간을 초과하였거나, 오차범위가 너무 큽니다.');
+      toast('유효시간을 초과하였거나 오차범위가 너무 큽니다');
       return;
     }
 
@@ -215,19 +215,19 @@ function Quiz() {
       const { hour, minute, second } = newState;
 
       if (parseInt(hour, 10) < 0 || parseInt(hour, 10) > 12) {
-        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        toast('0을 포함하여 입력해주세요 예) 2시 3분 4초 → 020304');
         newState.hour = '--';
         return prev;
       }
 
       if (parseInt(minute, 10) < 0 || parseInt(minute, 10) > 59) {
         newState.minute = '--';
-        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        toast('0을 포함하여 입력해주세요 예) 2시 3분 4초 → 020304');
         return prev;
       }
       if (parseInt(second, 10) < 0 || parseInt(second, 10) > 59) {
         newState.second = '--';
-        toast('시간을 올바른 형식으로 입력해주세요 예) 03:05:10');
+        toast('0을 포함하여 입력해주세요 예) 2시 3분 4초 → 020304');
         return prev;
       }
 
@@ -303,10 +303,10 @@ function Quiz() {
     <QuizPage id='quiz-page'>
       <HeaderSection>
         {currentQuiz === null ? (
-          <Text typo='head4'>{`제시되는 시간을 보고 정답을 제출하세요
-            시 분 초 순으로 입력됩니다
-            한 자리 숫자는 두 자리로 맞춰 입력해주세요
-            예) 03:03:10
+          <Text typo='head4'>{`제시되는 시각을 보고 정답을 제출하세요
+            시, 분, 초 순서로 입력됩니다
+            한 자리 숫자의 경우 0을 포함하여 입력해주세요
+            예) 2시 3분 4초 → 020304
             `}</Text>
         ) : (
           <ProgressBar>
