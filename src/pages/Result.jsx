@@ -30,6 +30,13 @@ function Result() {
     const q = query(collection(firestore, 'problems'));
     const querySnapshot = await getDocs(q);
 
+    if (querySnapshot.empty) {
+      alert(
+        '벌써 무료 계정 한도에 도달했네요! 내일 다시 찾아주시길 부탁드려요. 개발자 휴가가 끝나면 통계 로직 재정비 하겠습니다.🌴'
+      );
+      throw new Error('No data found in the "problems" collection.');
+    }
+
     const clockStats = {};
     let totalUserCount = 0;
 
@@ -218,12 +225,18 @@ function Result() {
             );
           })}
           <DateContainer>
-          <Text typo='head4' color='font'>{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-          <Text typo='head4' color='font'>{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
+            <Text
+              typo='head4'
+              color='font'
+            >{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+            <Text
+              typo='head4'
+              color='font'
+            >{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
           </DateContainer>
 
           <CopyRight>
-          <Text typo='head4' color='font'>{`*
+            <Text typo='head4' color='font'>{`*
           판독성 점수는 사용자 입력 시각과 
           정답 시각의 평균 오차 각도를 기준으로 계산합니다
           **
