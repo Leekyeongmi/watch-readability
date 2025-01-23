@@ -234,7 +234,7 @@ function Result() {
           developer. Lee kyeongmi
           professor. Lee byounghak
           
-          2024 
+          2024 - 2025
           Seoul national university of 
           science & technology
           M.F.A in visual design
