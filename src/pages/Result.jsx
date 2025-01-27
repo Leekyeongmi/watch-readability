@@ -267,22 +267,14 @@ function Result() {
               </Item>
             );
           })}
-          <DateContainer>
-            <Text
-              typo='head4'
-              color='font'
-            >{`Last update. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
-            <Text
-              typo='head4'
-              color='font'
-            >{`실험이 ${totalUserCount + 1228}개 진행되었습니다`}</Text>
-          </DateContainer>
-
           <CopyRight>
             <Text typo='head4' color='font'>{`*
+          last update: ${updateTime ? updateTime.toLocaleString() : '-'}
+          실험이 ${totalUserCount + 1228}개 진행되었습니다
+          **
           판독성 점수는 사용자 입력 시각과 
           정답 시각의 평균 오차 각도를 기준으로 계산합니다
-          **
+          ***
           시, 분, 초침에는 각 60% 35% 5%의 
           가중치가 적용됩니다
 
