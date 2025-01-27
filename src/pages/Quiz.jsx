@@ -64,7 +64,7 @@ function Quiz() {
       toast('유효시간을 초과하였거나 오차범위가 너무 큽니다');
       return;
     }
-
+    console.log(hourErrorAngle, minuteErrorAngle, secondErrorAngle, '==');
     updateUserData({
       clockId,
       elapsedTime,

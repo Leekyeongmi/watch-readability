@@ -5,7 +5,6 @@ import {
   Column,
   Row
 } from '../components/layouts/Layout';
-import { collection, query, getDocs } from 'firebase/firestore';
 import { firestore } from '../utils/firebase';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -17,6 +16,16 @@ import { useNavigate } from 'react-router-dom';
 import HomeButton from '../components/components/HomeButton';
 import MovingClock from '../components/MovingClock';
 import UserDataModal from '../components/components/UserDataModal';
+import {
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  getDocs,
+  where
+} from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 function Result() {
   const [stats, setStats] = useState();
@@ -27,13 +36,48 @@ function Result() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   async function calculateStats(filter) {
-    const q = query(collection(firestore, 'problems'));
+    const statsDocRef = doc(firestore, 'statistics', 'globalStats');
+    const statsDocSnapshot = await getDoc(statsDocRef);
+
+    const now = new Date();
+    let shouldUpdate = true;
+    let statsData;
+
+    if (statsDocSnapshot.exists()) {
+      statsData = statsDocSnapshot.data();
+      const lastUpdated = statsData.updatedAt.toDate();
+      const diffHours = (now - lastUpdated) / (1000 * 60 * 60);
+      console.log(diffHours, '통게 업데이트를 위한 시간차==');
+      if (diffHours < 24) {
+        shouldUpdate = false;
+      }
+    }
+
+    if (!shouldUpdate) {
+      const sortedStats = statsData.clocks.sort((a, b) => {
+        if (filter === 1) {
+          return b.errorScore - a.errorScore;
+        } else if (filter === 0) {
+          return a.averageElapsedTime - b.averageElapsedTime;
+        }
+      });
+      setStats(sortedStats);
+      setUpdateTime(statsData.updatedAt.toDate());
+      setTotalUserCount(statsData.totalUserCount);
+      return;
+    }
+
+    const startOfDay = Timestamp.fromDate(
+      new Date('2025-01-23T08:30:00+09:00')
+    );
+    const q = query(
+      collection(firestore, 'problems'),
+      where('timestamp', '>=', startOfDay)
+    );
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      alert(
-        '벌써 무료 계정 한도에 도달했네요! 내일 다시 찾아주시길 부탁드려요. 개발자 휴가가 끝나면 통계 로직 재정비 하겠습니다.🌴'
-      );
+      alert('데이터가 없습니다.');
       throw new Error('No data found in the "problems" collection.');
     }
 
@@ -63,74 +107,73 @@ function Result() {
       totalUserCount += 1;
     });
 
-    const result = Object.entries(clockStats)
-      .map(([clockId, stats]) => {
-        const averageElapsedTime =
-          Math.floor((stats.totalElapsedTime / stats.userCount) * 100) / 100;
-        const averageHourError =
-          Math.floor((stats.totalHourErrorAngle / stats.userCount) * 100) / 100;
-        const averageMinuteError =
-          Math.floor((stats.totalMinuteErrorAngle / stats.userCount) * 100) /
-          100;
-        const averageSecondError =
-          Math.floor((stats.totalSecondErrorAngle / stats.userCount) * 100) /
-          100;
+    const result = Object.entries(clockStats).map(([clockId, stats]) => {
+      const averageElapsedTime = stats.totalElapsedTime / stats.userCount;
+      const averageHourError = stats.totalHourErrorAngle / stats.userCount;
+      const averageMinuteError = stats.totalMinuteErrorAngle / stats.userCount;
+      const averageSecondError = stats.totalSecondErrorAngle / stats.userCount;
 
-        const epsilon = 0.01;
-        const adjustedLog = (value, maxValue) => {
-          if (value === 0) {
-            return 100;
-          }
+      const epsilon = 0.01;
+      const adjustedLog = (value, maxValue) => {
+        if (value === 0) {
+          return 100;
+        }
 
-          const logValue = Math.log(value + epsilon);
-          const logMaxValue = Math.log(maxValue + epsilon);
-          const normalizedScore = Math.max(
-            0,
-            100 - (logValue / logMaxValue) * 100
-          );
-
-          return normalizedScore;
-        };
-
-        const calculateErrorScore = (
-          averageHourError,
-          averageMinuteError,
-          averageSecondError
-        ) => {
-          const hourScore = adjustedLog(averageHourError, 90) * 0.6;
-          const minuteScore = adjustedLog(averageMinuteError, 90) * 0.35;
-          const secondScore = adjustedLog(averageSecondError, 120) * 0.05;
-
-          return hourScore + minuteScore + secondScore;
-        };
-
-        const errorScore = calculateErrorScore(
-          averageHourError,
-          averageMinuteError,
-          averageSecondError
+        const logValue = Math.log(value + epsilon);
+        const logMaxValue = Math.log(maxValue + epsilon);
+        const normalizedScore = Math.max(
+          0,
+          100 - (logValue / logMaxValue) * 100
         );
 
-        return {
-          clockId: parseInt(clockId),
-          averageElapsedTime,
-          averageHourError,
-          averageMinuteError,
-          averageSecondError,
-          errorScore: errorScore.toFixed(2),
-          userCount: stats.userCount
-        };
-      })
+        return normalizedScore;
+      };
 
-      .sort((a, b) => {
-        if (filter === 1) {
-          return b.errorScore - a.errorScore;
-        } else if (filter === 0) {
-          return a.averageElapsedTime - b.averageElapsedTime;
-        }
-      });
+      const calculateErrorScore = (
+        averageHourError,
+        averageMinuteError,
+        averageSecondError
+      ) => {
+        const hourScore = adjustedLog(averageHourError, 90) * 0.6;
+        const minuteScore = adjustedLog(averageMinuteError, 90) * 0.35;
+        const secondScore = adjustedLog(averageSecondError, 120) * 0.05;
+
+        return hourScore + minuteScore + secondScore;
+      };
+
+      const errorScore = calculateErrorScore(
+        averageHourError,
+        averageMinuteError,
+        averageSecondError
+      );
+
+      return {
+        clockId: parseInt(clockId),
+        averageElapsedTime: parseFloat(averageElapsedTime.toFixed(2)),
+        averageHourError: parseFloat(averageHourError.toFixed(2)),
+        averageMinuteError: parseFloat(averageMinuteError.toFixed(2)),
+        averageSecondError: parseFloat(averageSecondError.toFixed(2)),
+        errorScore: errorScore.toFixed(2),
+        userCount: stats.userCount
+      };
+    });
+
+    await setDoc(statsDocRef, {
+      clocks: result,
+      totalUserCount,
+      updatedAt: now
+    });
+
+    result.sort((a, b) => {
+      if (filter === 1) {
+        return b.errorScore - a.errorScore;
+      } else if (filter === 0) {
+        return a.averageElapsedTime - b.averageElapsedTime;
+      }
+    });
 
     setStats(result);
-    setUpdateTime(new Date());
+    setUpdateTime(now);
     setTotalUserCount(totalUserCount);
   }
 
@@ -232,7 +275,7 @@ function Result() {
             <Text
               typo='head4'
               color='font'
-            >{`실험이 ${totalUserCount}개 진행되었습니다`}</Text>
+            >{`실험이 ${totalUserCount + 1228}개 진행되었습니다`}</Text>
           </DateContainer>
 
           <CopyRight>
