@@ -271,7 +271,7 @@ function Result() {
             <Text
               typo='head4'
               color='font'
-            >{`updated at. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
+            >{`Last update. ${updateTime ? updateTime.toLocaleString() : '-'}`}</Text>
             <Text
               typo='head4'
               color='font'
